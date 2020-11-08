@@ -116,7 +116,17 @@ type Fav4Board struct {
 
 const SIZE_OF_FAV4_BOARD = unsafe.Sizeof(Fav4Board{})
 
+func FavCleanup(fav *Fav) error {
+	// XXX fav cleanup
+	return nil
+}
+
 func FavSave(fav *Fav, userID string) error {
+	err := FavCleanup(fav)
+	if err != nil {
+		return err
+	}
+
 	filename := setuserfile(userID, FAV)
 	postfix := getRandom().String()
 	tmpFilename := setuserfile(userID, FAV+".tmp."+postfix)
