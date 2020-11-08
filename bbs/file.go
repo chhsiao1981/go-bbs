@@ -11,6 +11,7 @@ package bbs
 import (
 	"bytes"
 	"encoding/binary"
+
 	// "iconv"
 	"io"
 	"log"

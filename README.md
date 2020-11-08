@@ -69,7 +69,7 @@ go test
    41 外籍使用者認證通知                   etc/foreign_welcome
    42 外籍使用者過期警告通知               etc/foreign_expired_warn
   ```
-  
+
   建立新看板的設定值
   ```
   【 建立新板 】
