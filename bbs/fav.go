@@ -169,9 +169,18 @@ func writeFavrec(file *os.File, fav *Fav) error {
 		return nil
 	}
 
-	binary.Write(file, binary.LittleEndian, &fav.NBoards)
-	binary.Write(file, binary.LittleEndian, &fav.NLines)
-	binary.Write(file, binary.LittleEndian, &fav.NFolders)
+	err := binary.Write(file, binary.LittleEndian, &fav.NBoards)
+	if err != nil {
+		return err
+	}
+	err = binary.Write(file, binary.LittleEndian, &fav.NLines)
+	if err != nil {
+		return err
+	}
+	err = binary.Write(file, binary.LittleEndian, &fav.NFolders)
+	if err != nil {
+		return err
+	}
 	total := fav.getDataNumber()
 	for i := int16(0); i < total; i++ {
 		ft := fav.Favh[i]
@@ -262,7 +271,10 @@ func FavLoad(userID string) (*Fav, error) {
 
 	// version
 	version := int16(0)
-	binary.Read(file, binary.LittleEndian, &version)
+	err = binary.Read(file, binary.LittleEndian, &version)
+	if err != nil {
+		return nil, err
+	}
 	// if version != FAV_VERSION {
 	// }
 
