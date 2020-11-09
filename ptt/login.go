@@ -18,7 +18,7 @@ func Login(userID string, passwd string, ip string, isHashed bool) (bool, error)
 		return false, nil
 	}
 
-	isValid, err := checkPasswd(user.passwd, []byte(passwd), isHashed)
+	isValid, err := checkPasswd(user.PasswdBig5, []byte(passwd), isHashed)
 	if err != nil {
 		return false, err
 	}

@@ -1,6 +1,8 @@
 #ifndef _BBSCRYPT_H_
 #define _BBSCRYPT_H_
 
+#include <stdlib.h>
+
 #ifdef PERL5
 char *des_crypt(char *buf, char *salt);
 #else

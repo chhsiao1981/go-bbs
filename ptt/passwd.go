@@ -18,12 +18,13 @@ var (
 
 // https://github.com/ptt/pttbbs/blob/master/include/pttstruct.h
 type Userec struct {
-	Version  uint32
-	Userid   string
-	Realname string
-	Nickname string
-	Passwd   string
-	Pad1     uint8
+	Version    uint32
+	Userid     string
+	Realname   string
+	Nickname   string
+	Passwd     string `binary:-`
+	PasswdBig5 []byte
+	Pad1       uint8
 
 	Uflag        uint32
 	_unused1     uint32
@@ -118,4 +119,8 @@ func checkPasswd(expected []byte, input []byte, isHashed bool) (bool, error) {
 	}
 
 	return reflect.DeepEqual(expected, passwd), nil
+}
+
+func logAttempt(userID string, ip string) {
+
 }
