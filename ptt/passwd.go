@@ -6,6 +6,9 @@ import (
 	"io"
 	"log"
 	"os"
+	"reflect"
+
+	"github.com/PichuChen/go-bbs/crypt"
 )
 
 var (
@@ -94,4 +97,25 @@ func NewUserecWithByte(data []byte) (*Userec, error) {
 	// ret.Title = binary.LittleEndian.Uint8(data[PTT_FNLEN+5+PTT_IDLEN+2+6 : PTT_FNLEN+5+PTT_IDLEN+2+6+PTT_TTLEN+1])
 
 	return &ret, nil
+}
+
+func initUser(userID string) (*Userec, error) {
+	return nil, nil
+}
+
+func checkPasswd(expected []byte, input []byte, isHashed bool) (bool, error) {
+	passwd := input
+	var err error = nil
+	if !isHashed {
+		passwd, err = crypt.Fcrypt(input, expected)
+		if err != nil {
+			return false, nil
+		}
+	}
+
+	if passwd == nil {
+		return false, nil
+	}
+
+	return reflect.DeepEqual(expected, passwd), nil
 }
