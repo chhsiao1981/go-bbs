@@ -1,7 +1,11 @@
-package bbs
+package crypt
 
 // #cgo CFLAGS: -Os -Wno-missing-field-initializers -pipe -I./include -Wno-parentheses-equality
 // #include "bbscrypt.h"
+//
+// void *fcrypt_wrapper(void *buf, void *salt) {
+//   return fcrypt((char *)buf, (char *)salt);
+// }
 import "C"
 import (
 	"errors"
@@ -27,15 +31,11 @@ func Fcrypt(input []byte, expected []byte) ([]byte, error) {
 	cexpected := C.CBytes(expected)
 	defer C.free(cexpected)
 
-	fpasswd, err := C.fcrypt(cinput, cexpected)
+	cpasswd, err := C.fcrypt_wrapper(cinput, cexpected)
 	if err != nil {
 		return nil, err
 	}
 
-	passwd := make([]byte, len(fpasswd))
-	nCopy := copy(passwd, fpasswd)
-	if nCopy != PASSWD_LEN {
-		return nil, ErrInvalidCrypt
-	}
+	passwd := C.GoBytes(cpasswd, PASSWD_LEN)
 	return passwd, nil
 }

@@ -1,4 +1,4 @@
-package bbs
+package crypt
 
 import (
 	"reflect"
