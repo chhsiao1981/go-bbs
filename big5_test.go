@@ -12,13 +12,13 @@ func TestUtf8ToBig5(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want []byte
+		want Big5String
 	}{
 		// TODO: Add test cases.
 		{
 			name: "test0",
 			args: args{input: "新的目錄"},
-			want: []byte{183, 115, 170, 186, 165, 216, 191, 253},
+			want: Big5String{183, 115, 170, 186, 165, 216, 191, 253},
 		},
 	}
 	for _, tt := range tests {
@@ -32,7 +32,7 @@ func TestUtf8ToBig5(t *testing.T) {
 
 func TestBig5ToUtf8(t *testing.T) {
 	type args struct {
-		input []byte
+		input Big5String
 	}
 	tests := []struct {
 		name string
@@ -42,7 +42,7 @@ func TestBig5ToUtf8(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			name: "test0",
-			args: args{input: []byte{183, 115, 170, 186, 165, 216, 191, 253}},
+			args: args{input: Big5String{183, 115, 170, 186, 165, 216, 191, 253}},
 			want: "新的目錄",
 		},
 	}
