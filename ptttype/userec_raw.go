@@ -2,6 +2,7 @@ package ptttype
 
 import (
 	"encoding/binary"
+	"io"
 	"os"
 	"unsafe"
 
@@ -94,10 +95,28 @@ var USEREC_RAW = UserecRaw{}
 
 const USEREC_RAW_SZ = unsafe.Sizeof(USEREC_RAW)
 
-func NewUserecRaw() *UserecRaw {
-	return &UserecRaw{}
+func LoadUserecRawsFromFile(filename string) ([]*UserecRaw, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var users []*UserecRaw
+	for {
+		eachUser, err := NewUserecRawWithFile(file)
+		if err != nil {
+			if err == io.EOF {
+				return users, nil
+			} else {
+				return nil, err
+			}
+		}
+		users = append(users, eachUser)
+	}
 }
 
+//NewUserecRawWithFile
 func NewUserecRawWithFile(file *os.File) (*UserecRaw, error) {
 	userecRaw := &UserecRaw{}
 

@@ -4,6 +4,12 @@ import (
 	"time"
 )
 
+var (
+	ZERO_TIME       = time.Unix(int64(0), 0)
+	ZERO_LOCAL_TIME = ZERO_TIME.In(TIMEZONE)
+	ZERO_TIME4      = Time4(0)
+)
+
 type Time4 int32
 
 func NowTS() Time4 {
@@ -17,6 +23,10 @@ func NowTS() Time4 {
 //to avoid the confusion. (also good for tests)
 func (t Time4) ToLocal() time.Time {
 	return time.Unix(int64(t), 0).In(TIMEZONE)
+}
+
+func (t Time4) ToUtc() time.Time {
+	return time.Unix(int64(t), 0).UTC()
 }
 
 //Cdate

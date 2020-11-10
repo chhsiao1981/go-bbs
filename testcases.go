@@ -1,6 +1,9 @@
 package bbs
 
-import "github.com/PichuChen/go-bbs/ptttype"
+import (
+	"github.com/PichuChen/go-bbs/ptttype"
+	"github.com/PichuChen/go-bbs/types"
+)
 
 var (
 	testUserecRaw = &ptttype.UserecRaw{
@@ -102,4 +105,237 @@ var (
 
 	testOpenUserecFile1     []*Userec = nil
 	TEST_N_OPEN_USER_FILE_1           = 50
+)
+
+var (
+	testBoard0 = &BoardHeader{
+		BrdName:    "SYSOP",
+		Title:      "嘰哩 ◎站長好!",
+		Brdattr:    ptttype.BRD_POSTMASK,
+		Gid:        2,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard1 = &BoardHeader{
+		BrdName:    "1...........",
+		Title:      ".... Σ中央政府  《高壓危險,非人可敵》",
+		Brdattr:    ptttype.BRD_GROUPBOARD,
+		Level:      ptttype.PERM_SYSOP,
+		Gid:        1,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard2 = &BoardHeader{
+		BrdName:    "junk",
+		Title:      "發電 ◎雜七雜八的垃圾",
+		Level:      ptttype.PERM_SYSOP,
+		Gid:        2,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard3 = &BoardHeader{
+		BrdName:    "Security",
+		Title:      "發電 ◎站內系統安全",
+		Level:      ptttype.PERM_SYSOP,
+		Gid:        2,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard4 = &BoardHeader{
+		BrdName:    "2...........",
+		Title:      ".... Σ市民廣場     報告  站長  ㄜ！",
+		Brdattr:    ptttype.BRD_GROUPBOARD,
+		Level:      0,
+		Gid:        1,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard5 = &BoardHeader{
+		BrdName:    "ALLPOST",
+		Title:      "嘰哩 ◎跨板式LOCAL新文章",
+		Level:      ptttype.PERM_SYSOP,
+		Brdattr:    ptttype.BRD_POSTMASK,
+		Gid:        5,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard6 = &BoardHeader{
+		BrdName:    "deleted",
+		Title:      "嘰哩 ◎資源回收筒",
+		Level:      ptttype.PERM_BM,
+		Gid:        5,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard7 = &BoardHeader{
+		BrdName:    "Note",
+		Title:      "嘰哩 ◎動態看板及歌曲投稿",
+		Level:      0,
+		Gid:        5,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard8 = &BoardHeader{
+		BrdName:    "Record",
+		Title:      "嘰哩 ◎我們的成果",
+		Brdattr:    ptttype.BRD_POSTMASK,
+		Level:      0,
+		Gid:        5,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard9 = &BoardHeader{
+		BrdName:    "WhoAmI",
+		Title:      "嘰哩 ◎呵呵，猜猜我是誰！",
+		Level:      0,
+		Gid:        5,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard10 = &BoardHeader{
+		BrdName:    "EditExp",
+		Title:      "嘰哩 ◎範本精靈投稿區",
+		Level:      0,
+		Gid:        5,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard11 = &BoardHeader{
+		BrdName:    "ALLHIDPOST",
+		Title:      "嘰哩 ◎跨板式LOCAL新文章(隱板)",
+		Brdattr:    ptttype.BRD_POSTMASK | ptttype.BRD_HIDE,
+		Level:      ptttype.PERM_SYSOP,
+		Gid:        5,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+		BM:         make([]string, 0),
+	}
+
+	testBoard12 = &BoardHeader{
+		BrdName:    "ptt_app",
+		Title:      "測試 ◎大家來玩吧",
+		BM:         []string{"SYSOP"},
+		Brdattr:    ptttype.BRD_CPLOG | ptttype.BRD_GUESTPOST | ptttype.BRD_POSTMASK,
+		Level:      0,
+		Gid:        5,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+	}
+
+	testBoard13 = &BoardHeader{
+		BrdName:    "test",
+		Title:      "測試 ◎測試測試測試",
+		BM:         []string{"SYSOP"},
+		Brdattr:    ptttype.BRD_CPLOG | ptttype.BRD_GUESTPOST | ptttype.BRD_POSTMASK,
+		Level:      0,
+		Gid:        5,
+		BUpdate:    types.ZERO_LOCAL_TIME,
+		VTime:      types.ZERO_LOCAL_TIME,
+		PermReload: types.ZERO_LOCAL_TIME,
+		EndGamble:  types.ZERO_LOCAL_TIME,
+		SRexpire:   types.ZERO_LOCAL_TIME,
+		Next:       []int32{0, 0},
+		FirstChild: []int32{0, 0},
+		PostType:   make([]byte, 33),
+	}
 )

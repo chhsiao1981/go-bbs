@@ -1,6 +1,9 @@
 package ptttype
 
 import (
+	"encoding/binary"
+	"io"
+	"os"
 	"unsafe"
 
 	"github.com/PichuChen/go-bbs/types"
@@ -12,8 +15,8 @@ type BoardHeaderRaw struct {
 	Title              [BTLEN + 1]byte
 	BM                 [IDLEN*3 + 3]byte /* BMs' userid, token '/' */
 	Pad1               [3]byte
-	BrdAttr            uint32      /* board的屬性 */
-	ChessCountry       byte        /* 棋國 */
+	BrdAttr            BrdAttr     /* board的屬性 */
+	ChessCountry       int8        /* 棋國 */
 	VoteLimitPosts_    uint8       /* (已停用) 連署 : 文章篇數下限 */
 	VoteLimitLogins    uint8       /* 連署 : 登入次數下限 */
 	Pad2_1             [1]uint8    /* (已停用) 連署 : 註冊時間限制 */
@@ -23,7 +26,7 @@ type BoardHeaderRaw struct {
 	Pad2_2             [1]uint8    /* (已停用) 發表文章 : 註冊時間限制 */
 	BVote              uint8       /* 正舉辦 Vote 數 */
 	VTime              types.Time4 /* Vote close time */
-	Level              uint32      /* 可以看此板的權限 */
+	Level              PERM        /* 可以看此板的權限 */
 	PermReload         types.Time4 /* 最後設定看板的時間 */
 	Gid                int32       /* 看板所屬的類別 ID */
 	Next               [2]int32    /* 在同一個gid下一個看板 動態產生*/
@@ -43,5 +46,37 @@ type BoardHeaderRaw struct {
 	Pad4               [40]byte
 }
 
-//Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
+//!!!Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
 const BOARD_HEADER_RAW_SZ = unsafe.Sizeof(BoardHeaderRaw{})
+
+func LoadBoardHeaderRawsFromFile(filename string) ([]*BoardHeaderRaw, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var boards []*BoardHeaderRaw
+	for {
+		eachBoard, err := NewBoardHeaderRawWithFile(file)
+		if err != nil {
+			if err == io.EOF {
+				return boards, nil
+			} else {
+				return nil, err
+			}
+		}
+		boards = append(boards, eachBoard)
+	}
+}
+
+func NewBoardHeaderRawWithFile(file *os.File) (*BoardHeaderRaw, error) {
+	boardRaw := &BoardHeaderRaw{}
+
+	err := binary.Read(file, binary.LittleEndian, boardRaw)
+	if err != nil {
+		return nil, err
+	}
+
+	return boardRaw, nil
+}
