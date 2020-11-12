@@ -41,7 +41,7 @@ func LogAttempt(userID *[ptttype.IDLEN + 1]byte, ip [ptttype.IPV4LEN + 1]byte, i
 //	int: user-num in passwd file.
 //	*ptttype.UserecBig5: user.
 //	error: err.
-func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecBig5, error) {
+func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecRaw, error) {
 	if userID == nil || userID[0] == 0 {
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
@@ -70,7 +70,7 @@ func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecBig5, 
 //Return
 //	*ptttype.UserecBig5: user.
 //	error: err.
-func PasswdQuery(num int) (*ptttype.UserecBig5, error) {
+func PasswdQuery(num int) (*ptttype.UserecRaw, error) {
 	if num < 1 || num > ptttype.MAX_USERS {
 		return nil, ptttype.ErrInvalidUserID
 	}
@@ -80,8 +80,8 @@ func PasswdQuery(num int) (*ptttype.UserecBig5, error) {
 		return nil, err
 	}
 
-	user := &ptttype.UserecBig5{}
-	offset := ptttype.USERREBIG5SZ * (int64(num) - 1)
+	user := &ptttype.UserecRaw{}
+	offset := ptttype.USEREC_RAW_SZ * (int64(num) - 1)
 	_, err = file.Seek(offset, 0)
 	if err != nil {
 		return nil, err

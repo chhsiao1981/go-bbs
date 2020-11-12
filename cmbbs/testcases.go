@@ -3,7 +3,7 @@ package cmbbs
 import "github.com/PichuChen/go-bbs/ptttype"
 
 var (
-	testUserecBig51 = &ptttype.UserecBig5{
+	testUserecBig51 = &ptttype.UserecRaw{
 		Version:    4194,
 		UserID:     [ptttype.IDLEN + 1]byte{83, 89, 83, 79, 80},
 		RealName:   [ptttype.REALNAMESZ]byte{67, 111, 100, 105, 110, 103, 77, 97, 110},

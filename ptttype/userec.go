@@ -2,7 +2,7 @@ package ptttype
 
 import "unsafe"
 
-type UserecBig5 struct {
+type UserecRaw struct {
 	Version uint32
 
 	//Require const-bytes to have correct Unsafe.Sizeof
@@ -84,8 +84,8 @@ type UserecBig5 struct {
 	PadTail [28]byte
 }
 
-const USERREBIG5SZ = int64(unsafe.Sizeof(UserecBig5{}))
+const USEREC_RAW_SZ = int64(unsafe.Sizeof(UserecRaw{}))
 
-func NewUserecBig5() *UserecBig5 {
-	return &UserecBig5{}
+func NewUserecBig5() *UserecRaw {
+	return &UserecRaw{}
 }

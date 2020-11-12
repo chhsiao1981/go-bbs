@@ -5,6 +5,6 @@ import (
 	"github.com/PichuChen/go-bbs/ptttype"
 )
 
-func initCurrentUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecBig5, error) {
+func initCurrentUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecRaw, error) {
 	return cmbbs.PasswdLoadUser(userID)
 }

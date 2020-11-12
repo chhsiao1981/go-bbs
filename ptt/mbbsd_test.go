@@ -23,7 +23,7 @@ func TestLoginQuery(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *ptttype.UserecBig5
+		want    *ptttype.UserecRaw
 		wantErr bool
 	}{
 		// TODO: Add test cases.

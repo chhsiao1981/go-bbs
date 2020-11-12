@@ -15,7 +15,7 @@ import (
 //Return
 //	*UserecBig5: current user
 //  error: err
-func LoginQuery(userID *[ptttype.IDLEN + 1]byte, passwd []byte, ip [ptttype.IPV4LEN + 1]byte, isHashed bool) (*ptttype.UserecBig5, error) {
+func LoginQuery(userID *[ptttype.IDLEN + 1]byte, passwd []byte, ip [ptttype.IPV4LEN + 1]byte, isHashed bool) (*ptttype.UserecRaw, error) {
 	if !cmbbs.IsValidUserID(userID) {
 		return nil, ptttype.ErrInvalidUserID
 	}
