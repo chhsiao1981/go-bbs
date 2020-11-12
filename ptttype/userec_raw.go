@@ -86,6 +86,6 @@ type UserecRaw struct {
 
 const USEREC_RAW_SZ = int64(unsafe.Sizeof(UserecRaw{}))
 
-func NewUserecBig5() *UserecRaw {
+func NewUserecRaw() *UserecRaw {
 	return &UserecRaw{}
 }
