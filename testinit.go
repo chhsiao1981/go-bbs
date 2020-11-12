@@ -1,23 +1,17 @@
 package bbs
 
-var (
-	isTest = false
-)
-
 func setupTest() {
-	isTest = true
 	initTestVars()
 }
 
 func teardownTest() {
-	isTest = false
 	freeTestVars()
 }
 
 func initTestVars() {
 	if testOpenUserecFile1 == nil {
-		testOpenUserecFile1 = make([]*Userec, 50)
-		for i := 0; i < 50; i++ {
+		testOpenUserecFile1 = make([]*Userec, TEST_N_OPEN_USER_FILE_1)
+		for i := 0; i < TEST_N_OPEN_USER_FILE_1; i++ {
 			testOpenUserecFile1[i] = testUserecEmpty
 		}
 		testOpenUserecFile1[0] = testUserec1
