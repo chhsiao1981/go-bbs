@@ -73,7 +73,7 @@ func Test_doSearchUser(t *testing.T) {
 
 }
 
-func Test_doSearchUserBig5(t *testing.T) {
+func Test_doSearchUserRaw(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
@@ -105,16 +105,16 @@ func Test_doSearchUserBig5(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1, err := doSearchUserBig5(tt.args.userID, tt.args.isReturn)
+			got, got1, err := doSearchUserRaw(tt.args.userID, tt.args.isReturn)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("doSearchUserBig5() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("doSearchUserRaw() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("doSearchUserBig5() got = %v, want %v", got, tt.want)
+				t.Errorf("doSearchUserRaw() got = %v, want %v", got, tt.want)
 			}
 			if !reflect.DeepEqual(got1, tt.want1) {
-				t.Errorf("doSearchUserBig5() got1 = %v, want %v", got1, tt.want1)
+				t.Errorf("doSearchUserRaw() got1 = %v, want %v", got1, tt.want1)
 			}
 		})
 	}

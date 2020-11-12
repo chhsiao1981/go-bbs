@@ -21,14 +21,14 @@ func TestPasswdLoadUser(t *testing.T) {
 		name    string
 		args    args
 		want    int
-		want1   *ptttype.UserecBig5
+		want1   *ptttype.UserecRaw
 		wantErr bool
 	}{
 		// TODO: Add test cases.
 		{
 			args:  args{&userID1},
 			want:  1,
-			want1: testUserecBig51,
+			want1: testUserecRaw1,
 		},
 	}
 	for _, tt := range tests {
@@ -58,13 +58,13 @@ func TestPasswdQuery(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *ptttype.UserecBig5
+		want    *ptttype.UserecRaw
 		wantErr bool
 	}{
 		// TODO: Add test cases.
 		{
 			args: args{1},
-			want: testUserecBig51,
+			want: testUserecRaw1,
 		},
 	}
 	for _, tt := range tests {

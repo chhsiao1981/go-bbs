@@ -83,7 +83,7 @@ func doSearchUser(userID string, isReturn bool) (int, string, error) {
 	return int(cusernum), returnID, nil
 }
 
-//SearchUserBig5
+//SearchUserRaw
 //Params:
 //	userID: querying user-id. (CBytes provides only []byte)
 //	isReturn
@@ -92,14 +92,14 @@ func doSearchUser(userID string, isReturn bool) (int, string, error) {
 //	int: usernum.
 //  []byte: the user-id in shm (CBytes provides only []byte)
 //	error: err.
-func SearchUserBig5(userID []byte, isReturn bool) (int, []byte, error) {
+func SearchUserRaw(userID []byte, isReturn bool) (int, []byte, error) {
 	if userID[0] == 0 {
 		return 0, nil, nil
 	}
-	return doSearchUserBig5(userID, isReturn)
+	return doSearchUserRaw(userID, isReturn)
 }
 
-//doSearchUserBig5
+//doSearchUserRaw
 //Params:
 //	userID: querying user-id. (CBytes provides only []byte)
 //	isReturn
@@ -108,7 +108,7 @@ func SearchUserBig5(userID []byte, isReturn bool) (int, []byte, error) {
 //	int: usernum.
 //  []byte: the user-id in shm (CBytes provides only []byte)
 //	error: err.
-func doSearchUserBig5(userID []byte, isReturn bool) (int, []byte, error) {
+func doSearchUserRaw(userID []byte, isReturn bool) (int, []byte, error) {
 	cuserID := C.CBytes(userID[:])
 	defer C.free(cuserID)
 

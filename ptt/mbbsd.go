@@ -13,7 +13,7 @@ import (
 //	isHashed: whether the input-passwd is already hashed.
 //
 //Return
-//	*UserecBig5: current user
+//	*UserecRaw: user
 //  error: err
 func LoginQuery(userID *[ptttype.IDLEN + 1]byte, passwd []byte, ip [ptttype.IPV4LEN + 1]byte, isHashed bool) (*ptttype.UserecRaw, error) {
 	if !cmbbs.IsValidUserID(userID) {

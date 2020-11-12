@@ -21,14 +21,14 @@ func Test_initCurrentUser(t *testing.T) {
 		name    string
 		args    args
 		want    int
-		want1   *ptttype.UserecBig5
+		want1   *ptttype.UserecRaw
 		wantErr bool
 	}{
 		// TODO: Add test cases.
 		{
 			args:  args{&userid1},
 			want:  1,
-			want1: testUserecBig51,
+			want1: testUserecRaw1,
 		},
 	}
 	for _, tt := range tests {

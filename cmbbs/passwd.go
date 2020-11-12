@@ -39,14 +39,14 @@ func LogAttempt(userID *[ptttype.IDLEN + 1]byte, ip [ptttype.IPV4LEN + 1]byte, i
 //
 //Return
 //	int: user-num in passwd file.
-//	*ptttype.UserecBig5: user.
+//	*ptttype.UserecRaw: user.
 //	error: err.
 func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecRaw, error) {
 	if userID == nil || userID[0] == 0 {
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
-	usernum, _, err := shm.SearchUserBig5(userID[:], false)
+	usernum, _, err := shm.SearchUserRaw(userID[:], false)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -68,7 +68,7 @@ func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecRaw, e
 //	num: user-num in passwd file.
 //
 //Return
-//	*ptttype.UserecBig5: user.
+//	*ptttype.UserecRaw: user.
 //	error: err.
 func PasswdQuery(num int) (*ptttype.UserecRaw, error) {
 	if num < 1 || num > ptttype.MAX_USERS {

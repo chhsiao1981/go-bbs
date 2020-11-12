@@ -29,7 +29,7 @@ func TestLoginQuery(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args: args{userID: &userid1, passwd: []byte("123123")},
-			want: testUserecBig51,
+			want: testUserecRaw1,
 		},
 		{
 			args:    args{userID: &userid1, passwd: []byte("124")},
