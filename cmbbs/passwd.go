@@ -14,15 +14,11 @@ import (
 //Params
 //	expected: expected-passwd-hash
 //	input: input-passwd
-//	isHash: whether the input-passwd is already hashed.
 //
 //Return
 //	bool: true: good (password matched). false: bad (password not matched).
 //	error: err
-func CheckPasswd(expected []byte, input []byte, isHashed bool) (bool, error) {
-	if isHashed {
-		return reflect.DeepEqual(expected, input), nil
-	}
+func CheckPasswd(expected []byte, input []byte) (bool, error) {
 	pw, err := crypt.Fcrypt(input, expected)
 	if err != nil {
 		return false, err
@@ -30,7 +26,7 @@ func CheckPasswd(expected []byte, input []byte, isHashed bool) (bool, error) {
 	return reflect.DeepEqual(pw, expected), nil
 }
 
-func LogAttempt(userID *[ptttype.IDLEN + 1]byte, ip [ptttype.IPV4LEN + 1]byte, isWithUserHome bool) {
+func LogAttempt(userID *[ptttype.IDLEN + 1]byte, ip *[ptttype.IPV4LEN + 1]byte, isWithUserHome bool) {
 }
 
 //PasswdLoadUser

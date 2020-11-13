@@ -15,10 +15,9 @@ func TestLoginQuery(t *testing.T) {
 	copy(userid1[:], []byte("SYSOP"))
 
 	type args struct {
-		userID   *[ptttype.IDLEN + 1]byte
-		passwd   []byte
-		ip       [ptttype.IPV4LEN + 1]byte
-		isHashed bool
+		userID *[ptttype.IDLEN + 1]byte
+		passwd []byte
+		ip     *[ptttype.IPV4LEN + 1]byte
 	}
 	tests := []struct {
 		name    string
@@ -39,7 +38,7 @@ func TestLoginQuery(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := LoginQuery(tt.args.userID, tt.args.passwd, tt.args.ip, tt.args.isHashed)
+			got, err := LoginQuery(tt.args.userID, tt.args.passwd, tt.args.ip)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoginQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return

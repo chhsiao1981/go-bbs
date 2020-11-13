@@ -5,26 +5,26 @@ import (
 	"io"
 	"log"
 	"os"
+
+	"github.com/PichuChen/go-bbs/ptt"
+	"github.com/PichuChen/go-bbs/ptttype"
 )
 
-// https://github.com/ptt/pttbbs/blob/master/include/pttstruct.h
-type Userec struct {
-	Version  uint32
-	Userid   string
-	Realname string
-	Nickname string
-	Passwd   string
-	Pad1     uint8
+func Login(userID string, passwd string, ip string) (*Userec, error) {
+	userIDRaw := &[ptttype.IDLEN + 1]byte{}
+	copy(userIDRaw[:], []byte(userID))
+	passwdRaw := []byte(passwd)
+	ipRaw := &[ptttype.IPV4LEN + 1]byte{}
+	copy(ipRaw[:], []byte(ip))
 
-	Uflag        uint32
-	_unused1     uint32
-	Userlevel    uint32
-	Numlogindays uint32
-	Numposts     uint32
-	Firstlogin   uint32
-	Lastlogin    uint32
-	Lasthost     string
-	// TODO
+	userRaw, err := ptt.LoginQuery(userIDRaw, passwdRaw, ipRaw)
+	if err != nil {
+		return nil, err
+	}
+
+	user := NewUserecFromRaw(userRaw)
+
+	return user, nil
 }
 
 func OpenUserecFile(filename string) ([]*Userec, error) {
@@ -55,7 +55,7 @@ func OpenUserecFile(filename string) ([]*Userec, error) {
 }
 
 func NewUserecWithFile(file *os.File) (*Userec, error) {
-	userecRaw := &UserecRaw{}
+	userecRaw := &ptttype.UserecRaw{}
 
 	err := binary.Read(file, binary.LittleEndian, userecRaw)
 	if err != nil {
@@ -65,25 +65,4 @@ func NewUserecWithFile(file *os.File) (*Userec, error) {
 	user := NewUserecFromRaw(userecRaw)
 
 	return user, nil
-}
-
-func NewUserecFromRaw(userecRaw *UserecRaw) *Userec {
-	user := &Userec{}
-	user.Version = userecRaw.Version
-	user.Userid = CstrToString(userecRaw.UserID[:])
-	user.Realname = Big5ToUtf8(CstrToBytes(userecRaw.RealName[:]))
-	user.Nickname = Big5ToUtf8(CstrToBytes(userecRaw.Nickname[:]))
-	user.Passwd = CstrToString(userecRaw.PasswdHash[:])
-	user.Pad1 = userecRaw.Pad1
-
-	user.Uflag = userecRaw.UFlag
-	user._unused1 = userecRaw.Unused1
-	user.Userlevel = userecRaw.UserLevel
-	user.Numlogindays = userecRaw.NumLoginDays
-	user.Numposts = userecRaw.NumPosts
-	user.Firstlogin = uint32(userecRaw.FirstLogin)
-	user.Lastlogin = uint32(userecRaw.LastLogin)
-	user.Lasthost = CstrToString(userecRaw.LastHost[:])
-
-	return user
 }

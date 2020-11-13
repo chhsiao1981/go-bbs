@@ -1,4 +1,4 @@
-package cmbbs
+package api
 
 import (
 	"github.com/PichuChen/go-bbs/ptttype"
@@ -6,15 +6,17 @@ import (
 )
 
 var (
-	origBBSHOME = ""
+	testOrigBBSHOME = ""
 )
 
 func setupTest() {
-	origBBSHOME = ptttype.SetBBSHOME("./testcase")
+	testOrigBBSHOME = ptttype.SetBBSHOME("./testcase")
+
+	// shm
 	shm.LoadUHash()
 	shm.AttachSHM()
 }
 
 func teardownTest() {
-	ptttype.SetBBSHOME(origBBSHOME)
+	ptttype.SetBBSHOME(testOrigBBSHOME)
 }

@@ -14,9 +14,6 @@ import (
 //This should be done with the original uhash_loader program.
 //Currently it's only for testing.
 func LoadUHash() error {
-	if !IsTest {
-		return ErrInvalidOp
-	}
 	// always got "file-exists error" in the error.
 	// err is not an indicator of wrong-op in C.load_uhash.
 	// use ret instead.

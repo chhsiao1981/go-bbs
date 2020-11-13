@@ -89,7 +89,6 @@ func TestCheckPasswd(t *testing.T) {
 	type args struct {
 		expected []byte
 		input    []byte
-		isHashed bool
 	}
 	tests := []struct {
 		name    string
@@ -99,23 +98,18 @@ func TestCheckPasswd(t *testing.T) {
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{expected1[:], input1, false},
-			want: true,
-		},
-		{
-			name: "already hashed",
-			args: args{expected1[:], expected1[:], true},
+			args: args{expected1[:], input1},
 			want: true,
 		},
 		{
 			name: "incorrect input",
-			args: args{expected1[:], input2, false},
+			args: args{expected1[:], input2},
 			want: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := CheckPasswd(tt.args.expected, tt.args.input, tt.args.isHashed)
+			got, err := CheckPasswd(tt.args.expected, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckPasswd() error = %v, wantErr %v", err, tt.wantErr)
 				return

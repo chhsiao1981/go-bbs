@@ -6,19 +6,15 @@ import (
 )
 
 var (
-	isTest      = false
 	origBBSHOME = ""
 )
 
 func setupTest() {
-	isTest = true
 	origBBSHOME = ptttype.SetBBSHOME("./testcase")
-	shm.IsTest = true
 	shm.LoadUHash()
 	shm.AttachSHM()
 }
 
 func teardownTest() {
-	isTest = false
 	ptttype.SetBBSHOME(origBBSHOME)
 }
