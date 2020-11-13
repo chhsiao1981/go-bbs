@@ -33,7 +33,7 @@ func TestLoginQuery(t *testing.T) {
 		{
 			args:    args{userID: &userid1, passwd: []byte("124")},
 			want:    nil,
-			wantErr: false,
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {

@@ -8,6 +8,7 @@ import (
 
 	"github.com/PichuChen/go-bbs/ptt"
 	"github.com/PichuChen/go-bbs/ptttype"
+	"github.com/sirupsen/logrus"
 )
 
 func Login(userID string, passwd string, ip string) (*Userec, error) {
@@ -18,6 +19,7 @@ func Login(userID string, passwd string, ip string) (*Userec, error) {
 	copy(ipRaw[:], []byte(ip))
 
 	userRaw, err := ptt.LoginQuery(userIDRaw, passwdRaw, ipRaw)
+	logrus.Infof("bbs.passwd.Login: after LoginQuery: userRaw: %v e: %v", userRaw, err)
 	if err != nil {
 		return nil, err
 	}

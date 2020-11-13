@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/PichuChen/go-bbs/api"
+	"github.com/PichuChen/go-bbs/ptttype"
+	"github.com/PichuChen/go-bbs/shm"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,7 +16,13 @@ func initGin() (*gin.Engine, error) {
 	return router, nil
 }
 
+func init() {
+	ptttype.SetBBSHOME("./testcase")
+	shm.AttachSHM()
+}
+
 func main() {
+
 	router, err := initGin()
 	if err != nil {
 		return

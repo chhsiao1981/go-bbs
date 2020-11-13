@@ -1,6 +1,9 @@
 package bbs
 
-import "github.com/PichuChen/go-bbs/ptttype"
+import (
+	"github.com/PichuChen/go-bbs/ptttype"
+	log "github.com/sirupsen/logrus"
+)
 
 // https://github.com/ptt/pttbbs/blob/master/include/pttstruct.h
 type Userec struct {
@@ -23,6 +26,7 @@ type Userec struct {
 }
 
 func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) *Userec {
+	log.Infof("userecRaw: %v", userecRaw)
 	user := &Userec{}
 	user.Version = userecRaw.Version
 	user.Userid = CstrToString(userecRaw.UserID[:])
