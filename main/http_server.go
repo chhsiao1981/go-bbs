@@ -18,6 +18,7 @@ func initGin() (*gin.Engine, error) {
 
 func init() {
 	ptttype.SetBBSHOME("./testcase")
+	shm.LoadUHash()
 	shm.AttachSHM()
 }
 
