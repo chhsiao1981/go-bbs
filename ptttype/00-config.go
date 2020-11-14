@@ -61,7 +61,7 @@ var (
 	OUTJOBSPOOL = true
 
 	/* 若定義, 則不能舉辦賭盤 */
-	NO_GAMBLE = true
+	NO_GAMBLE = false
 
 	/* 可動態透過 GLOBALVAR[9]調整使用者上限 */
 	DYMAX_ACTIVE = true
