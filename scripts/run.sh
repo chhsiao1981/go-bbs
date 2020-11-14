@@ -1,6 +1,10 @@
 #!/bin/bash
 
-echo "go build"
-go build ./...
+tags=${1:-default}
+
+echo "to build: tags: ${tags}"
+go build -tags ${tags} .
 echo "to run main"
-./main/main
+cd main
+go run -tags ${tags} .
+cd ..

@@ -37,8 +37,10 @@ var (
 	BN_WHOAMI = "WhoAmI"
 
 	/* 若定義, 則全站所有五子棋/象棋棋譜都會紀錄在此板 */
-	BN_FIVECHESS_LOG = BBSMNAME + "Five"
-	BN_CCHESS_LOG    = BBSMNAME + "CChess"
+	IS_BN_FIVECHESS_LOG_INFERRED = true
+	BN_FIVECHESS_LOG             = BBSMNAME + "Five"
+	IS_BN_CCHESS_LOG_INFERRED    = true
+	BN_CCHESS_LOG                = BBSMNAME + "CChess"
 
 	/* 若定義，則動態看板會動態檢查爭議性字眼 */
 	BN_NOTE_AGGCHKDIR = "<點歌> 動態看板"
@@ -209,7 +211,8 @@ var (
 	BBSMNAME2 = "Ｐtt"
 
 	/* 錢幣名，建議剛好 3 個字元。 詳見 sample/pttbbs.conf */
-	MONEYNAME = BBSMNAME + "幣"
+	IS_MONEYNAME_INFFERRED = true
+	MONEYNAME              = BBSMNAME + "幣"
 
 	/* AID 顯示的站台名稱。 若 IP 太長請另行定義。 */
 	AID_HOSTNAME = MYHOSTNAME
@@ -305,33 +308,17 @@ var (
 	/////////////////////////////////////////////////////////////////////////////
 	// Performance Parameters 效能參數
 
-	MAX_USERS = 150000 /* 最高註冊人數 */
-
-	MAX_ACTIVE = 1024 /* 最多同時上站人數 */
-
 	MAX_GUEST = 100 /* 最多 guest 上站人數 */
 
 	MAX_CPULOAD = 70 /* CPU 最高load */
 
 	DEBUGSLEEP_SECONDS = 3600 /* debug 等待時間 */
 
-	MAX_BOARD = 8192 /* 最大開板個數 */
-
 	HASH_BITS = 16 /* userid->uid hashing bits */
 
 	OVERLOADBLOCKFDS = 0 /* 超載後會保留這麼多個 fd */
 
-	MAX_FRIEND = 256 /* 載入 cache 之最多朋友數目 */
-
-	MAX_REJECT = 32 /* 載入 cache 之最多壞人數目 */
-
-	MAX_MSGS = 10 /* 水球(熱訊)忍耐上限 */
-
-	MAX_ADBANNER = 500 /* 最多動態看板數 */
-
 	MAX_SWAPUSED = 0.7 /* SWAP最高使用率 */
-
-	HOTBOARDCACHE = 0 /* 熱門看板快取 */
 
 	TARQUEUE_TIME_STR = "深夜" // 看板備份時間訊息 (應與 contab 一致)
 
@@ -362,8 +349,6 @@ var (
 	KEEP_DAYS_REGGED = 120 /* 已註冊使用者保留多久 */
 
 	KEEP_DAYS_UNREGGED = 15 /* 未註冊使用者保留多久 */
-
-	MAX_FROM = 300 /* 最多故鄉數 */
 
 	THREAD_SEARCH_RANGE = 500 /* 系列文章搜尋上限 */
 
@@ -409,10 +394,6 @@ var (
 	MAX_NOTE = 20 /* 最多保留幾篇留言？ */
 
 	MAX_SIGLINES = 6 /* 簽名檔引入最大行數 */
-
-	MAX_REVIEW = 7 /* 最多水球回顧 */
-
-	NUMVIEWFILE = 14 /* 進站畫面最多數 */
 
 	LOGINATTEMPTS = 3 /* 最大進站失誤次數 */
 
