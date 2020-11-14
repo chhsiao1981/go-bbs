@@ -7,6 +7,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+//InitConfig
+//
+//Params
+//	filename: ini filename
+//
+//Return
+//	error: err
 func InitConfig(filename string) error {
 
 	filenameList := strings.Split(filename, ".")
@@ -76,6 +83,7 @@ func setDoubleConfig(idx string, orig float64) float64 {
 //SetBBSHOME
 //
 //This is to safely set BBSHOME
+//Public to be used in the tests of other modules.
 //
 //Params
 //	bbshome: new bbshome
@@ -97,7 +105,7 @@ func SetBBSHOME(bbshome string) string {
 	return origBBSHome
 }
 
-//SetBBSMNAME
+//setBBSMName
 //
 //This is to safely set BBSMNAME
 //
@@ -106,7 +114,7 @@ func SetBBSHOME(bbshome string) string {
 //
 //Return
 //	string: original bbsmname
-func SetBBSMNAME(bbsmname string) string {
+func setBBSMName(bbsmname string) string {
 	origBBSMName := BBSMNAME
 	log.Debugf("SetBBSMNAME: %v", bbsmname)
 
@@ -123,7 +131,66 @@ func SetBBSMNAME(bbsmname string) string {
 		MONEYNAME = BBSMNAME + "幣"
 	}
 
-	//common.go
+	BN_BUGREPORT = BBSMNAME + "Bug"
+	BN_LAW = BBSMNAME + "Law"
+	BN_NEWBIE = BBSMNAME + "NewHand"
+	BN_FOREIGN = BBSMNAME + "Foreign"
 
 	return origBBSMName
+}
+
+func setCAPTCHAInsertServerAddr(captchaInsertServerAddr string) string {
+	origCAPTCHAInsertServerAddr := CAPTCHA_INSERT_SERVER_ADDR
+
+	CAPTCHA_INSERT_SERVER_ADDR = captchaInsertServerAddr
+
+	if IS_CAPTCHA_INSERT_HOST_INFERRED {
+		CAPTCHA_INSERT_HOST = CAPTCHA_INSERT_SERVER_ADDR
+	}
+
+	return origCAPTCHAInsertServerAddr
+}
+
+//setMyHostname
+//
+//Params
+//	myHostName: new my hostname
+//
+//Return
+//	string: orig my hostname
+func setMyHostname(myHostname string) string {
+	origMyHostname := MYHOSTNAME
+
+	MYHOSTNAME = myHostname
+
+	if IS_AID_HOSTNAME_INFERRED {
+		AID_HOSTNAME = MYHOSTNAME
+	}
+
+	return origMyHostname
+
+}
+
+//setRecycleBinName
+//
+//Params
+//	recycleBinName: new recycle bin name
+//
+//Return
+//	string: orig recycle bin name
+func setRecycleBinName(recycleBinName string) string {
+	origRecycleBinName := recycleBinName
+
+	RECYCLE_BIN_NAME = recycleBinName
+	RECYCLE_BIN_OWNER = "[" + RECYCLE_BIN_NAME + "]"
+
+	return origRecycleBinName
+}
+
+func postInitConfig() {
+	_ = SetBBSHOME(BBSHOME)
+	_ = setBBSMName(BBSMNAME)
+	_ = setCAPTCHAInsertServerAddr(CAPTCHA_INSERT_SERVER_ADDR)
+	_ = setMyHostname(MYHOSTNAME)
+	_ = setRecycleBinName(RECYCLE_BIN_NAME)
 }
