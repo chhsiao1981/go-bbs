@@ -24,7 +24,7 @@ func initMain() {
 	flag.Parse()
 
 	ptttype.InitConfig(filename)
-	ptttype.SetBBSHOME("./testcase")
+
 	shm.LoadUHash()
 	shm.AttachSHM()
 }
