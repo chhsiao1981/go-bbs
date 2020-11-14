@@ -188,6 +188,7 @@ func setRecycleBinName(recycleBinName string) string {
 }
 
 func postInitConfig() {
+	log.Infof("postInitConfig: start: BBSHOME: %v", BBSHOME)
 	_ = SetBBSHOME(BBSHOME)
 	_ = setBBSMName(BBSMNAME)
 	_ = setCAPTCHAInsertServerAddr(CAPTCHA_INSERT_SERVER_ADDR)

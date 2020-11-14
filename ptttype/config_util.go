@@ -5,9 +5,13 @@ import log "github.com/sirupsen/logrus"
 func initConfig() {
 	log.Infof("initConfig: start")
 	//////////
-	//string
+	// make.conf
 	//////////
-	//pttbbs.conf
+	BBSHOME = setStringConfig("BBSHOME", BBSHOME)
+
+	//////////
+	// pttbbs.conf
+	//////////
 	BBSNAME = setStringConfig("BBSNAME", BBSNAME)
 	BBSENAME = setStringConfig("BBSENAME", BBSENAME)
 	MYHOSTNAME = setStringConfig("MYHOSTNAME", MYHOSTNAME)

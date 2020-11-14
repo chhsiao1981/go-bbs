@@ -18,7 +18,7 @@ func TestInitConfig(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			args:        args{"./testcase/test.ini"},
-			wantBBSNAME: "test",
+			wantBBSNAME: "test ptttype",
 		},
 	}
 	for _, tt := range tests {

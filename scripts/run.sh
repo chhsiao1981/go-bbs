@@ -1,10 +1,17 @@
 #!/bin/bash
 
-tags=${1:-default}
+if [ "$#" -lt "1" ]
+then
+    echo "usage: run.sh"
+fi
+
+tags=default
+ini_filename=00-config.template.ini
 
 echo "to build: tags: ${tags}"
-go build -tags ${tags} .
-echo "to run main"
-cd main
-go run -tags ${tags} .
+cd go-bbs
+go build -tags ${tags}
 cd ..
+
+echo "to run go-bbs"
+./go-bbs/go-bbs -ini ${ini_filename}
