@@ -4,21 +4,20 @@ var (
 	//////////
 	// make.conf
 	//////////
-
 	BBSHOME = "/home/bbs" /* BBS home-dir. MUST-NOT set this directly. use SetBBSHOME() */
 
 	//////////
 	// pttbbs.conf
 	//////////
 	/* 定義 BBS 站名位址 */
-	BBSNAME    = "新批踢踢"           /* 中文站名 */
-	BBSENAME   = "PTT2"           /* 英文站名 */
-	MYHOSTNAME = "ptt2.cc"        /* 網路位址 */
-	MYIP       = "140.112.30.143" /* IP位址 */
+	BBSNAME    = "新批踢踢"      /* 中文站名 */
+	BBSENAME   = "PTT2"      /* 英文站名 */
+	MYHOSTNAME = "ptt2.cc"   /* 網路位址 */
+	MYIP       = "127.0.0.1" /* IP位址 */
 
 	/* 定義是否查詢文章的 web 版 URL，及 URL 用的 hostname/prefix */
-	QUERY_ARTICLE_URL = true                    /* 是否提供查詢文章 URL */
-	URL_PREFIX        = "http://www.ptt.cc/bbs" /* URL prefix */
+	QUERY_ARTICLE_URL = true                   /* 是否提供查詢文章 URL */
+	URL_PREFIX        = "http://localhost/bbs" /* URL prefix */
 	/*
 	   http://www.ptt.cc/bbs/SYSOP/M.1197864962.A.476.html
 	   ^^^^^^^^^^^^^^^^^^^^^
@@ -119,7 +118,7 @@ var (
 	   如在 linux x86_64 下使用 HUGETLB 時需為 4MB aligned,
 	   而在 linux ia64 下使用 HUGETLB時需為 256MB aligned.
 	   單位為 bytes */
-	SHMALIGNEDSIZE = 1048576 * 4 // 4MB for x86_64
+	SHMALIGNEDSIZE = 1048576 * 1 // 4MB for x86_64, 1MB for development
 
 	/* 讓過於熱門或被鬧的版冷靜, SHM 會變大一些些 */
 	USE_COOLDOWN = true
@@ -247,7 +246,7 @@ var (
 
 	DEFAULT_FOLDER_CREATE_PERM = 0755
 
-	DEFAULT_FILE_CREATE_PERM = (0644)
+	DEFAULT_FILE_CREATE_PERM = 0644
 
 	SHM_KEY = 1228
 
@@ -378,10 +377,6 @@ var (
 
 	/* (deprecated) more.c 中文章頁數上限(lines/22), +4 for safe */
 	MAX_PAGES = MAX_EDIT_LINE/22 + 4
-
-	MAX_ADBANNER_SECTION = 10 /* 最多動態看板類別 */
-
-	MAX_ADBANNER_HEIGHT = 11 /* 最大動態看板內容高度 */
 
 	MAX_QUERYLINES = 16 /* 顯示 Query/Plan 訊息最大行數 */
 

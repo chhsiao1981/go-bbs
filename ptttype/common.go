@@ -1,9 +1,9 @@
 package ptttype
 
-//////////
-// common.h
-//////////
 const (
+	//////////
+	// common.h
+	//////////
 	STR_GUEST  = "guest" // guest account
 	STR_REGNEW = "new"   // 用來建新帳號的名稱
 
