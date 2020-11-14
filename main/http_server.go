@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+
 	"github.com/PichuChen/go-bbs/api"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/shm"
@@ -16,14 +18,19 @@ func initGin() (*gin.Engine, error) {
 	return router, nil
 }
 
-func init() {
+func initMain() {
+	filename := ""
+	flag.StringVar(&filename, "ini", "config.ini", "ini filename")
+	flag.Parse()
+
+	ptttype.InitConfig(filename)
 	ptttype.SetBBSHOME("./testcase")
 	shm.LoadUHash()
 	shm.AttachSHM()
 }
 
 func main() {
-
+	initMain()
 	router, err := initGin()
 	if err != nil {
 		return

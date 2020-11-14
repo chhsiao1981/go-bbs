@@ -1,6 +1,68 @@
 package ptttype
 
-import log "github.com/sirupsen/logrus"
+import (
+	"strings"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+)
+
+func InitConfig(filename string) error {
+	filenameList := strings.Split(filename, ".")
+	if len(filenameList) == 1 {
+		return ErrInvalidIni
+	}
+	filenamePrefix := strings.Join(filenameList[:len(filenameList)-1], ".")
+	filenamePostfix := filenameList[len(filenameList)-1]
+	viper.SetConfigName(filenamePrefix)
+	viper.SetConfigType(filenamePostfix)
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
+	if err != nil {
+		return err
+	}
+
+	initConfig()
+	return nil
+}
+
+func setStringConfig(idx string, orig string) string {
+	if !viper.IsSet(idx) {
+		return orig
+	}
+
+	return viper.GetString(idx)
+}
+
+func setBoolConfig(idx string, orig bool) bool {
+	if !viper.IsSet(idx) {
+		return orig
+	}
+
+	return viper.GetBool(idx)
+}
+
+func setColorConfig(idx string, orig string) string {
+	if !viper.IsSet(idx) {
+		return orig
+	}
+	return ANSIColor(viper.GetString(idx))
+}
+
+func setIntConfig(idx string, orig int) int {
+	if !viper.IsSet(idx) {
+		return orig
+	}
+	return viper.GetInt(idx)
+}
+
+func setDoubleConfig(idx string, orig float64) float64 {
+	if !viper.IsSet(idx) {
+		return orig
+	}
+
+	return viper.GetFloat64(idx)
+}
 
 //SetBBSHOME
 //

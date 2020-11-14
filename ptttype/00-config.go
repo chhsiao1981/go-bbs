@@ -214,7 +214,8 @@ var (
 	MONEYNAME              = BBSMNAME + "幣"
 
 	/* AID 顯示的站台名稱。 若 IP 太長請另行定義。 */
-	AID_HOSTNAME = MYHOSTNAME
+	IS_AID_HOSTNAME_INFERRED = true
+	AID_HOSTNAME             = MYHOSTNAME
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Themes 主題配色
@@ -376,7 +377,7 @@ var (
 	MAX_CROSSNUM = 9 /* 最多crosspost次數 */
 
 	/* (deprecated) more.c 中文章頁數上限(lines/22), +4 for safe */
-	MAX_PAGES = MAX_EDIT_LINE/22 + 4
+	// MAX_PAGES = MAX_EDIT_LINE/22 + 4
 
 	MAX_QUERYLINES = 16 /* 顯示 Query/Plan 訊息最大行數 */
 
