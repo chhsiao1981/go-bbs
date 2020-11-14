@@ -1,6 +1,9 @@
 package ptttype
 
+import log "github.com/sirupsen/logrus"
+
 func initConfig() {
+	log.Infof("initConfig: start")
 	//////////
 	//string
 	//////////

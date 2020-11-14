@@ -8,10 +8,12 @@ import (
 )
 
 func InitConfig(filename string) error {
+
 	filenameList := strings.Split(filename, ".")
 	if len(filenameList) == 1 {
 		return ErrInvalidIni
 	}
+
 	filenamePrefix := strings.Join(filenameList[:len(filenameList)-1], ".")
 	filenamePostfix := filenameList[len(filenameList)-1]
 	viper.SetConfigName(filenamePrefix)
@@ -22,11 +24,14 @@ func InitConfig(filename string) error {
 		return err
 	}
 
+	log.Infof("viper keys: %v", viper.AllKeys())
+
 	initConfig()
 	return nil
 }
 
 func setStringConfig(idx string, orig string) string {
+	idx = "go-bbs." + strings.ToLower(idx)
 	if !viper.IsSet(idx) {
 		return orig
 	}
@@ -35,6 +40,7 @@ func setStringConfig(idx string, orig string) string {
 }
 
 func setBoolConfig(idx string, orig bool) bool {
+	idx = "go-bbs." + strings.ToLower(idx)
 	if !viper.IsSet(idx) {
 		return orig
 	}
@@ -43,6 +49,7 @@ func setBoolConfig(idx string, orig bool) bool {
 }
 
 func setColorConfig(idx string, orig string) string {
+	idx = "go-bbs." + strings.ToLower(idx)
 	if !viper.IsSet(idx) {
 		return orig
 	}
@@ -50,6 +57,7 @@ func setColorConfig(idx string, orig string) string {
 }
 
 func setIntConfig(idx string, orig int) int {
+	idx = "go-bbs." + strings.ToLower(idx)
 	if !viper.IsSet(idx) {
 		return orig
 	}
@@ -57,6 +65,7 @@ func setIntConfig(idx string, orig int) int {
 }
 
 func setDoubleConfig(idx string, orig float64) float64 {
+	idx = "go-bbs." + strings.ToLower(idx)
 	if !viper.IsSet(idx) {
 		return orig
 	}
