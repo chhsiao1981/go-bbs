@@ -1,6 +1,9 @@
 package cmbbs
 
-import "github.com/PichuChen/go-bbs/ptttype"
+import (
+	"github.com/PichuChen/go-bbs/ptttype"
+	"github.com/PichuChen/go-bbs/types"
+)
 
 //IsValidUserID
 //
@@ -14,8 +17,8 @@ func IsValidUserID(userID *[ptttype.IDLEN + 1]byte) bool {
 		return false
 	}
 
-	len := ptttype.FixedBytesLen(userID[:])
-	if len < 2 || len > ptttype.IDLEN {
+	theLen := types.Cstrlen(userID[:])
+	if theLen < 2 || theLen > ptttype.IDLEN {
 		return false
 	}
 
@@ -24,7 +27,7 @@ func IsValidUserID(userID *[ptttype.IDLEN + 1]byte) bool {
 	}
 
 	for idx, c := range userID {
-		if idx == len {
+		if idx == theLen {
 			break
 		}
 
