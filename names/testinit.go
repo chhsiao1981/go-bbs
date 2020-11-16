@@ -1,13 +1,9 @@
-package shm
+package names
 
-const (
-	testShmKey = 65538
-)
+var ()
 
 func setupTest() {
-
 }
 
 func teardownTest() {
-
 }

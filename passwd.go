@@ -1,7 +1,6 @@
 package bbs
 
 import (
-	"encoding/binary"
 	"io"
 	"log"
 	"os"
@@ -9,6 +8,7 @@ import (
 	"github.com/PichuChen/go-bbs/ptt"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/sirupsen/logrus"
+	"github.com/PichuChen/go-bbs/types"
 )
 
 func Login(userID string, passwd string, ip string) (*Userec, error) {
@@ -57,9 +57,7 @@ func OpenUserecFile(filename string) ([]*Userec, error) {
 }
 
 func NewUserecWithFile(file *os.File) (*Userec, error) {
-	userecRaw := &ptttype.UserecRaw{}
-
-	err := binary.Read(file, binary.LittleEndian, userecRaw)
+	userecRaw, err := ptttype.NewUserecRawWithFile(file)
 	if err != nil {
 		return nil, err
 	}
@@ -67,4 +65,25 @@ func NewUserecWithFile(file *os.File) (*Userec, error) {
 	user := NewUserecFromRaw(userecRaw)
 
 	return user, nil
+}
+
+func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) *Userec {
+	user := &Userec{}
+	user.Version = userecRaw.Version
+	user.Userid = types.CstrToString(userecRaw.UserID[:])
+	user.Realname = Big5ToUtf8(types.CstrToBytes(userecRaw.RealName[:]))
+	user.Nickname = Big5ToUtf8(types.CstrToBytes(userecRaw.Nickname[:]))
+	user.Passwd = types.CstrToString(userecRaw.PasswdHash[:])
+	user.Pad1 = userecRaw.Pad1
+
+	user.Uflag = userecRaw.UFlag
+	user._unused1 = userecRaw.Unused1
+	user.Userlevel = userecRaw.UserLevel
+	user.Numlogindays = userecRaw.NumLoginDays
+	user.Numposts = userecRaw.NumPosts
+	user.Firstlogin = uint32(userecRaw.FirstLogin)
+	user.Lastlogin = uint32(userecRaw.LastLogin)
+	user.Lasthost = types.CstrToString(userecRaw.LastHost[:])
+
+	return user
 }

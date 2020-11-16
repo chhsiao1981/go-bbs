@@ -1,8 +1,8 @@
 package cmbbs
 
 import (
+	"github.com/PichuChen/go-bbs/cache"
 	"github.com/PichuChen/go-bbs/ptttype"
-	"github.com/PichuChen/go-bbs/shm"
 )
 
 var (
@@ -11,8 +11,8 @@ var (
 
 func setupTest() {
 	origBBSHOME = ptttype.SetBBSHOME("./testcase")
-	shm.LoadUHash()
-	shm.AttachSHM()
+	cache.LoadUHash()
+	cache.AttachSHM()
 }
 
 func teardownTest() {

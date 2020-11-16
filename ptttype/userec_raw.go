@@ -1,6 +1,11 @@
 package ptttype
 
-import "unsafe"
+import (
+	"io"
+	"unsafe"
+
+	"github.com/PichuChen/go-bbs/types"
+)
 
 type UserecRaw struct {
 	Version uint32
@@ -17,8 +22,8 @@ type UserecRaw struct {
 	UserLevel    uint32            /* 權限 */
 	NumLoginDays uint32            /* 上線資歷 (每日最多+1的登入次數) */
 	NumPosts     uint32            /* 文章篇數 */
-	FirstLogin   time4             /* 註冊時間 */
-	LastLogin    time4             /* 最近上站時間(包含隱身) */
+	FirstLogin   types.Time4       /* 註冊時間 */
+	LastLogin    types.Time4       /* 最近上站時間(包含隱身) */
 	LastHost     [IPV4LEN + 1]byte /* 上次上站來源 */
 	Money        int32             /* Ptt幣 */
 	Unused2      [4]byte
@@ -40,15 +45,15 @@ type UserecRaw struct {
 	UnusedPhone   [PHONESZ]byte  /* 電話 */
 	Unused6       uint32         /* 從前放轉換前的 numlogins, 使用前請先清0 */
 	Chkpad1       [44]byte
-	Role          uint32 /* Role-specific permissions */
-	LastSeen      time4  /* 最近上站時間(隱身不計) */
-	TimeSetAngel  time4  /* 上次得到天使時間 */
-	TimePlayAngel time4  /* 上次與天使互動時間 (by day) */
+	Role          uint32      /* Role-specific permissions */
+	LastSeen      types.Time4 /* 最近上站時間(隱身不計) */
+	TimeSetAngel  types.Time4 /* 上次得到天使時間 */
+	TimePlayAngel types.Time4 /* 上次與天使互動時間 (by day) */
 	// 以上應為 sizeof(chicken_t) 同等大小
 
-	LastSong  time4  /* 上次點歌時間 */
-	LoginView uint32 /* 進站畫面 */
-	Unused8   uint8  // was: channel
+	LastSong  types.Time4 /* 上次點歌時間 */
+	LoginView uint32      /* 進站畫面 */
+	Unused8   uint8       // was: channel
 	Pad2      uint8
 
 	VlCount    uint16  /* 違法記錄 ViolateLaw counter */
@@ -76,10 +81,10 @@ type UserecRaw struct {
 	MyAngel   [IDLEN + 1]byte /* 我的小天使 */
 	Pad3      byte
 
-	ChessEloRating    uint16 /* 象棋等級分 */
-	WithMe            uint32 /* 我想找人下棋，聊天.... */
-	TimeRemoveBadPost time4  /* 上次刪除劣文時間 */
-	TimeViolateLaw    time4  /* 被開罰單時間 */
+	ChessEloRating    uint16      /* 象棋等級分 */
+	WithMe            uint32      /* 我想找人下棋，聊天.... */
+	TimeRemoveBadPost types.Time4 /* 上次刪除劣文時間 */
+	TimeViolateLaw    types.Time4 /* 被開罰單時間 */
 
 	PadTail [28]byte
 }
@@ -88,4 +93,8 @@ const USEREC_RAW_SZ = int64(unsafe.Sizeof(UserecRaw{}))
 
 func NewUserecRaw() *UserecRaw {
 	return &UserecRaw{}
+}
+
+func NewUserecRawWithFile(file *io.File) (*UserecRaw, error) {
+	return nil, nil
 }

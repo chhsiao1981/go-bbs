@@ -7,7 +7,6 @@ import (
 
 	"github.com/PichuChen/go-bbs/crypt"
 	"github.com/PichuChen/go-bbs/ptttype"
-	"github.com/PichuChen/go-bbs/shm"
 )
 
 //CheckPasswd
@@ -42,7 +41,7 @@ func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecRaw, e
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
-	usernum, _, err := shm.SearchUserRaw(userID[:], false)
+	usernum, _, err := cache.SearchUserRaw(userID, false)
 	if err != nil {
 		return 0, nil, err
 	}

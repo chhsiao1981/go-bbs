@@ -17,6 +17,8 @@ const (
 
 	MAX_MSGS = 10 /* 水球(熱訊)忍耐上限 */
 
+	HASH_BITS = 16 /* userid->uid hashing bits */
+
 	MAX_ADBANNER = 500 /* 最多動態看板數 */
 
 	HOTBOARDCACHE = 0 /* 熱門看板快取 */

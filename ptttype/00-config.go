@@ -313,8 +313,6 @@ var (
 
 	DEBUGSLEEP_SECONDS = 3600 /* debug 等待時間 */
 
-	HASH_BITS = 16 /* userid->uid hashing bits */
-
 	OVERLOADBLOCKFDS = 0 /* 超載後會保留這麼多個 fd */
 
 	MAX_SWAPUSED = 0.7 /* SWAP最高使用率 */
