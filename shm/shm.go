@@ -22,6 +22,10 @@ package shm
 //   unsigned int *dst = (unsigned int *)dst_b;
 //   (*dst)++;
 // }
+// int cmpwrapper(void *shmaddr, int offset, unsigned long n, void *cmpaddr) {
+//   unsigned char *cmp1 = (unsigned char *)shmaddr + offset;
+//   return memcmp(cmp1, cmpaddr, n);
+// }
 import "C"
 import (
 	"unsafe"
@@ -106,6 +110,18 @@ func IncUint32(shmaddr unsafe.Pointer, offset int) {
 	C.incuint32wrapper(shmaddr, C.int(offset))
 
 	return
+}
+
+//Cmp
+//
+//memcmp(shmaddr+offset, cmpaddr, size)
+//
+//Return:
+//	int: 0: shm == gomem, <0: shm < gomem, >0: shm > gomem
+func Cmp(shmaddr unsafe.Pointer, offset int, size types.Size_t, cmpaddr unsafe.Pointer) int {
+	cret := C.cmpwrapper(shmaddr, C.int(offset), C.ulong(size), cmpaddr)
+
+	return int(cret)
 }
 
 func shmget(key types.Key_t, size types.Size_t, shmflg int) int {

@@ -69,7 +69,7 @@ var (
 
 func fillUHash(isOnfly bool) error {
 	log.Infof("fillUHash: start: isOnfly: %v", isOnfly)
-	initFillUHash(isOnfly)
+	InitFillUHash(isOnfly)
 
 	file, err := os.Open(ptttype.FN_PASSWD)
 	if err != nil {
@@ -114,7 +114,7 @@ func userecRawAddToUHash(usernum int32, userecRaw *ptttype.UserecRaw, isOnfly bo
 		}
 	}
 
-	h := cmsys.StringHash(userecRaw.UserID[:]) % (1 << ptttype.HASH_BITS)
+	h := cmsys.StringHashWithHashBits(userecRaw.UserID[:])
 
 	shmUserID := [ptttype.IDLEN + 1]byte{}
 	Shm.ReadAt(
@@ -206,8 +206,9 @@ func userecRawAddToUHash(usernum int32, userecRaw *ptttype.UserecRaw, isOnfly bo
 	log.Debugf("UHashLoader.userecRawAddToUHash: added NextInHash: usernum: %v p: %v val: %v isFirst: %v", usernum, p, val, isFirst)
 }
 
-func initFillUHash(isOnfly bool) {
+func InitFillUHash(isOnfly bool) {
 	if !isOnfly {
+		log.Infof("InitFillUHash: to fill HashHead as all -1")
 		toFillHashHead := [1 << ptttype.HASH_BITS]int32{}
 		for idx := range toFillHashHead {
 			toFillHashHead[idx] = -1
@@ -279,7 +280,7 @@ func checkHash(h uint32) {
 		)
 		log.Infof("checkHash: (in-for-loop): after read userID: h: %v p: %v val: %v userID: %v", h, p, val, types.CstrToString(userID[:]))
 
-		userIDHash := cmsys.StringHash(userID[:]) % (1 << ptttype.HASH_BITS)
+		userIDHash := cmsys.StringHashWithHashBits(userID[:])
 
 		// check hash as expected line: 76
 		if userIDHash != h {
