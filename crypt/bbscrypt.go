@@ -36,16 +36,24 @@ func Fcrypt(key []byte, salt []byte) ([]byte, error) {
 	defer C.free(ckey)
 
 	csalt := C.CBytes(salt)
+
 	defer C.free(csalt)
 
-	// cpasswd is static unsigned char buff[20] in bbscrypt.c: line 543, no need to free.
-	cpasswdHash, err := C.fcrypt_wrapper(ckey, csalt)
-	if err != nil {
-		return nil, err
-	}
+	/*
+		// cpasswd is static unsigned char buff[20] in bbscrypt.c: line 543, no need to free.
+		cpasswdHash, err := C.fcrypt_wrapper(ckey, csalt)
+		if err != nil {
+			return nil, err
+		}
 
-	passwdHash := C.GoBytes(cpasswdHash, ptttype.PASSLEN)
-	// specified in bbscrypt.c: line 592
-	passwdHash[ptttype.PASSLEN-1] = 0
-	return passwdHash, nil
+		passwdHash := C.GoBytes(cpasswdHash, ptttype.PASSLEN)
+		// specified in bbscrypt.c: line 592
+		passwdHash[ptttype.PASSLEN-1] = 0
+		return passwdHash, nil
+	*/
+
+	passwdHash := [ptttype.PASSLEN]byte{}
+	cFcrypt(key, salt, &passwdHash)
+	return passwdHash[:], nil
+
 }

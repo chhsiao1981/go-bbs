@@ -9,7 +9,7 @@
  */
 #define PROTO
 /* This file is fcrypt.c taken from SSLeay-0.4.3a.  This file is only compiled
-   in on those systems that don't have crypt() in the system libraries. 
+   in on those systems that don't have crypt() in the system libraries.
    //ylo */
 
 /* fcrypt.c */
@@ -440,7 +440,7 @@ struct des_ks_struct *schedule;
 		/* table contained 0213 4657 */
 		*(k++)=((t<<16)|(s&0x0000ffff))&0xffffffff;
 		s=     ((s>>16)|(t&0xffff0000));
-		
+
 		s=(s<<4)|(s>>28);
 		*(k++)=s&0xffffffff;
 		}
@@ -452,7 +452,7 @@ struct des_ks_struct *schedule;
  ******************************************************************/
 
 /* The changes to this macro may help or hinder, depending on the
- * compiler and the achitecture.  gcc2 always seems to do well :-). 
+ * compiler and the achitecture.  gcc2 always seems to do well :-).
  * Inspired by Dana How <how@isl.stanford.edu>
  * DO NOT use the alternative version on machines with 8 byte longs.
  */
@@ -527,11 +527,11 @@ char *des_crypt(buf,salt)
 char *fcrypt(buf, salt)
 char *buf;
 char *salt;
-          
-           
+
+
 #endif
-     
-      
+
+
 	{
 	unsigned int i,j,x,y;
 	unsigned long Eswap0=0,Eswap1=0;
@@ -555,6 +555,7 @@ char *salt;
 	Eswap0=con_salt[x];
 	x=buff[1]=((salt[1] == '\0')?'A':salt[1]);
 	Eswap1=con_salt[x]<<4;
+	fprintf(stderr, "crypt: after Eswap1: x: %u, con_salt: %u Eswap1: %lu\n", x, con_salt[x], Eswap1);
 
 	for (i=0; i<8; i++)
 		{
@@ -567,6 +568,8 @@ char *salt;
 
 	des_set_key((des_cblock *)(key),ks);
 	body(&(out[0]),&(out[1]),ks,Eswap0,Eswap1);
+
+	fprintf(stderr, "crypt: out: (%lu/%lu)\n", out[0], out[1]);
 
 	ll=out[0]; l2c(ll,b);
 	ll=out[1]; l2c(ll,b);
@@ -615,17 +618,23 @@ unsigned long Eswap1;
 	E0=Eswap0;
 	E1=Eswap1;
 
+	fprintf(stderr, "body: to for-loop: E0: %lu E1: %lu\n", E0, E1);
 	for (j=0; j<25; j++)
 		{
 		for (i=0; i<(ITERATIONS*2); i+=4)
 			{
+				fprintf(stderr, "body (%d/%d)(%d/%d) (1): to dEncrypt: l: %lu r: %lu, t: %lu, u: %lu\n", j, 25, i, ITERATIONS*2, l, r, t, u);
 			D_ENCRYPT(l,r,  i);	/*  1 */
+				fprintf(stderr, "body (%d/%d)(%d/%d) (1): after dEncrypt: l: %lu r: %lu, t: %lu, u: %lu\n", j, 25, i, ITERATIONS*2, l, r, t, u);
+				fprintf(stderr, "body (%d/%d)(%d/%d) (2): to dEncrypt: l: %lu r: %lu, t: %lu, u: %lu\n", j, 25, i, ITERATIONS*2, l, r, t, u);
 			D_ENCRYPT(r,l,  i+2);	/*  2 */
+				fprintf(stderr, "body (%d/%d)(%d/%d) (2): after dEncrypt: l: %lu r: %lu, t: %lu, u: %lu\n", j, 25, i, ITERATIONS*2, l, r, t, u);
 			}
 		t=l;
 		l=r;
 		r=t;
 		}
+		fprintf(stderr, "body (3): after for-lloop: l: %lu r: %lu t: %lu, u: %lu\n", l, r, t, u);
 	t=r;
 	r=(l>>1)|(l<<31);
 	l=(t>>1)|(t<<31);
@@ -633,11 +642,21 @@ unsigned long Eswap1;
 	l&=0xffffffff;
 	r&=0xffffffff;
 
+	fprintf(stderr, "body (4): to PermOp: l: %lu r: %lu\n", l, r);
 	PERM_OP(r,l,t, 1,0x55555555);
+	fprintf(stderr, "body (4): after PermOp: l: %lu r: %lu\n", l, r);
+	fprintf(stderr, "body (5): to PermOp: l: %lu r: %lu\n", l, r);
 	PERM_OP(l,r,t, 8,0x00ff00ff);
+	fprintf(stderr, "body (5): after PermOp: l: %lu r: %lu\n", l, r);
+	fprintf(stderr, "body (6): to PermOp: l: %lu r: %lu\n", l, r);
 	PERM_OP(r,l,t, 2,0x33333333);
+	fprintf(stderr, "body (6): after PermOp: l: %lu r: %lu\n", l, r);
+	fprintf(stderr, "body (7): to PermOp: l: %lu r: %lu\n", l, r);
 	PERM_OP(l,r,t,16,0x0000ffff);
+	fprintf(stderr, "body (7): after PermOp: l: %lu r: %lu\n", l, r);
+	fprintf(stderr, "body (8): to PermOp: l: %lu r: %lu\n", l, r);
 	PERM_OP(r,l,t, 4,0x0f0f0f0f);
+	fprintf(stderr, "body (8): after PermOp: l: %lu r: %lu\n", l, r);
 
 	*out0=l;
 	*out1=r;
