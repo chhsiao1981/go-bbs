@@ -2,9 +2,11 @@ package main
 
 import (
 	"github.com/PichuChen/go-bbs/api"
+	"github.com/PichuChen/go-bbs/cache"
 	"github.com/PichuChen/go-bbs/ptttype"
-	"github.com/PichuChen/go-bbs/shm"
+	"github.com/PichuChen/go-bbs/types"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 func initGin() (*gin.Engine, error) {
@@ -16,10 +18,17 @@ func initGin() (*gin.Engine, error) {
 	return router, nil
 }
 
-func init() {
+func initMain() error {
 	ptttype.SetBBSHOME("./testcase")
-	shm.LoadUHash()
-	shm.AttachSHM()
+	err := cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, true)
+	if err != nil {
+		log.Errorf("unable to init SHM: e: %v", err)
+		return err
+	}
+	cache.LoadUHash()
+	cache.AttachSHM()
+
+	return nil
 }
 
 func main() {

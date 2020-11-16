@@ -5,6 +5,7 @@ import (
 	"os"
 	"reflect"
 
+	"github.com/PichuChen/go-bbs/cache"
 	"github.com/PichuChen/go-bbs/crypt"
 	"github.com/PichuChen/go-bbs/ptttype"
 )
@@ -41,7 +42,7 @@ func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecRaw, e
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
-	usernum, _, err := cache.SearchUserRaw(userID, false)
+	usernum, err := cache.SearchUserRaw(userID, nil)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -50,12 +51,14 @@ func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecRaw, e
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
-	user, err := PasswdQuery(usernum)
+	usernum_i := int(usernum)
+
+	user, err := PasswdQuery(usernum_i)
 	if err != nil {
 		return 0, nil, err
 	}
 
-	return usernum, user, nil
+	return usernum_i, user, nil
 }
 
 //PasswdQuery

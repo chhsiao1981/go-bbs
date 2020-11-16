@@ -7,7 +7,7 @@ import (
 	"github.com/PichuChen/go-bbs/cmsys"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 //AttachSHM
@@ -92,12 +92,14 @@ func doSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 
 	h := cmsys.StringHash(userID[:]) % (1 << ptttype.HASH_BITS)
 
 	//p = SHM->hash_head[h]  //line: 219
+	log.Infof("doSearchUserRaw: to Shm.ReadAt: userID: %v h: %v", string(userID[:]), h)
 	p := int32(0)
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.HashHead)+types.INT32_SZ*uintptr(h),
 		types.INT32_SZ,
 		unsafe.Pointer(&p),
 	)
+	log.Infof("doSearchUserRaw: after Shm.ReadAt: userID: %v h: %v p: %v", string(userID[:]), h, p)
 
 	shmUserID := [ptttype.IDLEN + 1]byte{}
 
@@ -111,7 +113,7 @@ func doSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 
 		if bytes.Compare(bytes.ToUpper(userID[:]), bytes.ToUpper(shmUserID[:])) == 0 {
 			if userID[0] != 0 && rightID != nil {
 				copy(rightID[:], shmUserID[:])
-				logrus.Infof("doSearchUserRaw: after copy: rightID: %v shmUserID: %v", string(rightID[:]), string(shmUserID[:]))
+				log.Infof("doSearchUserRaw: after copy: rightID: %v shmUserID: %v", string(rightID[:]), string(shmUserID[:]))
 			}
 			return p + 1, nil
 		}

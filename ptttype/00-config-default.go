@@ -9,9 +9,9 @@ const (
 
 	MAX_ACTIVE = 31 /* 最多同時上站人數 */
 
-	MAX_BOARD = 1024 /* 最大開板個數 */
+	MAX_BOARD = 100 /* 最大開板個數 */
 
-	MAX_FRIEND = 256 /* 載入 cache 之最多朋友數目 */
+	MAX_FRIEND = 30 /* 載入 cache 之最多朋友數目 */
 
 	MAX_REJECT = 32 /* 載入 cache 之最多壞人數目 */
 
@@ -19,11 +19,11 @@ const (
 
 	HASH_BITS = 16 /* userid->uid hashing bits */
 
-	MAX_ADBANNER = 500 /* 最多動態看板數 */
+	MAX_ADBANNER = 100 /* 最多動態看板數 */
 
 	HOTBOARDCACHE = 0 /* 熱門看板快取 */
 
-	MAX_FROM = 300 /* 最多故鄉數 */
+	MAX_FROM = 30 /* 最多故鄉數 */
 
 	MAX_REVIEW = 7 /* 最多水球回顧 */
 
