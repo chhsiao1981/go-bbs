@@ -1,18 +1,21 @@
-// +build custom
+// +build production
 
 package ptttype
 
 const (
 	// These are special config variables requiring to be const.
-	// copy to ptttype/00-config-custom.go to setup customized config
+	// copy to ptttype/00-config-production.go to setup production config.
 	//
 	// type struct requires const.
-	MAX_USERS = 100 /* 最高註冊人數 */
+	MAX_USERS = 10000 /* 最高註冊人數 */
 
-	MAX_ACTIVE = 31 /* 最多同時上站人數 */
+	MAX_ACTIVE = 512 /* 最多同時上站人數 */
 
 	MAX_BOARD = 1024 /* 最大開板個數 */
 
+	//////////
+	//config.h
+	//////////
 	HASH_BITS = 16 /* userid->uid hashing bits */
 
 	MAX_FRIEND = 256 /* 載入 cache 之最多朋友數目 */

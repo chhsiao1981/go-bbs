@@ -195,3 +195,7 @@ func postInitConfig() {
 	_ = setMyHostname(MYHOSTNAME)
 	_ = setRecycleBinName(RECYCLE_BIN_NAME)
 }
+
+func ValidUSHMEntry(x int) bool {
+	return x >= 0 && x < USHM_SIZE
+}

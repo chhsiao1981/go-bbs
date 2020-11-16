@@ -24,6 +24,7 @@ func TestNewSHM(t *testing.T) {
 		args        args
 		wantVersion int32
 		wantSize    int32
+		isClose     bool
 		wantErr     bool
 	}{
 		// TODO: Add test caseShm.
@@ -33,8 +34,19 @@ func TestNewSHM(t *testing.T) {
 				isUseHugeTlb: false,
 				isCreate:     true,
 			},
+			isClose:     false,
 			wantVersion: SHM_VERSION,
-			wantSize:    int32(SHM_RAW_SZ),
+			wantSize:    int32((int(SHM_RAW_SZ)/(ptttype.SHMALIGNEDSIZE) + 1) * ptttype.SHMALIGNEDSIZE),
+		},
+		{
+			args: args{
+				key:          testShmKey,
+				isUseHugeTlb: false,
+				isCreate:     false,
+			},
+			isClose:     true,
+			wantVersion: SHM_VERSION,
+			wantSize:    int32((int(SHM_RAW_SZ)/(ptttype.SHMALIGNEDSIZE) + 1) * ptttype.SHMALIGNEDSIZE),
 		},
 	}
 	for _, tt := range tests {
@@ -52,8 +64,12 @@ func TestNewSHM(t *testing.T) {
 			if !reflect.DeepEqual(Shm.Size, tt.wantSize) {
 				t.Errorf("NewSHM() size: %v expected :%v", Shm.Size, tt.wantSize)
 			}
-			CloseSHM()
 
+			if tt.isClose {
+				CloseSHM()
+			} else {
+				Shm = nil
+			}
 		})
 	}
 }

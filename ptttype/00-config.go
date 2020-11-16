@@ -1,10 +1,12 @@
 package ptttype
 
 var (
+	SERVICE_MODE = DEV
+
 	//////////
 	// make.conf
 	//////////
-	BBSHOME = "/home/bbs" /* BBS home-dir. MUST-NOT set this directly. use SetBBSHOME() */
+	BBSHOME = "./testcase" /* BBS home-dir. MUST-NOT set this directly. use SetBBSHOME() */
 
 	//////////
 	// pttbbs.conf
@@ -23,6 +25,30 @@ var (
 	   ^^^^^^^^^^^^^^^^^^^^^
 	   這個部分
 	*/
+
+	/* *** 以下為預設板名 (見 include/config.h) *** */
+
+	/* 安全紀錄 */
+	BN_SECURITY = "Security"
+	/* 動態看板的家 */
+	BN_NOTE = "Note"
+	/* 紀錄 */
+	BN_RECORD = "Record"
+
+	/* SYSOP 板 */
+	BN_SYSOP = "SYSOP"
+	/* 測試板 */
+	BN_TEST = "Test"
+	/* 發生錯誤時建議的回報板名為此板 */
+	BN_BUGREPORT = BBSMNAME + "Bug"
+	/* 法律訴訟的板 */
+	BN_LAW = BBSMNAME + "Law"
+	/* 新手板(會自動進我的最愛) */
+	BN_NEWBIE = BBSMNAME + "NewHand"
+	/* 找看板(會自動進我的最愛) */
+	BN_ASKBOARD = "AskBoard"
+	/* 外國板 */
+	BN_FOREIGN = BBSMNAME + "Foreign"
 
 	/* *** 以下為定義時會多出功能的板名 *** */
 
@@ -261,30 +287,6 @@ var (
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Default Board Names 預設看板名稱
-
-	/* *** 以下為預設板名 (見 include/config.h) *** */
-
-	/* 安全紀錄 */
-	BN_SECURITY = "Security"
-	/* 動態看板的家 */
-	BN_NOTE = "Note"
-	/* 紀錄 */
-	BN_RECORD = "Record"
-
-	/* SYSOP 板 */
-	BN_SYSOP = "SYSOP"
-	/* 測試板 */
-	BN_TEST = "Test"
-	/* 發生錯誤時建議的回報板名為此板 */
-	BN_BUGREPORT = BBSMNAME + "Bug"
-	/* 法律訴訟的板 */
-	BN_LAW = BBSMNAME + "Law"
-	/* 新手板(會自動進我的最愛) */
-	BN_NEWBIE = BBSMNAME + "NewHand"
-	/* 找看板(會自動進我的最愛) */
-	BN_ASKBOARD = "AskBoard"
-	/* 外國板 */
-	BN_FOREIGN = BBSMNAME + "Foreign"
 
 	BN_ID_PROBLEM = "SYSOP"
 

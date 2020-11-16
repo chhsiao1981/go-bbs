@@ -13,12 +13,14 @@ type SHMRaw struct {
 
 	/* uhash */
 	/* uhash is a userid->uid hash table -- jochang */
-	Userid       [ptttype.MAX_USERS][ptttype.IDLEN + 1]byte
-	Gap1         [ptttype.IDLEN + 1]byte
-	NextInHash   [ptttype.MAX_USERS]int32
-	Gap2         [types.INT32_SZ]byte
-	Money        [ptttype.MAX_USERS]int32
-	Gap3         [types.INT32_SZ]byte
+	Userid     [ptttype.MAX_USERS][ptttype.IDLEN + 1]byte
+	Gap1       [ptttype.IDLEN + 1]byte
+	NextInHash [ptttype.MAX_USERS]int32
+	Gap2       [types.INT32_SZ]byte
+	Money      [ptttype.MAX_USERS]int32
+	Gap3       [types.INT32_SZ]byte
+	// XXX CooldownTime is affected with USE_COOLDOWN
+	//     Require to discuss with admins about current settings.
 	CooldownTime [ptttype.MAX_USERS]types.Time4
 	Gap4         [types.INT32_SZ]byte
 	HashHead     [1 << ptttype.HASH_BITS]int32
@@ -27,6 +29,8 @@ type SHMRaw struct {
 	Loaded       int32 /* .PASSWD has been loaded? */
 
 	/* utmpshm */
+	// XXX UserInfoRaw is affected with NOKILLWATERBALL
+	//     Require to discuss with admins about current settings.
 	UInfo  [ptttype.USHM_SIZE]ptttype.UserInfoRaw
 	Gap6   [ptttype.USER_INFO_RAW_SZ]byte
 	Sorted [2][9][ptttype.USHM_SIZE]int32
@@ -35,18 +39,20 @@ type SHMRaw struct {
 	Gap7          [types.INT32_SZ]byte
 	CurrSorted    int32
 	UTMPUptime    types.Time4
-	UTMPNumber    int
+	UTMPNumber    int32
 	UTMPNeedSort  byte
 	UTMPBusyState byte
 
 	/* brdshm */
-	Gap8          [types.INT32_SZ]byte
-	BMCache       [ptttype.MAX_BOARD][ptttype.MAX_BMs]int32
-	Gap9          [types.INT32_SZ]byte
-	BCache        [ptttype.MAX_BOARD]ptttype.BoardHeaderRaw
-	Gap10         [types.INT32_SZ]byte
-	BSorted       [2][ptttype.MAX_BOARD]int32 /* 0: by name 1: by class */ /* 裡頭存的是 bid-1 */
-	Gap11         [types.INT32_SZ]byte
+	Gap8    [types.INT32_SZ]byte
+	BMCache [ptttype.MAX_BOARD][ptttype.MAX_BMs]int32
+	Gap9    [types.INT32_SZ]byte
+	BCache  [ptttype.MAX_BOARD]ptttype.BoardHeaderRaw
+	Gap10   [types.INT32_SZ]byte
+	BSorted [2][ptttype.MAX_BOARD]int32 /* 0: by name 1: by class */ /* 裡頭存的是 bid-1 */
+	Gap11   [types.INT32_SZ]byte
+	// XXX NHOTs and HBcache are affected with HOTBOARDCACHE
+	//     Require to discuss with admins about current settings.
 	NHOTs         uint8
 	HBcache       [ptttype.HOTBOARDCACHE]int32
 	Gap12         [types.INT32_SZ]byte
@@ -81,7 +87,7 @@ type SHMRaw struct {
 	LastUsong             int32
 	PUptime               types.Time4
 	PTouchTime            types.Time4
-	PBusyState            int
+	PBusyState            int32
 
 	/* SHM 中的全域變數, 可用 shmctl 設定或顯示. 供動態調整或測試使用 */
 	GV2 shmGV2

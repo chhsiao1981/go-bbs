@@ -3,6 +3,7 @@ package cache
 import (
     "unsafe"
 
+    "github.com/PichuChen/go-bbs/ptttype"
     "github.com/PichuChen/go-bbs/shm"
     "github.com/PichuChen/go-bbs/types"
     log "github.com/sirupsen/logrus"
@@ -16,18 +17,26 @@ type SHM struct {
     SHMRaw //dummy variable to get the offset and size of the shm-fields.
 }
 
+//NewSHM
+//
+//This is to init SHM with Version and Size checked.
 func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
     if Shm != nil {
         return ErrInvalidOp
     }
 
     shmid := int(0)
-    var shmaddr unsafe.Pointer = nil
+    var shmaddr unsafe.Pointer
     isNew := false
-    var err error = nil
+    var err error
 
-    size := types.Size_t(SHM_RAW_SZ)
-    log.Infof("NewSHM: SHM_RAW_SZ: %v", SHM_RAW_SZ)
+    // pttstruct.h line: 616
+    SHMSIZE := types.Size_t(SHM_RAW_SZ)
+    if ptttype.SHMALIGNEDSIZE != 0 {
+        SHMSIZE = types.Size_t((int(SHM_RAW_SZ)/(ptttype.SHMALIGNEDSIZE) + 1) * ptttype.SHMALIGNEDSIZE)
+    }
+
+    size := SHMSIZE
 
     if isCreate {
         shmid, shmaddr, isNew, err = shm.CreateShm(key, size, isUseHugeTlb)
@@ -49,7 +58,7 @@ func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
 
     if isNew {
         in_version := SHM_VERSION
-        in_size := int32(SHM_RAW_SZ)
+        in_size := int32(size)
         in_number := int32(0)
         in_loaded := int32(0)
         Shm.WriteAt(
@@ -92,6 +101,13 @@ func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
         CloseSHM()
         return ErrShmVersion
     }
+    if Shm.Size != int32(size) {
+        log.Warnf("NewSHM: size not match (version matched): key: %v Shm.Size: %v SHM_RAW_SZ: %v size: %v isCreate: %v isNew: %v", key, Shm.Size, SHM_RAW_SZ, size, isCreate, isNew)
+
+        CloseSHM()
+        return ErrShmSize
+    }
+
     if isCreate && !isNew {
         log.Warnf("NewSHM: is expected to create, but not: key: %v", key)
     }
@@ -176,4 +192,8 @@ func (s *SHM) WriteAt(offsetOfSHMRawComponent uintptr, size uintptr, inptr unsaf
 
 func (s *SHM) IncUint32(offsetOfSHMRawComponent uintptr) {
     shm.IncUint32(s.Shmaddr, int(offsetOfSHMRawComponent))
+}
+
+func (s *SHM) Cmp(offsetOfSHMRawComponent uintptr, size uintptr, cmpptr unsafe.Pointer) int {
+    return shm.Cmp(s.Shmaddr, int(offsetOfSHMRawComponent), types.Size_t(size), cmpptr)
 }

@@ -19,11 +19,36 @@ const (
 	CAREERSZ   = 40 /* Size of career field */
 	PHONESZ    = 20 /* Size of phone field */
 
+	USERNAMESZ = 24 /* Size of Username in MailQueue */
+	RCPTSZ     = 50 /* Size of RCPT in MailQueue */
+
 	PASSWD_VERSION = 4194
 
 	BTLEN = 48 /* Length of board title */
 
+	TTLEN = 64 /* Length of title */
+	FNLEN = 28 /* Length of filename */
+
+	// Prefix of str_reply and str_forward usually needs longer.
+	// In artitlcle list, the normal length is (80-34)=46.
+	DISP_TTLEN = 46
+
+	STRLEN = 80 /* Length of most string data */
+
+	FAVMAX   = 1024 /* Max boards of Myfavorite */
+	FAVGMAX  = 32   /* Max groups of Myfavorite */
+	FAVGSLEN = 8    /* Max Length of Description String */
+
+	ONEKEY_SIZE = int('~')
+
+	ANSILINELEN = 511 /* Maximum Screen width in chars */
+
+	/* USHM_SIZE 比 MAX_ACTIVE 大是為了防止檢查人數上限時, 又同時衝進來
+	 * 會造成找 shm 空位的無窮迴圈.
+	 * 又, 因 USHM 中用 hash, 空間稍大時效率較好. */
+	USHM_SIZE = MAX_ACTIVE * 41 / 40
+
 	MAX_BMs = 4
 
-	USHM_SIZE = MAX_ACTIVE * 41 / 40
+	// SHMSIZE is computed in cache/shm.go
 )

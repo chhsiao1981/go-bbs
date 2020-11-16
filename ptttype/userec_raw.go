@@ -90,7 +90,9 @@ type UserecRaw struct {
 	PadTail [28]byte
 }
 
-const USEREC_RAW_SZ = int64(unsafe.Sizeof(UserecRaw{}))
+var USEREC_RAW = UserecRaw{}
+
+const USEREC_RAW_SZ = unsafe.Sizeof(USEREC_RAW)
 
 func NewUserecRaw() *UserecRaw {
 	return &UserecRaw{}
