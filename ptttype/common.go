@@ -260,7 +260,5 @@ var (
 	FN_PASSWD_POSTFIX     = "/.PASSWDS"                     /* User records */
 	FN_PASSWD             = BBSHOME + FN_PASSWD_POSTFIX     /* User records */
 
-	SHM_HUGETLB = 04000 /* segment is mapped via hugetlb */
-
 	MSG_SELECT_BOARD = ANSIColor("7") + "【 選擇看板 】" + ANSIReset() + "\n" + "請輸入看板名稱(按空白鍵自動搜尋): "
 )

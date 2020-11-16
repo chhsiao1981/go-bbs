@@ -69,7 +69,7 @@ go test
    41 外籍使用者認證通知                   etc/foreign_welcome
    42 外籍使用者過期警告通知               etc/foreign_expired_warn
   ```
-  
+
   建立新看板的設定值
   ```
   【 建立新板 】
@@ -118,3 +118,24 @@ P. BBSADM               Ｘ              5. 警察                 Ｘ
 ## 授權
 
 Apache 2.0 (TBD)
+
+## Config 設定
+
+有兩個部分需要設定.
+1. 00-config.ini: 可參考 00-config.template.ini
+2. ptttype/00-config-custom.go (需要重新 build): 可參考 00-config-custom.go.template
+
+## Default-build
+
+可以按照以下步驟執行 default config:
+(tags: default, ini_filename: 00-config.template.ini)
+
+1. scripts/run.sh
+
+## Custom-build
+
+可以按照以下步驟做 customized-build:
+
+1. 建立 "+build custom" 的 ptttype/00-config-custom.go
+2. 建立 ini file.
+3. scripts/run-custom.sh [ini-filename]

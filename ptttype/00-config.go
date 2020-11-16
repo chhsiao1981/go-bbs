@@ -174,16 +174,17 @@ var (
 	/* 限制一個email能註冊的帳號數量 (要使用請在make的時候加 WITH_EMAILDB) */
 	EMAILDB_LIMIT = 5
 
-	USE_REG_CAPTCHA            = false
-	USE_POST_CAPTCHA_FOR_NOREG = false
-	USE_VOTE_CAPTCHA           = false
-	USE_REMOTE_CAPTCHA         = false
-	CAPTCHA_INSERT_SERVER_ADDR = "127.0.0.1:80"
-	CAPTCHA_INSERT_HOST        = CAPTCHA_INSERT_SERVER_ADDR
-	CAPTCHA_INSERT_URI         = "/captcha/insert"
-	CAPTCHA_INSERT_SECRET      = ""
-	CAPTCHA_URL_PREFIX         = "http://localhost/captcha"
-	CAPTCHA_CODE_LENGTH        = 32
+	USE_REG_CAPTCHA                 = false
+	USE_POST_CAPTCHA_FOR_NOREG      = false
+	USE_VOTE_CAPTCHA                = false
+	USE_REMOTE_CAPTCHA              = false
+	CAPTCHA_INSERT_SERVER_ADDR      = "127.0.0.1:80"
+	IS_CAPTCHA_INSERT_HOST_INFERRED = true
+	CAPTCHA_INSERT_HOST             = CAPTCHA_INSERT_SERVER_ADDR
+	CAPTCHA_INSERT_URI              = "/captcha/insert"
+	CAPTCHA_INSERT_SECRET           = ""
+	CAPTCHA_URL_PREFIX              = "http://localhost/captcha"
+	CAPTCHA_CODE_LENGTH             = 32
 
 	REQUIRE_SECURE_CONN_TO_REGISTER  = false
 	REQUIRE_VERIFY_EMAIL_AT_REGISTER = false
@@ -214,7 +215,8 @@ var (
 	MONEYNAME              = BBSMNAME + "幣"
 
 	/* AID 顯示的站台名稱。 若 IP 太長請另行定義。 */
-	AID_HOSTNAME = MYHOSTNAME
+	IS_AID_HOSTNAME_INFERRED = true
+	AID_HOSTNAME             = MYHOSTNAME
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Themes 主題配色
@@ -374,7 +376,7 @@ var (
 	MAX_CROSSNUM = 9 /* 最多crosspost次數 */
 
 	/* (deprecated) more.c 中文章頁數上限(lines/22), +4 for safe */
-	MAX_PAGES = MAX_EDIT_LINE/22 + 4
+	// MAX_PAGES = MAX_EDIT_LINE/22 + 4
 
 	MAX_QUERYLINES = 16 /* 顯示 Query/Plan 訊息最大行數 */
 

@@ -3,8 +3,10 @@
 package ptttype
 
 const (
+	// These are special config variables requiring to be const.
+	// link 00-config.conf to ptttype/ to setup customized config
+	//
 	// type struct requires const.
-	// use "// +build custom" to setup customized config
 	MAX_USERS = 100 /* 最高註冊人數 */
 
 	MAX_ACTIVE = 31 /* 最多同時上站人數 */
