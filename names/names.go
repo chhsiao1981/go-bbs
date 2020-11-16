@@ -1,17 +1,23 @@
-package cmbbs
+package names
 
 import (
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 )
 
+//IsValidUserID
+//
+//Params
+//	userID: user-id
+//
+//Return
+//	bool: is valid user-id
 func IsValidUserID(userID *[ptttype.IDLEN + 1]byte) bool {
-
 	if userID == nil {
 		return false
 	}
 
-	theLen := types.CstrLen(userID[:])
+	theLen := types.Cstrlen(userID[:])
 	if theLen < 2 || theLen > ptttype.IDLEN {
 		return false
 	}
@@ -34,12 +40,26 @@ func IsValidUserID(userID *[ptttype.IDLEN + 1]byte) bool {
 }
 
 func isalpha(c byte) bool {
-	return (c >= 'a' && c <= 'z') ||
-		(c >= 'A' && c <= 'Z')
+	if c >= 'A' && c <= 'Z' {
+		return true
+	}
+
+	if c >= 'a' && c <= 'z' {
+		return true
+	}
+
+	return false
+}
+
+func isnumber(c byte) bool {
+	if c >= '0' && c <= '9' {
+		return true
+	}
+	return false
 }
 
 func isalnum(c byte) bool {
+	return isalpha(c) || isnumber(c)
 	return (c >= 'a' && c <= 'z') ||
-		(c >= '0' && c <= '9') ||
 		(c >= 'A' && c <= 'Z')
 }

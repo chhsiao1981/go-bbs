@@ -15,7 +15,7 @@ func TestStatInc(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(testShmKey, false, true)
+	err := NewSHM(TestShmKey, false, true)
 	if err != nil {
 		log.Errorf("TestStatInc: unable to NewSHM: e: %v", err)
 		return
@@ -65,7 +65,7 @@ func TestReadStat(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(testShmKey, false, true)
+	err := NewSHM(TestShmKey, false, true)
 	if err != nil {
 		log.Errorf("TestReadStat: unable to NewSHM: e: %v", err)
 		return
@@ -115,7 +115,7 @@ func TestCleanStat(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(testShmKey, false, true)
+	err := NewSHM(TestShmKey, false, true)
 	if err != nil {
 		logrus.Errorf("CleanStat: unable to new shm: e: %v", err)
 		return

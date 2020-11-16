@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"unsafe"
 
-	"github.com/PichuChen/go-bbs/cmbbs"
 	"github.com/PichuChen/go-bbs/cmsys"
+	"github.com/PichuChen/go-bbs/names"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 	log "github.com/sirupsen/logrus"
@@ -106,7 +106,7 @@ func userecRawAddToUHash(usernum int32, userecRaw *ptttype.UserecRaw, isOnfly bo
 	// uhash use userid="" to denote free slot for new register
 	// However, such entries will have the same hash key.
 	// So we skip most of invalid userid to prevent lots of hash collision.
-	if !cmbbs.IsValidUserID(&userecRaw.UserID) {
+	if !names.IsValidUserID(&userecRaw.UserID) {
 		// dirty hack, preserve few slot for new register
 		uHashLoaderInvalidUserID++
 		if uHashLoaderInvalidUserID > 1000 {

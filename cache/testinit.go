@@ -3,7 +3,7 @@ package cache
 import "github.com/PichuChen/go-bbs/ptttype"
 
 const (
-	testShmKey = 2000000
+	TestShmKey = 2000000
 )
 
 var (
