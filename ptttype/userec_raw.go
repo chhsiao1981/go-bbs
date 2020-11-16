@@ -1,7 +1,8 @@
 package ptttype
 
 import (
-	"io"
+	"encoding/binary"
+	"os"
 	"unsafe"
 
 	"github.com/PichuChen/go-bbs/types"
@@ -95,6 +96,13 @@ func NewUserecRaw() *UserecRaw {
 	return &UserecRaw{}
 }
 
-func NewUserecRawWithFile(file *io.File) (*UserecRaw, error) {
-	return nil, nil
+func NewUserecRawWithFile(file *os.File) (*UserecRaw, error) {
+	userecRaw := &UserecRaw{}
+
+	err := binary.Read(file, binary.LittleEndian, userecRaw)
+	if err != nil {
+		return nil, err
+	}
+
+	return userecRaw, nil
 }
