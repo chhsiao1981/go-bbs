@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"unsafe"
 
-	"github.com/PichuChen/go-bbs/cmbbs"
 	"github.com/PichuChen/go-bbs/cmsys"
+	"github.com/PichuChen/go-bbs/names"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 	log "github.com/sirupsen/logrus"
@@ -38,7 +38,10 @@ func LoadUHash() (err error) {
 	//XXX in case it's not assumed zero, this becomes a race...
 	if number == 0 && loaded == 0 {
 		// line: 60
-		fillUHash(false)
+		err = fillUHash(false)
+		if err != nil {
+			return err
+		}
 
 		// line: 61
 		zeroByte := '\x00'
@@ -57,7 +60,10 @@ func LoadUHash() (err error) {
 		)
 	} else {
 		// line: 65
-		fillUHash(true)
+		err = fillUHash(true)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -73,6 +79,7 @@ func fillUHash(isOnfly bool) error {
 
 	file, err := os.Open(ptttype.FN_PASSWD)
 	if err != nil {
+		log.Errorf("fillUHash: unable to open passwd: file: %v e: %v", ptttype.FN_PASSWD, err)
 		return err
 	}
 
@@ -94,6 +101,13 @@ func fillUHash(isOnfly bool) error {
 		userecRawAddToUHash(usernum, userecRaw, isOnfly)
 	}
 
+	if err != nil {
+		log.Errorf("fillUHash: unable to read passwd: file: %v e: %v", ptttype.FN_PASSWD, err)
+		return err
+	}
+
+	log.Infof("fillUHash: to write usernum: %v", usernum)
+
 	Shm.WriteAt(
 		unsafe.Offsetof(Shm.Number),
 		unsafe.Sizeof(Shm.Number),
@@ -106,7 +120,7 @@ func userecRawAddToUHash(usernum int32, userecRaw *ptttype.UserecRaw, isOnfly bo
 	// uhash use userid="" to denote free slot for new register
 	// However, such entries will have the same hash key.
 	// So we skip most of invalid userid to prevent lots of hash collision.
-	if !cmbbs.IsValidUserID(&userecRaw.UserID) {
+	if !names.IsValidUserID(&userecRaw.UserID) {
 		// dirty hack, preserve few slot for new register
 		uHashLoaderInvalidUserID++
 		if uHashLoaderInvalidUserID > 1000 {

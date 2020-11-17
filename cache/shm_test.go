@@ -30,7 +30,7 @@ func TestNewSHM(t *testing.T) {
 		// TODO: Add test caseShm.
 		{
 			args: args{
-				key:          testShmKey,
+				key:          TestShmKey,
 				isUseHugeTlb: false,
 				isCreate:     true,
 			},
@@ -40,7 +40,7 @@ func TestNewSHM(t *testing.T) {
 		},
 		{
 			args: args{
-				key:          testShmKey,
+				key:          TestShmKey,
 				isUseHugeTlb: false,
 				isCreate:     false,
 			},
@@ -78,7 +78,7 @@ func TestSHM_ReadAt(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(testShmKey, false, true)
+	err := NewSHM(TestShmKey, false, true)
 	if err != nil {
 		log.Errorf("cache.TestSHM_ReadAt: unable to NewSHM: e: %v", err)
 		return
@@ -197,7 +197,7 @@ func TestSHM_WriteAt(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(testShmKey, false, true)
+	err := NewSHM(TestShmKey, false, true)
 	if err != nil {
 		log.Errorf("cache.TestSHM_WriteAt: unable to NewSHM: e: %v", err)
 		return

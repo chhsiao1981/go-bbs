@@ -10,7 +10,7 @@ func TestAttachSHM(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	_ = NewSHM(testShmKey, ptttype.USE_HUGETLB, true)
+	_ = NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
 	defer CloseSHM()
 
 	tests := []struct {

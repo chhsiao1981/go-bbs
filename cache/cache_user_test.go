@@ -14,7 +14,7 @@ func TestDoSearchUser(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(testShmKey, ptttype.USE_HUGETLB, true)
+	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		log.Errorf("TestDoSearchUser: unable to NewSHM: e: %v", err)
 		return
@@ -67,7 +67,7 @@ func TestAddToUHash(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(testShmKey, ptttype.USE_HUGETLB, true)
+	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		log.Errorf("TestDoSearchUser: unable to NewSHM: e: %v", err)
 		return
@@ -127,7 +127,7 @@ func TestRemoveFromUHash(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(testShmKey, ptttype.USE_HUGETLB, true)
+	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		log.Errorf("TestDoSearchUser: unable to NewSHM: e: %v", err)
 		return
@@ -244,7 +244,7 @@ func TestGetUserID(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(testShmKey, ptttype.USE_HUGETLB, true)
+	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		log.Errorf("TestGetUserID: unable to NewSHM: e: %v", err)
 		return
@@ -308,7 +308,7 @@ func TestSetUserID(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(testShmKey, ptttype.USE_HUGETLB, true)
+	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
 		log.Errorf("TestGetUserID: unable to NewSHM: e: %v", err)
 		return
