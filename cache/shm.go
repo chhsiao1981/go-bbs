@@ -22,7 +22,7 @@ type SHM struct {
 //This is to init SHM with Version and Size checked.
 func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
     if Shm != nil {
-        return ErrInvalidOp
+        return ErrShmAlreadyInit
     }
 
     shmid := int(0)
@@ -111,6 +111,8 @@ func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
     if isCreate && !isNew {
         log.Warnf("NewSHM: is expected to create, but not: key: %v", key)
     }
+
+    log.Infof("NewSHM: shm created: key: %v size: %v isNew: %v", key, Shm.Size, isNew)
 
     return nil
 }

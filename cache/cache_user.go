@@ -195,18 +195,17 @@ func doSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 
 	// XXX we should have 0 as non-exists.
 	//     currently the reason why it's ok is because the probability of collision on 0 is low.
 
-	StatInc(ptttype.STAT_SEARCHUSER)
+	_ = StatInc(ptttype.STAT_SEARCHUSER)
 	h := cmsys.StringHashWithHashBits(userID[:])
 
 	//p = SHM->hash_head[h]  //line: 219
-	log.Infof("doSearchUserRaw: to Shm.ReadAt: userID: %v h: %v", string(userID[:]), h)
 	p := int32(0)
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.HashHead)+types.INT32_SZ*uintptr(h),
 		types.INT32_SZ,
 		unsafe.Pointer(&p),
 	)
-	log.Infof("doSearchUserRaw: after Shm.ReadAt: userID: %v h: %v p: %v", string(userID[:]), h, p)
+	log.Debugf("doSearchUserRaw: after Shm.ReadAt: userID: %v h: %v p: %v", string(userID[:]), h, p)
 
 	shmUserID := [ptttype.IDLEN + 1]byte{}
 
@@ -217,7 +216,7 @@ func doSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 
 			ptttype.USER_ID_SZ,
 			unsafe.Pointer(&shmUserID),
 		)
-		if bytes.Compare(bytes.ToUpper(userID[:]), bytes.ToUpper(shmUserID[:])) == 0 {
+		if bytes.Equal(bytes.ToUpper(userID[:]), bytes.ToUpper(shmUserID[:])) {
 			if userID[0] != 0 && rightID != nil {
 				copy(rightID[:], shmUserID[:])
 				log.Infof("doSearchUserRaw: after copy: rightID: %v shmUserID: %v", string(rightID[:]), string(shmUserID[:]))
