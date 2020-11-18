@@ -4,8 +4,6 @@ import (
 	"unsafe"
 )
 
-type Time4 int32
-
 type Pid_t uint32
 
 type InAddr_t uint32

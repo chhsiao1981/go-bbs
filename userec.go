@@ -34,9 +34,9 @@ func NewUserecFromRaw(userecRaw *ptttype.UserecRaw) *Userec {
 	user.Passwd = types.CstrToString(userecRaw.PasswdHash[:])
 	user.Pad1 = userecRaw.Pad1
 
-	user.Uflag = userecRaw.UFlag
+	user.Uflag = uint32(userecRaw.UFlag)
 	user._unused1 = userecRaw.Unused1
-	user.Userlevel = userecRaw.UserLevel
+	user.Userlevel = uint32(userecRaw.UserLevel)
 	user.Numlogindays = userecRaw.NumLoginDays
 	user.Numposts = userecRaw.NumPosts
 	user.Firstlogin = uint32(userecRaw.FirstLogin)

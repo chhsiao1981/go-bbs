@@ -162,7 +162,7 @@ func doSearchUser(userID string, isReturn bool) (uid int32, rightID string, err 
 		rightIDBytes = &[ptttype.IDLEN + 1]byte{}
 	}
 
-	uid, err = doSearchUserRaw(userIDBytes, rightIDBytes)
+	uid, err = DoSearchUserRaw(userIDBytes, rightIDBytes)
 	if err != nil {
 		return 0, "", err
 	}
@@ -188,10 +188,10 @@ func SearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 1]
 	if userID[0] == 0 {
 		return 0, nil
 	}
-	return doSearchUserRaw(userID, rightID)
+	return DoSearchUserRaw(userID, rightID)
 }
 
-func doSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 1]byte) (int32, error) {
+func DoSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 1]byte) (int32, error) {
 	// XXX we should have 0 as non-exists.
 	//     currently the reason why it's ok is because the probability of collision on 0 is low.
 

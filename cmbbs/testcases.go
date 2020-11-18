@@ -18,8 +18,8 @@ var (
 		LastLogin:    1600756094,
 		LastHost:     [ptttype.IPV4LEN + 1]byte{53, 57, 46, 49, 50, 52, 46, 49, 54, 55, 46, 50, 50, 54},
 		Address:      [ptttype.ADDRESSSZ]byte{183, 115, 166, 203, 191, 164, 164, 108, 181, 234, 182, 109, 175, 81, 166, 179, 167, 248, 53, 52, 51, 184, 185},
-		Over18:       1,
-		Pager:        1,
+		Over18:       true,
+		Pager:        ptttype.PAGER_ON,
 		Career:       [ptttype.CAREERSZ]byte{165, 254, 180, 186, 179, 110, 197, 233},
 		LastSeen:     1600681288,
 	}

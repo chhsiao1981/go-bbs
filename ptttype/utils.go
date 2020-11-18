@@ -7,36 +7,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-//InitConfig
-//
-//Params
-//	filename: ini filename
-//
-//Return
-//	error: err
-func InitConfig(filename string) error {
-
-	filenameList := strings.Split(filename, ".")
-	if len(filenameList) == 1 {
-		return ErrInvalidIni
-	}
-
-	filenamePrefix := strings.Join(filenameList[:len(filenameList)-1], ".")
-	filenamePostfix := filenameList[len(filenameList)-1]
-	viper.SetConfigName(filenamePrefix)
-	viper.SetConfigType(filenamePostfix)
-	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
-	if err != nil {
-		return err
-	}
-
-	log.Infof("viper keys: %v", viper.AllKeys())
-
-	initConfig()
-	return nil
-}
-
 func setStringConfig(idx string, orig string) string {
 	idx = "go-bbs." + strings.ToLower(idx)
 	if !viper.IsSet(idx) {

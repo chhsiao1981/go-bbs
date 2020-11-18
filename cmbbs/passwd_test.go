@@ -18,17 +18,17 @@ func TestPasswdLoadUser(t *testing.T) {
 		userID *[ptttype.IDLEN + 1]byte
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    int
-		want1   *ptttype.UserecRaw
-		wantErr bool
+		name      string
+		args      args
+		expected  int32
+		expected1 *ptttype.UserecRaw
+		wantErr   bool
 	}{
 		// TODO: Add test cases.
 		{
-			args:  args{&userID1},
-			want:  1,
-			want1: testUserecRaw1,
+			args:      args{&userID1},
+			expected:  1,
+			expected1: testUserecRaw1,
 		},
 	}
 	for _, tt := range tests {
@@ -38,11 +38,11 @@ func TestPasswdLoadUser(t *testing.T) {
 				t.Errorf("PasswdLoadUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
-				t.Errorf("PasswdLoadUser() got = %v, want %v", got, tt.want)
+			if got != tt.expected {
+				t.Errorf("PasswdLoadUser() got = %v, expected %v", got, tt.expected)
 			}
-			if !reflect.DeepEqual(got1, tt.want1) {
-				t.Errorf("PasswdLoadUser() got1 = %v, want %v", got1, tt.want1)
+			if !reflect.DeepEqual(got1, tt.expected1) {
+				t.Errorf("PasswdLoadUser() got1 = %v, expected1 %v", got1, tt.expected1)
 			}
 		})
 	}
@@ -53,29 +53,29 @@ func TestPasswdQuery(t *testing.T) {
 	defer teardownTest()
 
 	type args struct {
-		num int
+		uid int32
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    *ptttype.UserecRaw
-		wantErr bool
+		name     string
+		args     args
+		expected *ptttype.UserecRaw
+		wantErr  bool
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{1},
-			want: testUserecRaw1,
+			args:     args{1},
+			expected: testUserecRaw1,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := PasswdQuery(tt.args.num)
+			got, err := PasswdQuery(tt.args.uid)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PasswdQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("PasswdQuery() = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("PasswdQuery() = %v, expected %v", got, tt.expected)
 			}
 		})
 	}
@@ -91,20 +91,20 @@ func TestCheckPasswd(t *testing.T) {
 		input    []byte
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    bool
-		wantErr bool
+		name     string
+		args     args
+		expected bool
+		wantErr  bool
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{expected1[:], input1},
-			want: true,
+			args:     args{expected1[:], input1},
+			expected: true,
 		},
 		{
-			name: "incorrect input",
-			args: args{expected1[:], input2},
-			want: false,
+			name:     "incorrect input",
+			args:     args{expected1[:], input2},
+			expected: false,
 		},
 	}
 	for _, tt := range tests {
@@ -114,8 +114,50 @@ func TestCheckPasswd(t *testing.T) {
 				t.Errorf("CheckPasswd() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
-				t.Errorf("CheckPasswd() = %v, want %v", got, tt.want)
+			if got != tt.expected {
+				t.Errorf("CheckPasswd() = %v, expected %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestGenPasswd(t *testing.T) {
+	type args struct {
+		passwd []byte
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{
+			args: args{[]byte("1234")},
+		},
+		{
+			args: args{[]byte("abcdef")},
+		},
+		{
+			args: args{[]byte("834792134")},
+		},
+		{
+			args: args{[]byte("rweqrrwe")},
+		},
+		{
+			args: args{[]byte("!@#$5ks")},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotPasswdHash, err := GenPasswd(tt.args.passwd)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GenPasswd() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+
+			isGood, err := CheckPasswd(gotPasswdHash[:], tt.args.passwd)
+			if err != nil || !isGood {
+				t.Errorf("GenPasswd: unable to pass CheckPasswd: passwd: %v gotPasswdHash: %v", tt.args.passwd, gotPasswdHash)
 			}
 		})
 	}

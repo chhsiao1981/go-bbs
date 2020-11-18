@@ -18,9 +18,9 @@ type UserecRaw struct {
 	PasswdHash [PASSLEN]byte    /* 密碼 (hashed bytes) */
 	Pad1       byte
 
-	UFlag        uint32            /* 習慣, see uflags.h */
+	UFlag        UFlag             /* 習慣, see uflags.h */
 	Unused1      uint32            /* 從前放習慣2, 使用前請先清0 */
-	UserLevel    uint32            /* 權限 */
+	UserLevel    PERM              /* 權限 */
 	NumLoginDays uint32            /* 上線資歷 (每日最多+1的登入次數) */
 	NumPosts     uint32            /* 文章篇數 */
 	FirstLogin   types.Time4       /* 註冊時間 */
@@ -33,9 +33,9 @@ type UserecRaw struct {
 	Address     [ADDRESSSZ]byte  /* 住址 */
 	Justify     [REGLEN + 1]byte /* 審核資料 */
 	UnusedBirth [3]uint8         /* 生日 月日年 */
-	Over18      uint8            /* 是否已滿18歲 */
+	Over18      bool             /* 是否已滿18歲 */
 	PagerUIType uint8            /* 呼叫器界面類別 (was: WATER_*) */
-	Pager       uint8            /* 呼叫器狀態 */
+	Pager       PagerMode        /* 呼叫器狀態 */
 	Invisible   uint8            /* 隱形狀態 */
 	Unused4     [2]byte
 	Exmailbox   uint32 /* 購買信箱數 */

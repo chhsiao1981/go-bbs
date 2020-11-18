@@ -7,8 +7,12 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/PichuChen/go-bbs/api"
+	"github.com/PichuChen/go-bbs/ptttype"
+	"github.com/PichuChen/go-bbs/types"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Login(t *testing.T) {
@@ -85,6 +89,42 @@ func Test_Ping(t *testing.T) {
 			if (w.Code != http.StatusOK) != tt.wantErr {
 				t.Errorf("code: %v wantErr: %v", w.Code, tt.wantErr)
 			}
+		})
+	}
+}
+
+func Test_initConfig(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
+	type args struct {
+		filename string
+	}
+	tests := []struct {
+		name        string
+		args        args
+		wantErr     bool
+		wantBBSNAME string
+	}{
+		// TODO: Add test cases.
+		{
+			args:        args{"./testcase/test.ini"},
+			wantBBSNAME: "test ptttype",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := initConfig(tt.args.filename); (err != nil) != tt.wantErr {
+				t.Errorf("initConfig() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if ptttype.BBSNAME != tt.wantBBSNAME {
+				t.Errorf("BBSNAME: InitConfig(): %v want: %v", ptttype.BBSNAME, tt.wantBBSNAME)
+			}
+
+			tz, _ := time.LoadLocation("America/New_York")
+			assert.Equal(t, types.TIME_LOCATION, "America/New_York")
+			assert.Equal(t, types.TIMEZONE, tz)
 		})
 	}
 }

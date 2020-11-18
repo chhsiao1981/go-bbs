@@ -43,21 +43,24 @@ func TestStatInc(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Logf("StatInc: %v: start", tt.name)
+
 			if err := StatInc(tt.args.stats); (err != nil) != tt.wantErr {
 				t.Errorf("StatInc() error = %v, wantErr %v", err, tt.wantErr)
 			}
+
+			out := uint32(0)
+			Shm.ReadAt(
+				unsafe.Offsetof(Shm.Statistic)+types.UINT32_SZ*ptttype.STAT_BOARDREC,
+				unsafe.Sizeof(Shm.Statistic[ptttype.STAT_BOARDREC]),
+				unsafe.Pointer(&out),
+			)
+
+			if !reflect.DeepEqual(out, tt.expected) {
+				t.Errorf("StatInc() out: %v expected: %v", out, tt.expected)
+			}
+
 		})
-
-		out := uint32(0)
-		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Statistic)+types.UINT32_SZ*ptttype.STAT_BOARDREC,
-			unsafe.Sizeof(Shm.Statistic[ptttype.STAT_BOARDREC]),
-			unsafe.Pointer(&out),
-		)
-
-		if !reflect.DeepEqual(out, tt.expected) {
-			t.Errorf("StatInc() out: %v expected: %v", out, tt.expected)
-		}
 	}
 }
 
@@ -99,6 +102,8 @@ func TestReadStat(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Logf("ReadStat: %v: start", tt.name)
+
 			got, err := ReadStat(tt.args.stats)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadStat() error = %v, wantErr %v", err, tt.wantErr)

@@ -2,8 +2,8 @@ package ptttype
 
 import log "github.com/sirupsen/logrus"
 
-func initConfig() {
-	log.Infof("initConfig: start")
+func InitConfig() {
+	log.Infof("InitConfig: start")
 
 	serviceModeStr := setStringConfig("SERVICE_MODE", "DEV")
 	SERVICE_MODE = stringToServiceMode(serviceModeStr)
@@ -317,6 +317,14 @@ func initConfig() {
 	STR_SAFEDEL_TITLE = setStringConfig("STR_SAFEDEL_TITLE", STR_SAFEDEL_TITLE)
 
 	SAFE_ARTICLE_DELETE_NUSER = setIntConfig("SAFE_ARTICLE_DELETE_NUSER", SAFE_ARTICLE_DELETE_NUSER)
+
+	//////////
+	// proto.h
+	//////////
+	USE_COMMENTD = setBoolConfig("USE_COMMENTD", USE_COMMENTD)
+	USE_EMAILDB = setBoolConfig("USE_EMAILDB", USE_EMAILDB)
+	USE_REGCHECKD = setBoolConfig("USE_REGCHECKD", USE_REGCHECKD)
+	USE_VERIFYDB = setBoolConfig("USE_VERIFYDB", USE_VERIFYDB)
 
 	postInitConfig()
 

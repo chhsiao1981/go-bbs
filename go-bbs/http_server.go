@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"strings"
 
 	"github.com/PichuChen/go-bbs/api"
 	"github.com/PichuChen/go-bbs/cache"
@@ -10,15 +11,49 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	jww "github.com/spf13/jwalterweatherman"
+	"github.com/spf13/viper"
 )
 
 func initGin() (*gin.Engine, error) {
 	router := gin.Default()
 
 	router.POST("/login", NewApi(api.Login, &api.LoginParams{}).Json)
+	router.POST("/register", NewApi(api.Register, &api.RegisterParams{}).Json)
 	router.POST("/ping", NewApi(api.Ping, nil).LoginRequiredJson)
 
 	return router, nil
+}
+
+//initConfig
+//
+//Params
+//	filename: ini filename
+//
+//Return
+//	error: err
+func initConfig(filename string) error {
+
+	filenameList := strings.Split(filename, ".")
+	if len(filenameList) == 1 {
+		return ErrInvalidIni
+	}
+
+	filenamePrefix := strings.Join(filenameList[:len(filenameList)-1], ".")
+	filenamePostfix := filenameList[len(filenameList)-1]
+	viper.SetConfigName(filenamePrefix)
+	viper.SetConfigType(filenamePostfix)
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
+	if err != nil {
+		return err
+	}
+
+	log.Infof("viper keys: %v", viper.AllKeys())
+
+	types.InitConfig()
+	ptttype.InitConfig()
+
+	return nil
 }
 
 func initMain() error {
@@ -30,7 +65,7 @@ func initMain() error {
 	flag.StringVar(&filename, "ini", "config.ini", "ini filename")
 	flag.Parse()
 
-	ptttype.InitConfig(filename)
+	initConfig(filename)
 
 	err := cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, true)
 	if err != nil {

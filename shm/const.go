@@ -14,7 +14,7 @@ package shm
 import "C"
 
 const (
-	IpcCreat   = C.IPC_CREAT
-	IpcExcl    = C.IPC_EXCL
-	ShmHugeTlb = C.SHM_HUGETLB
+	IPC_CREAT   = C.IPC_CREAT
+	IPC_EXCL    = C.IPC_EXCL
+	SHM_HUGETLB = C.SHM_HUGETLB
 )

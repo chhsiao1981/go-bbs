@@ -8,6 +8,7 @@ import (
 )
 
 //LoginQuery
+//
 //Params
 //	userID: userID
 //	passwd: passwd

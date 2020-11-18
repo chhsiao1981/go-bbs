@@ -3,6 +3,8 @@ package ptttype
 const (
 	//////////
 	//pttstruct.h
+	//
+	//SHMSIZE is computed in cache/shm.go NewSHM
 	//////////
 	IDLEN   = 12 /* Length of bid/uid */
 	IPV4LEN = 15 /* a.b.c.d form */
@@ -49,6 +51,16 @@ const (
 	USHM_SIZE = MAX_ACTIVE * 41 / 40
 
 	MAX_BMs = 4
+)
 
-	// SHMSIZE is computed in cache/shm.go
+const (
+	//mbbsd/register.c line: 381
+	FN_FRESH = ".fresh"
+
+	//mbbsd/register.c line: 415
+	CLEAN_USER_EXPIRE_RANGE_MIN = 365 * 12 * 60 // 180 days.
+
+	//mbbsd/user.c line: 42
+	DIR_TMP  = "tmp"
+	DIR_HOME = "home"
 )

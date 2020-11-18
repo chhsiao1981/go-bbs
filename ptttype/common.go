@@ -30,7 +30,7 @@ const (
 	FN_BANNED_HISTORY          = "banned.history"  // 新水桶之歷史記錄
 	FN_BADPOST_HISTORY         = "badpost.history" // 劣文歷史記錄
 	FN_CANVOTE                 = "can_vote"
-	FN_VISABLE                 = "visable" // 不知道是誰拼錯的，將錯就錯吧...
+	FN_VISIBLE                 = "visable" // 不知道是誰拼錯的，將錯就錯吧... // variable corrected in go.
 	FN_ALOHAED                 = "alohaed" // 上站要通知我的名單 (編輯用)
 	FN_ALOHA                   = "aloha"   // 我上站要通知的名單 (自動產生)
 	FN_USIES                   = "usies"   /* BBS log */
@@ -186,7 +186,7 @@ const (
 	FRIEND_SPECIAL = 4
 	FRIEND_CANVOTE = 5
 	BOARD_WATER    = 6
-	BOARD_VISABLE  = 7
+	BOARD_VISIBLE  = 7
 
 	LOCK_THIS  = 1 // lock這線不能重複玩
 	LOCK_MULTI = 2 // lock所有線不能重複玩
@@ -255,6 +255,9 @@ const (
 )
 
 var (
+	USER_ID_GUEST  = [IDLEN + 1]byte{'g', 'u', 'e', 's', 't'} // guest account
+	USER_ID_REGNEW = [IDLEN + 1]byte{'n', 'e', 'w'}           // 用來建新帳號的名稱
+
 	FN_CONF_BANIP_POSTFIX = "/etc/banip.conf"               // 禁止連線的 IP 列表
 	FN_CONF_BANIP         = BBSHOME + FN_CONF_BANIP_POSTFIX // 禁止連線的 IP 列表
 	FN_PASSWD_POSTFIX     = "/.PASSWDS"                     /* User records */
