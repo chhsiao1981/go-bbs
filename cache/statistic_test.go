@@ -50,8 +50,8 @@ func TestStatInc(t *testing.T) {
 
 		out := uint32(0)
 		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Statistic)+types.UINT32_SZ*ptttype.STAT_BOARDREC,
-			unsafe.Sizeof(Shm.Statistic[ptttype.STAT_BOARDREC]),
+			unsafe.Offsetof(Shm.Raw.Statistic)+types.UINT32_SZ*ptttype.STAT_BOARDREC,
+			unsafe.Sizeof(Shm.Raw.Statistic[ptttype.STAT_BOARDREC]),
 			unsafe.Pointer(&out),
 		)
 

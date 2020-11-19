@@ -30,18 +30,20 @@ func initMain() error {
 	flag.StringVar(&filename, "ini", "config.ini", "ini filename")
 	flag.Parse()
 
-	ptttype.InitConfig(filename)
+	_ = InitConfig(filename)
 
-	err := cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, true)
+	err := cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, ptttype.IS_NEW_SHM)
 	if err != nil {
 		log.Errorf("unable to init SHM: e: %v", err)
 		return err
 	}
 
-	err = cache.LoadUHash()
-	if err != nil {
-		log.Errorf("unable to load UHash: e: %v", err)
-		return err
+	if ptttype.IS_NEW_SHM {
+		err = cache.LoadUHash()
+		if err != nil {
+			log.Errorf("unable to load UHash: e: %v", err)
+			return err
+		}
 	}
 	err = cache.AttachCheckSHM()
 	if err != nil {

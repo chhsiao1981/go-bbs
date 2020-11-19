@@ -23,15 +23,15 @@ func LoadUHash() (err error) {
 	// line: 58
 	number := int32(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Number),
-		unsafe.Sizeof(Shm.Number),
+		unsafe.Offsetof(Shm.Raw.Number),
+		unsafe.Sizeof(Shm.Raw.Number),
 		unsafe.Pointer(&number),
 	)
 
 	loaded := int32(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Loaded),
-		unsafe.Sizeof(Shm.Loaded),
+		unsafe.Offsetof(Shm.Raw.Loaded),
+		unsafe.Sizeof(Shm.Raw.Loaded),
 		unsafe.Pointer(&loaded),
 	)
 
@@ -46,16 +46,16 @@ func LoadUHash() (err error) {
 		// line: 61
 		zeroByte := '\x00'
 		Shm.WriteAt(
-			unsafe.Offsetof(Shm.TodayIs),
-			unsafe.Sizeof(Shm.TodayIs[0]),
+			unsafe.Offsetof(Shm.Raw.TodayIs),
+			unsafe.Sizeof(Shm.Raw.TodayIs[0]),
 			unsafe.Pointer(&zeroByte),
 		)
 
 		// line: 62
 		loaded = 1
 		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Loaded),
-			unsafe.Sizeof(Shm.Loaded),
+			unsafe.Offsetof(Shm.Raw.Loaded),
+			unsafe.Sizeof(Shm.Raw.Loaded),
 			unsafe.Pointer(&loaded),
 		)
 	} else {
@@ -83,10 +83,10 @@ func fillUHash(isOnfly bool) error {
 		return err
 	}
 
-	usernum := int32(0)
+	uidInCache := int32(0)
 
 	uHashLoaderInvalidUserID = 0
-	for ; ; usernum++ {
+	for ; ; uidInCache++ {
 		userecRaw, eachErr := ptttype.NewUserecRawWithFile(file)
 		if eachErr != nil {
 			// io.EOF is reading correctly to the end the file.
@@ -98,7 +98,7 @@ func fillUHash(isOnfly bool) error {
 			break
 		}
 
-		userecRawAddToUHash(usernum, userecRaw, isOnfly)
+		userecRawAddToUHash(uidInCache, userecRaw, isOnfly)
 	}
 
 	if err != nil {
@@ -106,17 +106,17 @@ func fillUHash(isOnfly bool) error {
 		return err
 	}
 
-	log.Infof("fillUHash: to write usernum: %v", usernum)
+	log.Infof("fillUHash: to write usernum: %v", uidInCache)
 
 	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Number),
-		unsafe.Sizeof(Shm.Number),
-		unsafe.Pointer(&usernum),
+		unsafe.Offsetof(Shm.Raw.Number),
+		unsafe.Sizeof(Shm.Raw.Number),
+		unsafe.Pointer(&uidInCache),
 	)
 	return nil
 }
 
-func userecRawAddToUHash(usernum int32, userecRaw *ptttype.UserecRaw, isOnfly bool) {
+func userecRawAddToUHash(uidInCache int32, userecRaw *ptttype.UserecRaw, isOnfly bool) {
 	// uhash use userid="" to denote free slot for new register
 	// However, such entries will have the same hash key.
 	// So we skip most of invalid userid to prevent lots of hash collision.
@@ -132,22 +132,22 @@ func userecRawAddToUHash(usernum int32, userecRaw *ptttype.UserecRaw, isOnfly bo
 
 	shmUserID := [ptttype.IDLEN + 1]byte{}
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Userid)+ptttype.USER_ID_SZ*uintptr(usernum),
+		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
 		ptttype.USER_ID_SZ,
 		unsafe.Pointer(&shmUserID),
 	)
 
-	offsetNextInHash := unsafe.Offsetof(Shm.NextInHash)
+	offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 
 	if !isOnfly || !reflect.DeepEqual(userecRaw.UserID, shmUserID) {
 		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Userid)+ptttype.USER_ID_SZ*uintptr(usernum),
+			unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
 			ptttype.USER_ID_SZ,
 			unsafe.Pointer(&userecRaw.UserID),
 		)
 
 		Shm.WriteAt(
-			unsafe.Offsetof(Shm.Money)+types.INT32_SZ*uintptr(usernum),
+			unsafe.Offsetof(Shm.Raw.Money)+types.INT32_SZ*uintptr(uidInCache),
 			types.INT32_SZ,
 			unsafe.Pointer(&userecRaw.Money),
 		)
@@ -155,18 +155,18 @@ func userecRawAddToUHash(usernum int32, userecRaw *ptttype.UserecRaw, isOnfly bo
 		if ptttype.USE_COOLDOWN {
 			zero := types.Time4(0)
 			Shm.WriteAt(
-				unsafe.Offsetof(Shm.CooldownTime)+types.TIME4_SZ*uintptr(usernum),
+				unsafe.Offsetof(Shm.Raw.CooldownTime)+types.TIME4_SZ*uintptr(uidInCache),
 				types.TIME4_SZ,
 				unsafe.Pointer(&zero),
 			)
 		}
-		log.Debugf("UHashLoader.userecRawAddToUHash: add info: usernum: %v id: %v shmUserID: %v", usernum, string(userecRaw.UserID[:]), string(shmUserID[:]))
+		log.Debugf("UHashLoader.userecRawAddToUHash: add info: usernum: %v id: %v shmUserID: %v", uidInCache, string(userecRaw.UserID[:]), string(shmUserID[:]))
 	}
 
 	p := h
 	val := int32(0)
-	offsetHashHead := unsafe.Offsetof(Shm.HashHead)
-	//offsetNextInHash := unsafe.Offsetof(Shm.NextInHash)
+	offsetHashHead := unsafe.Offsetof(Shm.Raw.HashHead)
+	//offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 	isFirst := true
 
 	Shm.ReadAt(
@@ -177,7 +177,7 @@ func userecRawAddToUHash(usernum int32, userecRaw *ptttype.UserecRaw, isOnfly bo
 
 	l := 0
 	for val >= 0 && val < ptttype.MAX_USERS {
-		if isOnfly && val == usernum { // already in hash
+		if isOnfly && val == uidInCache { // already in hash
 			return
 		}
 
@@ -200,14 +200,14 @@ func userecRawAddToUHash(usernum int32, userecRaw *ptttype.UserecRaw, isOnfly bo
 	if !isFirst {
 		offset = offsetNextInHash
 	}
-	val = usernum
+	val = uidInCache
 	Shm.WriteAt(
 		offset+types.INT32_SZ*uintptr(p),
 		types.INT32_SZ,
 		unsafe.Pointer(&val),
 	)
 
-	log.Infof("UHashLoader.userecRawAddToUHash: added level: %v p: %v hash: %v usernum: %v [%v] val: %v in hash isHashHead: %v", l, p, h, usernum, string(userecRaw.UserID[:]), val, isFirst)
+	log.Infof("UHashLoader.userecRawAddToUHash: added level: %v p: %v hash: %v usernum: %v [%v] val: %v in hash isHashHead: %v", l, p, h, uidInCache, string(userecRaw.UserID[:]), val, isFirst)
 
 	// set next in hash as -1
 	p = uint32(val)
@@ -217,7 +217,7 @@ func userecRawAddToUHash(usernum int32, userecRaw *ptttype.UserecRaw, isOnfly bo
 		types.INT32_SZ,
 		unsafe.Pointer(&val),
 	)
-	log.Debugf("UHashLoader.userecRawAddToUHash: added NextInHash: usernum: %v p: %v val: %v isFirst: %v", usernum, p, val, isFirst)
+	log.Debugf("UHashLoader.userecRawAddToUHash: added NextInHash: usernum: %v p: %v val: %v isFirst: %v", uidInCache, p, val, isFirst)
 }
 
 func InitFillUHash(isOnfly bool) {
@@ -228,8 +228,8 @@ func InitFillUHash(isOnfly bool) {
 			toFillHashHead[idx] = -1
 		}
 		Shm.WriteAt(
-			unsafe.Offsetof(Shm.HashHead),
-			unsafe.Sizeof(Shm.HashHead),
+			unsafe.Offsetof(Shm.Raw.HashHead),
+			unsafe.Sizeof(Shm.Raw.HashHead),
 			unsafe.Pointer(&toFillHashHead),
 		)
 	} else {
@@ -251,7 +251,7 @@ func checkHash(h uint32) {
 	pval := &val
 	valptr := unsafe.Pointer(pval)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.HashHead)+types.INT32_SZ*uintptr(p),
+		unsafe.Offsetof(Shm.Raw.HashHead)+types.INT32_SZ*uintptr(p),
 		types.INT32_SZ,
 		valptr,
 	)
@@ -263,8 +263,8 @@ func checkHash(h uint32) {
 	isFirst := true
 
 	var offset uintptr = 0
-	offsetHashHead := unsafe.Offsetof(Shm.HashHead)
-	offsetNextInHash := unsafe.Offsetof(Shm.NextInHash)
+	offsetHashHead := unsafe.Offsetof(Shm.Raw.HashHead)
+	offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 
 	userID := [ptttype.IDLEN + 1]byte{}
 	deep := 0
@@ -288,7 +288,7 @@ func checkHash(h uint32) {
 
 		// get user-id: line: 75
 		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Userid)+ptttype.USER_ID_SZ*uintptr(val),
+			unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(val),
 			ptttype.USER_ID_SZ,
 			unsafe.Pointer(&userID),
 		)

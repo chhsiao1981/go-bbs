@@ -488,3 +488,7 @@ var (
 
 	SAFE_ARTICLE_DELETE_NUSER = 2
 )
+
+var (
+	IS_NEW_SHM = true
+)

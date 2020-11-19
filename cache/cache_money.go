@@ -13,7 +13,7 @@ import (
 //XXX uid-in-cache = uid - 1
 func SetUMoney(uid int32, money int32) (int32, error) {
 	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Money)+types.INT32_SZ*uintptr(uid-1),
+		unsafe.Offsetof(Shm.Raw.Money)+types.INT32_SZ*uintptr(uid-1),
 		types.INT32_SZ,
 		unsafe.Pointer(&money),
 	)
@@ -46,7 +46,7 @@ func DeUMoney(uid int32, money int32) (int32, error) {
 
 func moneyOf(uid int32) (money int32) {
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Money)+types.INT32_SZ*uintptr(uid-1),
+		unsafe.Offsetof(Shm.Raw.Money)+types.INT32_SZ*uintptr(uid-1),
 		types.INT32_SZ,
 		unsafe.Pointer(&money),
 	)

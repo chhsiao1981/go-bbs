@@ -12,16 +12,14 @@ import (
 	jww "github.com/spf13/jwalterweatherman"
 )
 
-var (
-	testOrigBBSHOME = ""
-)
+var ()
 
 func setupTest() {
 	jww.SetLogOutput(os.Stderr)
 	jww.SetLogThreshold(jww.LevelDebug)
 	jww.SetStdoutThreshold(jww.LevelDebug)
 
-	ptttype.InitConfig("./testcase/test.ini")
+	_ = InitConfig("./testcase/test.ini")
 
 	gin.SetMode(gin.TestMode)
 
@@ -29,11 +27,11 @@ func setupTest() {
 	cache.IsTest = true
 	_ = cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, true)
 
-	cache.LoadUHash()
-	cache.AttachSHM()
+	_ = cache.LoadUHash()
+	_ = cache.AttachSHM()
 }
 
 func teardownTest() {
-	cache.CloseSHM()
+	_ = cache.CloseSHM()
 	cache.IsTest = false
 }

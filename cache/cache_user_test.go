@@ -148,15 +148,15 @@ func TestRemoveFromUHash(t *testing.T) {
 	nextInHash := &[ptttype.MAX_USERS]int32{}
 
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.HashHead),
-		unsafe.Sizeof(Shm.HashHead),
+		unsafe.Offsetof(Shm.Raw.HashHead),
+		unsafe.Sizeof(Shm.Raw.HashHead),
 		unsafe.Pointer(hashHead),
 	)
 	assert.Equal(t, int32(0), hashHead[35])
 
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.NextInHash),
-		unsafe.Sizeof(Shm.NextInHash),
+		unsafe.Offsetof(Shm.Raw.NextInHash),
+		unsafe.Sizeof(Shm.Raw.NextInHash),
 		unsafe.Pointer(nextInHash),
 	)
 	for i := 0; i < 4; i++ {
@@ -218,14 +218,14 @@ func TestRemoveFromUHash(t *testing.T) {
 			}
 
 			Shm.ReadAt(
-				unsafe.Offsetof(Shm.HashHead),
-				unsafe.Sizeof(Shm.HashHead),
+				unsafe.Offsetof(Shm.Raw.HashHead),
+				unsafe.Sizeof(Shm.Raw.HashHead),
 				unsafe.Pointer(hashHead),
 			)
 
 			Shm.ReadAt(
-				unsafe.Offsetof(Shm.NextInHash),
-				unsafe.Sizeof(Shm.NextInHash),
+				unsafe.Offsetof(Shm.Raw.NextInHash),
+				unsafe.Sizeof(Shm.Raw.NextInHash),
 				unsafe.Pointer(nextInHash),
 			)
 
@@ -380,8 +380,8 @@ func TestSetUserID(t *testing.T) {
 
 			nextInHash := &[ptttype.MAX_USERS]int32{}
 			Shm.ReadAt(
-				unsafe.Offsetof(Shm.NextInHash),
-				unsafe.Sizeof(Shm.NextInHash),
+				unsafe.Offsetof(Shm.Raw.NextInHash),
+				unsafe.Sizeof(Shm.Raw.NextInHash),
 				unsafe.Pointer(nextInHash),
 			)
 			assert.Equalf(t, nextInHash, tt.wantNextInHash, "SetUserID() nextInHash: %v want: %v", nextInHash, tt.wantNextInHash)
