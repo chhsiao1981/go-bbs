@@ -487,7 +487,9 @@ var (
 	STR_SAFEDEL_TITLE = "(本文已被刪除)"
 
 	SAFE_ARTICLE_DELETE_NUSER = 2
+)
 
+var (
 	//////////
 	// proto.h
 	//////////

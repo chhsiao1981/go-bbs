@@ -12,7 +12,7 @@ func InitConfig() error {
 }
 
 func setStringConfig(idx string, orig string) string {
-	idx = "http-server." + strings.ToLower(idx)
+	idx = "go-bbs." + strings.ToLower(idx)
 	if !viper.IsSet(idx) {
 		return orig
 	}
