@@ -62,7 +62,7 @@ type SHMRaw struct {
 	Gap14         [types.INT32_SZ]byte
 	NBottom       [ptttype.MAX_BOARD]uint8 /* number of bottom */
 	Gap15         [types.INT32_SZ]byte
-	Hbfl          [ptttype.MAX_BOARD][ptttype.MAX_FRIEND + 1]int /* hidden board friend list, 0: load time, 1-MAX_FRIEND: uid */
+	Hbfl          [ptttype.MAX_BOARD][ptttype.MAX_FRIEND + 1]int32 /* hidden board friend list, 0: load time, 1-MAX_FRIEND: uid */
 	Gap16         [types.INT32_SZ]byte
 	LastPostTime  [ptttype.MAX_BOARD]types.Time4
 	Gap17         [types.INT32_SZ]byte
@@ -108,6 +108,8 @@ type SHMRaw struct {
 	FBusyState int32
 }
 
+const DUMMY_SHMGV2 = 512 - 6
+
 type shmGV2 struct {
 	DyMaxMctive  int32       /* 動態設定最大人數上限     */
 	TooManyUsers int32       /* 超過人數上限不給進的個數 */
@@ -115,6 +117,7 @@ type shmGV2 struct {
 	Now          types.Time4 // __attribute__ ((deprecated));
 	NWelcomes    int32
 	Shutdown     int32 /* shutdown flag */
+	Dummy        [DUMMY_SHMGV2]int32
 }
 
 const SHM_RAW_SZ = unsafe.Sizeof(SHMRaw{})

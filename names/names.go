@@ -60,6 +60,4 @@ func isnumber(c byte) bool {
 
 func isalnum(c byte) bool {
 	return isalpha(c) || isnumber(c)
-	return (c >= 'a' && c <= 'z') ||
-		(c >= 'A' && c <= 'Z')
 }

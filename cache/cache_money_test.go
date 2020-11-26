@@ -25,34 +25,34 @@ func TestSetUMoney(t *testing.T) {
 	SetUserID(1, userID1)
 
 	money := MoneyOf(1)
-	log.Infof("TestSetUMoney: moneyOf(1): money: %v", money)
+	log.Infof("TestSetUMoney: MoneyOf(1): money: %v", money)
 
 	type args struct {
 		uid   int32
 		money int32
 	}
 	tests := []struct {
-		name     string
-		args     args
-		expected int32
-		wantErr  bool
+		name    string
+		args    args
+		want    int32
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{1, 100},
-			expected: 100,
+			args: args{1, 100},
+			want: 100,
 		},
 		{
-			args:     args{1, 10000},
-			expected: 10000,
+			args: args{1, 10000},
+			want: 10000,
 		},
 		{
-			args:     args{1, 0},
-			expected: 0,
+			args: args{1, 0},
+			want: 0,
 		},
 		{
-			args:     args{1, money},
-			expected: money,
+			args: args{1, money},
+			want: money,
 		},
 	}
 	for _, tt := range tests {
@@ -62,8 +62,8 @@ func TestSetUMoney(t *testing.T) {
 				t.Errorf("SetUMoney() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.expected {
-				t.Errorf("SetUMoney() = %v, expected %v", got, tt.expected)
+			if got != tt.want {
+				t.Errorf("SetUMoney() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -83,7 +83,7 @@ func TestDeUMoney(t *testing.T) {
 	_ = LoadUHash()
 
 	money := MoneyOf(1)
-	log.Infof("TestDeUMoney: moneyOf(1): money: %v", money)
+	log.Infof("TestDeUMoney: MoneyOf(1): money: %v", money)
 
 	defer SetUMoney(1, 0)
 
@@ -92,39 +92,39 @@ func TestDeUMoney(t *testing.T) {
 		money int32
 	}
 	tests := []struct {
-		name     string
-		args     args
-		expected int32
-		wantErr  bool
+		name    string
+		args    args
+		want    int32
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 		{
-			args:     args{1, 100},
-			expected: 100,
+			args: args{1, 100},
+			want: 100,
 		},
 		{
-			args:     args{1, -50},
-			expected: 50,
+			args: args{1, -50},
+			want: 50,
 		},
 		{
-			args:     args{1, -200},
-			expected: 0,
+			args: args{1, -200},
+			want: 0,
 		},
 		{
-			args:     args{1, 100},
-			expected: 100,
+			args: args{1, 100},
+			want: 100,
 		},
 		{
-			args:     args{1, 300},
-			expected: 400,
+			args: args{1, 300},
+			want: 400,
 		},
 		{
-			args:     args{1, -150},
-			expected: 250,
+			args: args{1, -150},
+			want: 250,
 		},
 		{
-			args:     args{1, -250},
-			expected: 0,
+			args: args{1, -250},
+			want: 0,
 		},
 	}
 	for _, tt := range tests {
@@ -134,8 +134,8 @@ func TestDeUMoney(t *testing.T) {
 				t.Errorf("DeUMoney() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.expected {
-				t.Errorf("DeUMoney() = %v, expected %v", got, tt.expected)
+			if got != tt.want {
+				t.Errorf("DeUMoney() = %v, want %v", got, tt.want)
 			}
 		})
 	}

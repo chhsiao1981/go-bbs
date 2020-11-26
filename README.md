@@ -7,6 +7,30 @@
 
 未來可能會支援 FormosaBBS
 
+## Run Docker (login)
+
+1. docker run --name go-bbs -p 3456:3456 -p 8888:8888 -p 48763:48763 chhsiao1981/go-bbs:dev
+2. (another terminal) telnet localhost 8888
+3. create SYSOP and some other users.
+4. curl -X POST -d '{"UserID": "SYSOP", "Passwd": "[passwd]", "IP": "localhost"}' 'http://localhost:3456/login'
+
+## config
+
+因為有些 variable 必須是 const (ex: IDLEN, 用在 [IDLEN+1]byte)
+所以 config variables 被分成以 .ini 和 以 00-config-\[build\].go 的方式表示.
+目前有 types, ptttype, go-bbs 這些 modules 會需要設定 config.
+
+### .ini
+
+有一個唯一的 config.ini. 用 \[module\] 隔開.
+每個 module 裡. 有 00-config.go 用來表示有哪些 config-variables.
+然後有 config.go 用來表示如何設定 config-variables.
+和 config_util.go (InitConfig 和 postConfig) 用來表示設定 config 的基本 functions.
+
+### 00-config-\[build\].go
+
+這裡使用 go build -tags \[build\] 來達成在 compile-time 可以決定 config-variables.
+目前只有 ptttype/00-config-default.go 會需要有如此的處理.
 
 ## 目前支援的檔案
 
@@ -69,7 +93,7 @@ go test
    41 外籍使用者認證通知                   etc/foreign_welcome
    42 外籍使用者過期警告通知               etc/foreign_expired_warn
   ```
-  
+
   建立新看板的設定值
   ```
   【 建立新板 】

@@ -31,7 +31,7 @@ func initGin() (*gin.Engine, error) {
 //
 //Return
 //	error: err
-func initConfig(filename string) error {
+func initAllConfig(filename string) error {
 
 	filenameList := strings.Split(filename, ".")
 	if len(filenameList) == 1 {
@@ -50,6 +50,7 @@ func initConfig(filename string) error {
 
 	log.Infof("viper keys: %v", viper.AllKeys())
 
+	InitConfig()
 	types.InitConfig()
 	ptttype.InitConfig()
 
@@ -65,18 +66,20 @@ func initMain() error {
 	flag.StringVar(&filename, "ini", "config.ini", "ini filename")
 	flag.Parse()
 
-	initConfig(filename)
+	initAllConfig(filename)
 
-	err := cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, true)
+	err := cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, ptttype.IS_NEW_SHM)
 	if err != nil {
 		log.Errorf("unable to init SHM: e: %v", err)
 		return err
 	}
 
-	err = cache.LoadUHash()
-	if err != nil {
-		log.Errorf("unable to load UHash: e: %v", err)
-		return err
+	if ptttype.IS_NEW_SHM {
+		err = cache.LoadUHash()
+		if err != nil {
+			log.Errorf("unable to load UHash: e: %v", err)
+			return err
+		}
 	}
 	err = cache.AttachCheckSHM()
 	if err != nil {

@@ -16,7 +16,7 @@ func AddToUHash(uidInCache int32, userID *[ptttype.IDLEN + 1]byte) error {
 
 	// line: 166
 	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
+		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
 		ptttype.USER_ID_SZ,
 		unsafe.Pointer(userID),
 	)
@@ -26,7 +26,7 @@ func AddToUHash(uidInCache int32, userID *[ptttype.IDLEN + 1]byte) error {
 	val := int32(0)
 	pval := &val
 	valptr := unsafe.Pointer(pval)
-	offset := unsafe.Offsetof(Shm.HashHead)
+	offset := unsafe.Offsetof(Shm.Raw.HashHead)
 
 	// line: 168
 	Shm.ReadAt(
@@ -36,7 +36,7 @@ func AddToUHash(uidInCache int32, userID *[ptttype.IDLEN + 1]byte) error {
 	)
 
 	times := 0
-	offsetNextInHash := unsafe.Offsetof(Shm.NextInHash)
+	offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 	for ; times < ptttype.MAX_USERS && val != -1; times++ {
 		offset = offsetNextInHash
 		p = uint32(val)
@@ -62,7 +62,7 @@ func AddToUHash(uidInCache int32, userID *[ptttype.IDLEN + 1]byte) error {
 	// set next as -1
 	*pval = -1
 	Shm.WriteAt(
-		unsafe.Offsetof(Shm.NextInHash)+types.INT32_SZ*uintptr(uidInCache),
+		unsafe.Offsetof(Shm.Raw.NextInHash)+types.INT32_SZ*uintptr(uidInCache),
 		types.INT32_SZ,
 		valptr,
 	)
@@ -75,7 +75,7 @@ func RemoveFromUHash(uidInCache int32) error {
 	userID := &[ptttype.IDLEN + 1]byte{}
 
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
+		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
 		ptttype.USER_ID_SZ,
 		unsafe.Pointer(userID),
 	)
@@ -87,7 +87,7 @@ func RemoveFromUHash(uidInCache int32) error {
 	val := int32(0)
 	pval := &val
 	valptr := unsafe.Pointer(pval)
-	offset := unsafe.Offsetof(Shm.HashHead)
+	offset := unsafe.Offsetof(Shm.Raw.HashHead)
 	Shm.ReadAt(
 		offset+types.INT32_SZ*uintptr(p),
 		types.INT32_SZ,
@@ -98,7 +98,7 @@ func RemoveFromUHash(uidInCache int32) error {
 	times := 0
 	for ; times < ptttype.MAX_USERS && val != -1 && val != uidInCache; times++ {
 		p = uint32(val)
-		offset = unsafe.Offsetof(Shm.NextInHash)
+		offset = unsafe.Offsetof(Shm.Raw.NextInHash)
 		Shm.ReadAt(
 			offset+types.INT32_SZ*uintptr(p),
 			types.INT32_SZ,
@@ -113,7 +113,7 @@ func RemoveFromUHash(uidInCache int32) error {
 	if val == uidInCache {
 		nextNum := int32(0)
 		Shm.ReadAt(
-			unsafe.Offsetof(Shm.NextInHash)+types.INT32_SZ*uintptr(uidInCache),
+			unsafe.Offsetof(Shm.Raw.NextInHash)+types.INT32_SZ*uintptr(uidInCache),
 			types.INT32_SZ,
 			unsafe.Pointer(&nextNum),
 		)
@@ -141,10 +141,10 @@ func SearchUser(userID string, isReturn bool) (uid int32, rightID string, err er
 	if len(userID) == 0 {
 		return 0, "", nil
 	}
-	return doSearchUser(userID, isReturn)
+	return DoSearchUser(userID, isReturn)
 }
 
-//doSearchUser
+//DoSearchUser
 //Params:
 //	userID
 //	isReturn
@@ -153,7 +153,7 @@ func SearchUser(userID string, isReturn bool) (uid int32, rightID string, err er
 //	int32: uid
 //	string: the userID in shm.
 //	error: err.
-func doSearchUser(userID string, isReturn bool) (uid int32, rightID string, err error) {
+func DoSearchUser(userID string, isReturn bool) (uid int32, rightID string, err error) {
 	userIDBytes := &[ptttype.IDLEN + 1]byte{}
 	copy(userIDBytes[:], []byte(userID))
 
@@ -201,7 +201,7 @@ func DoSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 
 	//p = SHM->hash_head[h]  //line: 219
 	p := int32(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.HashHead)+types.INT32_SZ*uintptr(h),
+		unsafe.Offsetof(Shm.Raw.HashHead)+types.INT32_SZ*uintptr(h),
 		types.INT32_SZ,
 		unsafe.Pointer(&p),
 	)
@@ -212,7 +212,7 @@ func DoSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 
 	for times := 0; times < ptttype.MAX_USERS && p != -1 && p < ptttype.MAX_USERS; times++ {
 		//if (strcasecmp(SHM->userid[p], userid) == 0)  //line: 222
 		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Userid)+ptttype.USER_ID_SZ*uintptr(p),
+			unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(p),
 			ptttype.USER_ID_SZ,
 			unsafe.Pointer(&shmUserID),
 		)
@@ -224,7 +224,7 @@ func DoSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 
 			return p + 1, nil
 		}
 		Shm.ReadAt(
-			unsafe.Offsetof(Shm.NextInHash)+types.INT32_SZ*uintptr(p),
+			unsafe.Offsetof(Shm.Raw.NextInHash)+types.INT32_SZ*uintptr(p),
 			types.INT32_SZ,
 			unsafe.Pointer(&p),
 		)
@@ -245,7 +245,7 @@ func GetUserID(uid int32) (*[ptttype.IDLEN + 1]byte, error) {
 	userID := &[ptttype.IDLEN + 1]byte{}
 	log.Infof("GetUserID: to ReadAt: uid: %v", uid)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Userid)+ptttype.USER_ID_SZ*uintptr(uid),
+		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uid),
 		ptttype.USER_ID_SZ,
 		unsafe.Pointer(userID),
 	)
@@ -279,7 +279,7 @@ func SearchUListUserID(userID *[ptttype.IDLEN + 1]byte) *ptttype.UserInfoRaw {
 
 	end := int32(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.UTMPNumber),
+		unsafe.Offsetof(Shm.Raw.UTMPNumber),
 		types.INT32_SZ,
 		unsafe.Pointer(&end),
 	)
@@ -291,7 +291,7 @@ func SearchUListUserID(userID *[ptttype.IDLEN + 1]byte) *ptttype.UserInfoRaw {
 	// current-sorted
 	currentSorted := int32(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.CurrSorted),
+		unsafe.Offsetof(Shm.Raw.CurrSorted),
 		types.INT32_SZ,
 		unsafe.Pointer(&currentSorted),
 	)
@@ -301,27 +301,27 @@ func SearchUListUserID(userID *[ptttype.IDLEN + 1]byte) *ptttype.UserInfoRaw {
 	pulist_i := &ulist_i
 	ulist_iptr := unsafe.Pointer(pulist_i)
 	isDiff := 0
-	const offsetUInfoUserID = unsafe.Offsetof(Shm.UInfo[0].UserID)
-	const sizeOfSorted = unsafe.Sizeof(Shm.Sorted[0])
-	const sizeOfSorted2 = unsafe.Sizeof(Shm.Sorted[0][0])
+	const offsetUInfoUserID = unsafe.Offsetof(Shm.Raw.UInfo[0].UserID)
+	const sizeOfSorted = unsafe.Sizeof(Shm.Raw.Sorted[0])
+	const sizeOfSorted2 = unsafe.Sizeof(Shm.Raw.Sorted[0][0])
 	uInfo := &ptttype.UserInfoRaw{}
 	for i := (start + end) / 2; ; i = (start + end) / 2 {
 		// get ulist_i
 		Shm.ReadAt(
-			unsafe.Offsetof(Shm.Sorted)+sizeOfSorted*uintptr(currentSorted)+sizeOfSorted2*0+types.INT32_SZ*uintptr(i),
+			unsafe.Offsetof(Shm.Raw.Sorted)+sizeOfSorted*uintptr(currentSorted)+sizeOfSorted2*0+types.INT32_SZ*uintptr(i),
 			types.INT32_SZ,
 			ulist_iptr,
 		)
 
 		// do cmp.
 		isDiff = Shm.Cmp(
-			unsafe.Offsetof(Shm.UInfo)+ptttype.USER_INFO_RAW_SZ*uintptr(ulist_i)+offsetUInfoUserID,
+			unsafe.Offsetof(Shm.Raw.UInfo)+ptttype.USER_INFO_RAW_SZ*uintptr(ulist_i)+offsetUInfoUserID,
 			ptttype.USER_ID_SZ,
 			unsafe.Pointer(userID),
 		)
 		if isDiff == 0 {
 			Shm.ReadAt(
-				unsafe.Offsetof(Shm.UInfo)+ptttype.USER_INFO_RAW_SZ*uintptr(ulist_i),
+				unsafe.Offsetof(Shm.Raw.UInfo)+ptttype.USER_INFO_RAW_SZ*uintptr(ulist_i),
 				ptttype.USER_INFO_RAW_SZ,
 				unsafe.Pointer(uInfo),
 			)

@@ -487,7 +487,9 @@ var (
 	STR_SAFEDEL_TITLE = "(本文已被刪除)"
 
 	SAFE_ARTICLE_DELETE_NUSER = 2
+)
 
+var (
 	//////////
 	// proto.h
 	//////////
@@ -495,4 +497,8 @@ var (
 	USE_EMAILDB   = false
 	USE_REGCHECKD = false
 	USE_VERIFYDB  = false
+)
+
+var (
+	IS_NEW_SHM = true
 )

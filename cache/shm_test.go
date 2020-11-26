@@ -36,7 +36,7 @@ func TestNewSHM(t *testing.T) {
 			},
 			isClose:     false,
 			wantVersion: SHM_VERSION,
-			wantSize:    int32((int(SHM_RAW_SZ)/(ptttype.SHMALIGNEDSIZE) + 1) * ptttype.SHMALIGNEDSIZE),
+			wantSize:    int32(SHM_RAW_SZ),
 		},
 		{
 			args: args{
@@ -46,7 +46,7 @@ func TestNewSHM(t *testing.T) {
 			},
 			isClose:     true,
 			wantVersion: SHM_VERSION,
-			wantSize:    int32((int(SHM_RAW_SZ)/(ptttype.SHMALIGNEDSIZE) + 1) * ptttype.SHMALIGNEDSIZE),
+			wantSize:    int32(SHM_RAW_SZ),
 		},
 	}
 	for _, tt := range tests {
@@ -57,12 +57,12 @@ func TestNewSHM(t *testing.T) {
 				return
 			}
 
-			if !reflect.DeepEqual(Shm.Version, tt.wantVersion) {
-				t.Errorf("NewSHM() version: %v expected: %v", Shm.Version, tt.wantVersion)
+			if !reflect.DeepEqual(Shm.Raw.Version, tt.wantVersion) {
+				t.Errorf("NewSHM() version: %v expected: %v", Shm.Raw.Version, tt.wantVersion)
 			}
 
-			if !reflect.DeepEqual(Shm.Size, tt.wantSize) {
-				t.Errorf("NewSHM() size: %v expected :%v", Shm.Size, tt.wantSize)
+			if !reflect.DeepEqual(Shm.Raw.Size, tt.wantSize) {
+				t.Errorf("NewSHM() size: %v expected :%v", Shm.Raw.Size, tt.wantSize)
 			}
 
 			if tt.isClose {
@@ -89,8 +89,8 @@ func TestSHM_ReadAt(t *testing.T) {
 	in1 := byte(1)
 
 	Shm.WriteAt(
-		unsafe.Offsetof(Shm.UTMPNeedSort),
-		unsafe.Sizeof(Shm.UTMPNeedSort),
+		unsafe.Offsetof(Shm.Raw.UTMPNeedSort),
+		unsafe.Sizeof(Shm.Raw.UTMPNeedSort),
 		unsafe.Pointer(&in1),
 	)
 
@@ -106,8 +106,8 @@ func TestSHM_ReadAt(t *testing.T) {
 	copy(in2[4][:], []byte("test4"))
 
 	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Userid),
-		unsafe.Sizeof(Shm.Userid),
+		unsafe.Offsetof(Shm.Raw.Userid),
+		unsafe.Sizeof(Shm.Raw.Userid),
 		unsafe.Pointer(&in2),
 	)
 
@@ -120,8 +120,8 @@ func TestSHM_ReadAt(t *testing.T) {
 	copy(in3.UserID[:], []byte("test33"))
 
 	Shm.WriteAt(
-		unsafe.Offsetof(Shm.LoginMsg)+unsafe.Offsetof(Shm.LoginMsg.UserID),
-		unsafe.Sizeof(Shm.LoginMsg.UserID),
+		unsafe.Offsetof(Shm.Raw.LoginMsg)+unsafe.Offsetof(Shm.Raw.LoginMsg.UserID),
+		unsafe.Sizeof(Shm.Raw.LoginMsg.UserID),
 		unsafe.Pointer(&in3.UserID),
 	)
 
@@ -153,8 +153,8 @@ func TestSHM_ReadAt(t *testing.T) {
 		{
 			name: "UTMPNeedSort (byte)",
 			args: args{
-				unsafe.Offsetof(Shm.UTMPNeedSort),
-				unsafe.Sizeof(Shm.UTMPNeedSort),
+				unsafe.Offsetof(Shm.Raw.UTMPNeedSort),
+				unsafe.Sizeof(Shm.Raw.UTMPNeedSort),
 				unsafe.Pointer(&out1),
 			},
 			out:      &out1,
@@ -163,8 +163,8 @@ func TestSHM_ReadAt(t *testing.T) {
 		{
 			name: "Userid[3] ([IDLEN+1]byte)",
 			args: args{
-				unsafe.Offsetof(Shm.Userid) + (ptttype.IDLEN+1)*3,
-				unsafe.Sizeof(Shm.Userid[3]),
+				unsafe.Offsetof(Shm.Raw.Userid) + (ptttype.IDLEN+1)*3,
+				unsafe.Sizeof(Shm.Raw.Userid[3]),
 				unsafe.Pointer(&out2),
 			},
 			out:      &out2,
@@ -173,8 +173,8 @@ func TestSHM_ReadAt(t *testing.T) {
 		{
 			name: "LoginMsg.UserID ([IDLEN+1]byte)",
 			args: args{
-				unsafe.Offsetof(Shm.LoginMsg) + unsafe.Offsetof(Shm.LoginMsg.UserID),
-				unsafe.Sizeof(Shm.LoginMsg.UserID),
+				unsafe.Offsetof(Shm.Raw.LoginMsg) + unsafe.Offsetof(Shm.Raw.LoginMsg.UserID),
+				unsafe.Sizeof(Shm.Raw.LoginMsg.UserID),
 				unsafe.Pointer(&out3.UserID),
 			},
 			out:      &out3.UserID,
@@ -268,12 +268,12 @@ func TestSHM_WriteAt(t *testing.T) {
 		// TODO: Add test caseShm.
 		{
 			args: args{
-				unsafe.Offsetof(Shm.UTMPNeedSort),
-				unsafe.Sizeof(Shm.UTMPNeedSort),
+				unsafe.Offsetof(Shm.Raw.UTMPNeedSort),
+				unsafe.Sizeof(Shm.Raw.UTMPNeedSort),
 				unsafe.Pointer(&in1),
 			},
-			readOffset: unsafe.Offsetof(Shm.UTMPNeedSort),
-			readSize:   unsafe.Sizeof(Shm.UTMPNeedSort),
+			readOffset: unsafe.Offsetof(Shm.Raw.UTMPNeedSort),
+			readSize:   unsafe.Sizeof(Shm.Raw.UTMPNeedSort),
 			read:       out1ptr,
 			out:        &out1,
 			expected:   &want1,
@@ -281,12 +281,12 @@ func TestSHM_WriteAt(t *testing.T) {
 		{
 			name: "with 2d-list [][]interface{}, the unit size is unsafe.Sizeof []interface{}",
 			args: args{
-				unsafe.Offsetof(Shm.Userid) + unsafe.Sizeof(Shm.Userid[0])*3,
-				unsafe.Sizeof(Shm.Userid[0]),
+				unsafe.Offsetof(Shm.Raw.Userid) + unsafe.Sizeof(Shm.Raw.Userid[0])*3,
+				unsafe.Sizeof(Shm.Raw.Userid[0]),
 				unsafe.Pointer(&in2[3]),
 			},
-			readOffset: unsafe.Offsetof(Shm.Userid) + unsafe.Sizeof(Shm.Userid[0])*3,
-			readSize:   unsafe.Sizeof(Shm.Userid[0]),
+			readOffset: unsafe.Offsetof(Shm.Raw.Userid) + unsafe.Sizeof(Shm.Raw.Userid[0])*3,
+			readSize:   unsafe.Sizeof(Shm.Raw.Userid[0]),
 			read:       out2ptr,
 			out:        &out2,
 			expected:   &want2,
@@ -294,12 +294,12 @@ func TestSHM_WriteAt(t *testing.T) {
 		{
 			name: "with nested-data",
 			args: args{
-				unsafe.Offsetof(Shm.LoginMsg) + unsafe.Offsetof(Shm.LoginMsg.UserID),
-				unsafe.Sizeof(Shm.LoginMsg.UserID),
+				unsafe.Offsetof(Shm.Raw.LoginMsg) + unsafe.Offsetof(Shm.Raw.LoginMsg.UserID),
+				unsafe.Sizeof(Shm.Raw.LoginMsg.UserID),
 				unsafe.Pointer(&in3.UserID),
 			},
-			readOffset: unsafe.Offsetof(Shm.LoginMsg) + unsafe.Offsetof(Shm.LoginMsg.UserID),
-			readSize:   unsafe.Sizeof(Shm.LoginMsg.UserID),
+			readOffset: unsafe.Offsetof(Shm.Raw.LoginMsg) + unsafe.Offsetof(Shm.Raw.LoginMsg.UserID),
+			readSize:   unsafe.Sizeof(Shm.Raw.LoginMsg.UserID),
 			read:       out3ptr,
 			out:        &out3,
 			expected:   &want3,
@@ -307,12 +307,12 @@ func TestSHM_WriteAt(t *testing.T) {
 		{
 			name: "with list, remember to have unit-size",
 			args: args{
-				unsafe.Offsetof(Shm.Money) + types.INT32_SZ*4,
+				unsafe.Offsetof(Shm.Raw.Money) + types.INT32_SZ*4,
 				types.INT32_SZ,
 				unsafe.Pointer(&in4),
 			},
-			readOffset: unsafe.Offsetof(Shm.Money),
-			readSize:   unsafe.Sizeof(Shm.Money),
+			readOffset: unsafe.Offsetof(Shm.Raw.Money),
+			readSize:   unsafe.Sizeof(Shm.Raw.Money),
 			read:       out4ptr,
 			out:        &out4,
 			expected:   &want4,

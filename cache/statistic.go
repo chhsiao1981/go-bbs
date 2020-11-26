@@ -13,7 +13,7 @@ func StatInc(stats uintptr) error {
 		return err
 	}
 
-	Shm.IncUint32(unsafe.Offsetof(Shm.Statistic) + types.UINT32_SZ*stats)
+	Shm.IncUint32(unsafe.Offsetof(Shm.Raw.Statistic) + types.UINT32_SZ*stats)
 
 	return nil
 }
@@ -21,8 +21,8 @@ func StatInc(stats uintptr) error {
 func CleanStat() {
 	in := [ptttype.STAT_MAX]uint32{}
 	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Statistic),
-		unsafe.Sizeof(Shm.Statistic),
+		unsafe.Offsetof(Shm.Raw.Statistic),
+		unsafe.Sizeof(Shm.Raw.Statistic),
 		unsafe.Pointer(&in),
 	)
 }
@@ -35,7 +35,7 @@ func ReadStat(stats uintptr) (uint32, error) {
 
 	out := uint32(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Statistic)+types.UINT32_SZ*stats,
+		unsafe.Offsetof(Shm.Raw.Statistic)+types.UINT32_SZ*stats,
 		types.UINT32_SZ,
 		unsafe.Pointer(&out),
 	)
@@ -48,7 +48,7 @@ func validateStats(stats uintptr) error {
 		return ErrShmNotInit
 	}
 
-	if Shm.Version != SHM_VERSION {
+	if Shm.Raw.Version != SHM_VERSION {
 		return ErrShmVersion
 	}
 	if stats < 0 || stats >= ptttype.STAT_MAX {

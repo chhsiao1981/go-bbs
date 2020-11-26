@@ -1,5 +1,5 @@
 package main
 
-var (
-	HTTP_HOST = "localhost:3456"
-)
+func config() {
+	HTTP_HOST = setStringConfig("HTTP_HOST", HTTP_HOST)
+}

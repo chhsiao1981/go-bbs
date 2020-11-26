@@ -90,6 +90,7 @@ type UserInfoRaw struct {
 	WithMe uint32
 	BrcID  uint32
 
+	// XXX affected by NOKILLWATERBALL
 	WBTime types.Time4
 }
 
