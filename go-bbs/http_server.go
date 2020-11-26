@@ -19,7 +19,10 @@ func initGin() (*gin.Engine, error) {
 
 	router.POST("/login", NewApi(api.Login, &api.LoginParams{}).Json)
 	router.POST("/register", NewApi(api.Register, &api.RegisterParams{}).Json)
-	router.POST("/ping", NewApi(api.Ping, nil).LoginRequiredJson)
+	router.POST("/ping", NewLoginRequiredApi(api.Ping, nil).LoginRequiredJson)
+	router.POST("/getFav", NewLoginRequiredApi(api.GetFav, &api.GetFavParams{}).LoginRequiredJson)
+	router.POST("/saveFav", NewLoginRequiredApi(api.SaveFav, &api.SaveFavParams{}).LoginRequiredJson)
+	router.POST("/getFavMTime", NewLoginRequiredApi(api.GetFavMTime, &api.GetFavMTimeParams{}).LoginRequiredJson)
 
 	return router, nil
 }

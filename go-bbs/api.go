@@ -11,33 +11,45 @@ type Api struct {
 	Params interface{}
 }
 
+type LoginRequiredApi struct {
+	Func   api.LoginRequiredApiFunc
+	Params interface{}
+}
+
 func NewApi(f api.ApiFunc, params interface{}) *Api {
 	return &Api{Func: f, Params: params}
+}
+
+func NewLoginRequiredApi(f api.LoginRequiredApiFunc, params interface{}) *LoginRequiredApi {
+	return &LoginRequiredApi{Func: f, Params: params}
 }
 
 func (api *Api) Json(c *gin.Context) {
 	err := c.ShouldBindJSON(api.Params)
 	if err != nil {
 		processResult(c, nil, err)
+		return
 	}
 
 	result, err := api.Func(api.Params)
 	processResult(c, result, err)
 }
 
-func (api *Api) LoginRequiredJson(c *gin.Context) {
+func (api *LoginRequiredApi) LoginRequiredJson(c *gin.Context) {
 	loginParams := &LoginRequiredParams{Data: api.Params}
 	err := c.ShouldBindJSON(loginParams)
 	if err != nil {
 		processResult(c, nil, err)
+		return
 	}
 
 	err = verifyJwt(loginParams.UserID, loginParams.Jwt)
 	if err != nil {
 		processResult(c, nil, err)
+		return
 	}
 
-	result, err := api.Func(loginParams.Data)
+	result, err := api.Func(loginParams.UserID, loginParams.Data)
 	processResult(c, result, err)
 }
 
