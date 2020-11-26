@@ -7,6 +7,13 @@
 
 未來可能會支援 FormosaBBS
 
+## Run Docker (login)
+
+1. docker run --name go-bbs -p 3456:3456 -p 8888:8888 -p 48763:48763 chhsiao1981/go-bbs:dockerfile
+2. (another terminal) telnet localhost 8888
+3. create SYSOP and some other users.
+4. curl -X POST -d '{"UserID": "SYSOP", "Passwd": "[passwd]", "IP": "localhost"}' 'http://localhost:3456/login'
+
 
 ## 目前支援的檔案
 
@@ -69,7 +76,7 @@ go test
    41 外籍使用者認證通知                   etc/foreign_welcome
    42 外籍使用者過期警告通知               etc/foreign_expired_warn
   ```
-  
+
   建立新看板的設定值
   ```
   【 建立新板 】

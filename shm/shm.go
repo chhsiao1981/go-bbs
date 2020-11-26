@@ -50,6 +50,7 @@ func CreateShm(key types.Key_t, size types.Size_t, isUseHugeTlb bool) (shmid int
 		shmid = shmget(key, size, flags)
 	}
 	if shmid < 0 {
+		log.Errorf("shm.CreateShm: unable to create shm: key: %v size: %v", key, size)
 		return shmid, nil, false, ErrInvalidShm
 	}
 
@@ -69,6 +70,7 @@ func OpenShm(key types.Key_t, size types.Size_t, is_usehugetlb bool) (shmid int,
 	shmid = shmget(key, size, flags)
 
 	if shmid < 0 {
+		log.Errorf("shm.OpenShm: unable to create shm: key: %v size: %v", key, size)
 		return shmid, nil, ErrInvalidShm
 	}
 

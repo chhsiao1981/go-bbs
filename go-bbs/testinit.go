@@ -31,12 +31,12 @@ func setupTest() {
 	cache.IsTest = true
 	_ = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
 
-	cache.LoadUHash()
-	cache.AttachSHM()
+	_ = cache.LoadUHash()
+	_ = cache.AttachSHM()
 }
 
 func teardownTest() {
-	cache.CloseSHM()
+	_ = cache.CloseSHM()
 	cache.IsTest = false
 	testMutex.Unlock()
 }

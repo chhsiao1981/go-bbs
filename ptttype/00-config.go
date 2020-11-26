@@ -496,3 +496,7 @@ var (
 	USE_REGCHECKD = false
 	USE_VERIFYDB  = false
 )
+
+var (
+	IS_NEW_SHM = true
+)

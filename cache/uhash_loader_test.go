@@ -71,8 +71,8 @@ func TestLoadUHash(t *testing.T) {
 			nextInHash := [ptttype.MAX_USERS]int32{}
 
 			Shm.ReadAt(
-				unsafe.Offsetof(Shm.HashHead),
-				unsafe.Sizeof(Shm.HashHead),
+				unsafe.Offsetof(Shm.Raw.HashHead),
+				unsafe.Sizeof(Shm.Raw.HashHead),
 				unsafe.Pointer(&hashHead),
 			)
 
@@ -83,8 +83,8 @@ func TestLoadUHash(t *testing.T) {
 			}
 
 			Shm.ReadAt(
-				unsafe.Offsetof(Shm.NextInHash),
-				unsafe.Sizeof(Shm.NextInHash),
+				unsafe.Offsetof(Shm.Raw.NextInHash),
+				unsafe.Sizeof(Shm.Raw.NextInHash),
 				unsafe.Pointer(&nextInHash),
 			)
 

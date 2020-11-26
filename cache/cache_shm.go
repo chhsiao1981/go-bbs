@@ -33,7 +33,7 @@ func AttachCheckSHM() (err error) {
 
 	loaded := int32(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.Loaded),
+		unsafe.Offsetof(Shm.Raw.Loaded),
 		types.INT32_SZ,
 		unsafe.Pointer(&loaded),
 	)
@@ -45,14 +45,14 @@ func AttachCheckSHM() (err error) {
 	// commit: 6bdd36898bde207683a441cdffe2981e95de5b20
 	btouchTime := types.Time4(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.BTouchTime),
+		unsafe.Offsetof(Shm.Raw.BTouchTime),
 		types.TIME4_SZ,
 		unsafe.Pointer(&btouchTime),
 	)
 	if btouchTime == 0 {
 		btouchTime = types.Time4(1)
 		Shm.WriteAt(
-			unsafe.Offsetof(Shm.BTouchTime),
+			unsafe.Offsetof(Shm.Raw.BTouchTime),
 			types.TIME4_SZ,
 			unsafe.Pointer(&btouchTime),
 		)
@@ -63,14 +63,14 @@ func AttachCheckSHM() (err error) {
 	// line: 139
 	ptouchTime := types.Time4(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.PTouchTime),
+		unsafe.Offsetof(Shm.Raw.PTouchTime),
 		types.TIME4_SZ,
 		unsafe.Pointer(&ptouchTime),
 	)
 	if ptouchTime == 0 {
 		ptouchTime = 1
 		Shm.WriteAt(
-			unsafe.Offsetof(Shm.PTouchTime),
+			unsafe.Offsetof(Shm.Raw.PTouchTime),
 			types.TIME4_SZ,
 			unsafe.Pointer(&ptouchTime),
 		)
@@ -79,14 +79,14 @@ func AttachCheckSHM() (err error) {
 	// line: 142
 	ftouchTime := types.Time4(0)
 	Shm.ReadAt(
-		unsafe.Offsetof(Shm.PTouchTime),
+		unsafe.Offsetof(Shm.Raw.PTouchTime),
 		types.TIME4_SZ,
 		unsafe.Pointer(&ftouchTime),
 	)
 	if ftouchTime == 0 {
 		ftouchTime = 1
 		Shm.WriteAt(
-			unsafe.Offsetof(Shm.FTouchTime),
+			unsafe.Offsetof(Shm.Raw.FTouchTime),
 			types.TIME4_SZ,
 			unsafe.Pointer(&ftouchTime),
 		)
