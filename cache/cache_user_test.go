@@ -10,13 +10,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDoSearchUser(t *testing.T) {
+func Test_doSearchUser(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
 	err := NewSHM(TestShmKey, ptttype.USE_HUGETLB, true)
 	if err != nil {
-		log.Errorf("TestDoSearchUser: unable to NewSHM: e: %v", err)
+		log.Errorf("Test_doSearchUser: unable to NewSHM: e: %v", err)
 		return
 	}
 	defer CloseSHM()
@@ -48,16 +48,17 @@ func TestDoSearchUser(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Logf("doSearchUser: start: %v", tt.name)
 			got, got1, err := doSearchUser(tt.args.userID, tt.args.isReturn)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("DoSearchUser() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("doSearchUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.expected {
-				t.Errorf("DoSearchUser() got = %v, expected%v", got, tt.expected)
+				t.Errorf("doSearchUser() got = %v, expected%v", got, tt.expected)
 			}
 			if got1 != tt.want1 {
-				t.Errorf("DoSearchUser() got1 = %v, expected%v", got1, tt.want1)
+				t.Errorf("doSearchUser() got1 = %v, expected%v", got1, tt.want1)
 			}
 		})
 	}
@@ -116,7 +117,7 @@ func TestAddToUHash(t *testing.T) {
 			}
 
 			if !reflect.DeepEqual(userID, tt.args.userID) {
-				t.Errorf("AddToUHash: userID: %v want: %v", userID, tt.args.userID)
+				t.Errorf("AddToUHash: userID: %v expected: %v", userID, tt.args.userID)
 			}
 
 		})
@@ -267,10 +268,10 @@ func TestGetUserID(t *testing.T) {
 		uid int32
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    *[ptttype.IDLEN + 1]byte
-		wantErr bool
+		name     string
+		args     args
+		expected *[ptttype.IDLEN + 1]byte
+		wantErr  bool
 	}{
 		// TODO: Add test cases.
 		{
@@ -278,16 +279,16 @@ func TestGetUserID(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			args: args{1},
-			want: userID1,
+			args:     args{1},
+			expected: userID1,
 		},
 		{
-			args: args{2},
-			want: userID2,
+			args:     args{2},
+			expected: userID2,
 		},
 		{
-			args: args{3},
-			want: userIDEmpty,
+			args:     args{3},
+			expected: userIDEmpty,
 		},
 	}
 	for _, tt := range tests {
@@ -297,8 +298,8 @@ func TestGetUserID(t *testing.T) {
 				t.Errorf("GetUserID() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetUserID() = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("GetUserID() = %v, expected %v", got, tt.expected)
 			}
 		})
 	}
@@ -313,7 +314,11 @@ func TestSetUserID(t *testing.T) {
 		log.Errorf("TestGetUserID: unable to NewSHM: e: %v", err)
 		return
 	}
-	defer CloseSHM()
+	defer func() {
+		CloseSHM()
+		log.Infof("TestSetUserID: after CloseSHM")
+	}()
+	log.Infof("TestSetUserID: after NewSHM")
 
 	InitFillUHash(false)
 
@@ -375,7 +380,7 @@ func TestSetUserID(t *testing.T) {
 
 			userID, _ := GetUserID(tt.args.uid)
 			if !reflect.DeepEqual(userID, tt.args.userID) {
-				t.Errorf("SetUserID() userID: %v want: %v", userID, tt.args.userID)
+				t.Errorf("SetUserID() userID: %v expected: %v", userID, tt.args.userID)
 			}
 
 			nextInHash := &[ptttype.MAX_USERS]int32{}

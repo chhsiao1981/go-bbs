@@ -15,10 +15,10 @@ func TestLogin(t *testing.T) {
 		params interface{}
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    interface{}
-		wantErr bool
+		name     string
+		args     args
+		expected interface{}
+		wantErr  bool
 	}{
 		// TODO: Add test cases.
 		{
@@ -26,7 +26,7 @@ func TestLogin(t *testing.T) {
 				UserID: "SYSOP",
 				Passwd: "123123",
 			}},
-			want: &JwtClaim{UserID: "SYSOP"},
+			expected: &JwtClaim{UserID: "SYSOP"},
 		},
 	}
 
@@ -47,9 +47,9 @@ func TestLogin(t *testing.T) {
 			claims := &JwtClaim{}
 			token, _ := jwt.ParseSigned(gotResult.Jwt)
 			_ = token.UnsafeClaimsWithoutVerification(claims)
-			wantJwt, _ := tt.want.(*JwtClaim)
+			wantJwt, _ := tt.expected.(*JwtClaim)
 			if !reflect.DeepEqual(claims.UserID, wantJwt.UserID) {
-				t.Errorf("Login() = %v claims: %v want: %v", got, claims, tt.want)
+				t.Errorf("Login() = %v claims: %v expected: %v", got, claims, tt.expected)
 				return
 			}
 		})

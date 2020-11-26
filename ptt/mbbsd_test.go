@@ -20,20 +20,20 @@ func TestLoginQuery(t *testing.T) {
 		ip     *[ptttype.IPV4LEN + 1]byte
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    *ptttype.UserecRaw
-		wantErr bool
+		name     string
+		args     args
+		expected *ptttype.UserecRaw
+		wantErr  bool
 	}{
 		// TODO: Add test cases.
 		{
-			args: args{userID: &userid1, passwd: []byte("123123")},
-			want: testUserecRaw1,
+			args:     args{userID: &userid1, passwd: []byte("123123")},
+			expected: testUserecRaw1,
 		},
 		{
-			args:    args{userID: &userid1, passwd: []byte("124")},
-			want:    nil,
-			wantErr: true,
+			args:     args{userID: &userid1, passwd: []byte("124")},
+			expected: nil,
+			wantErr:  true,
 		},
 	}
 	for _, tt := range tests {
@@ -43,8 +43,8 @@ func TestLoginQuery(t *testing.T) {
 				t.Errorf("LoginQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("LoginQuery() = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("LoginQuery() = %v, expected %v", got, tt.expected)
 			}
 		})
 	}

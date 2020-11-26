@@ -1,14 +1,38 @@
 package cmbbs
 
+import "C"
 import (
+	"bytes"
 	"encoding/binary"
+	"errors"
+	"math/rand"
 	"os"
-	"reflect"
 
 	"github.com/PichuChen/go-bbs/cache"
 	"github.com/PichuChen/go-bbs/crypt"
 	"github.com/PichuChen/go-bbs/ptttype"
+	"github.com/PichuChen/go-bbs/sem"
 )
+
+//GenPasswd
+//
+//If passwd as empty: return empty passwd (unable to login)
+func GenPasswd(passwd []byte) (passwdHash *[ptttype.PASSLEN]byte, err error) {
+	if passwd[0] == 0 {
+		return &[ptttype.PASSLEN]byte{}, nil
+	}
+
+	num := rand.Intn(65536)
+	saltc := [2]byte{
+		byte(num & 0x7f),
+		byte((num >> 8) & 0x7f),
+	}
+
+	result, err := crypt.Fcrypt(passwd, saltc[:])
+	passwdHash = &[ptttype.PASSLEN]byte{}
+	copy(passwdHash[:], result[:])
+	return passwdHash, err
+}
 
 //CheckPasswd
 //Params
@@ -23,7 +47,7 @@ func CheckPasswd(expected []byte, input []byte) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return reflect.DeepEqual(pw, expected), nil
+	return bytes.Equal(pw, expected), nil
 }
 
 func LogAttempt(userID *[ptttype.IDLEN + 1]byte, ip *[ptttype.IPV4LEN + 1]byte, isWithUserHome bool) {
@@ -34,42 +58,40 @@ func LogAttempt(userID *[ptttype.IDLEN + 1]byte, ip *[ptttype.IPV4LEN + 1]byte, 
 //	userID: user-id
 //
 //Return
-//	int: user-num in passwd file.
+//	int32: uid
 //	*ptttype.UserecRaw: user.
 //	error: err.
-func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int, *ptttype.UserecRaw, error) {
+func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int32, *ptttype.UserecRaw, error) {
 	if userID == nil || userID[0] == 0 {
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
-	usernum, err := cache.SearchUserRaw(userID, nil)
+	uid, err := cache.SearchUserRaw(userID, nil)
 	if err != nil {
 		return 0, nil, err
 	}
 
-	if usernum > ptttype.MAX_USERS {
+	if uid > ptttype.MAX_USERS {
 		return 0, nil, ptttype.ErrInvalidUserID
 	}
 
-	usernum_i := int(usernum)
-
-	user, err := PasswdQuery(usernum_i)
+	user, err := PasswdQuery(uid)
 	if err != nil {
 		return 0, nil, err
 	}
 
-	return usernum_i, user, nil
+	return uid, user, nil
 }
 
 //PasswdQuery
 //Params
-//	num: user-num in passwd file.
+//	uid: uid
 //
 //Return
 //	*ptttype.UserecRaw: user.
 //	error: err.
-func PasswdQuery(num int) (*ptttype.UserecRaw, error) {
-	if num < 1 || num > ptttype.MAX_USERS {
+func PasswdQuery(uid int32) (*ptttype.UserecRaw, error) {
+	if uid < 1 || uid > ptttype.MAX_USERS {
 		return nil, ptttype.ErrInvalidUserID
 	}
 
@@ -79,7 +101,7 @@ func PasswdQuery(num int) (*ptttype.UserecRaw, error) {
 	}
 
 	user := &ptttype.UserecRaw{}
-	offset := int64(ptttype.USEREC_RAW_SZ) * (int64(num) - 1)
+	offset := int64(ptttype.USEREC_RAW_SZ) * (int64(uid) - 1)
 	_, err = file.Seek(offset, 0)
 	if err != nil {
 		return nil, err
@@ -90,4 +112,63 @@ func PasswdQuery(num int) (*ptttype.UserecRaw, error) {
 	}
 
 	return user, nil
+}
+
+func PasswdUpdate(uid int32, user *ptttype.UserecRaw) error {
+	if uid < 1 || uid > ptttype.MAX_USERS {
+		return cache.ErrInvalidUID
+	}
+
+	file, err := os.OpenFile(ptttype.FN_PASSWD, os.O_WRONLY, 0600)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = file.Seek(int64(ptttype.USEREC_RAW_SZ)*int64(uid-1), 0)
+	if err != nil {
+		return err
+	}
+
+	err = binary.Write(file, binary.LittleEndian, user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func PasswdInit() error {
+	if Sem != nil {
+		return nil
+	}
+
+	var err error
+	Sem, err = sem.SemGet(ptttype.PASSWDSEM_KEY, 1, sem.SEM_R|sem.SEM_A|sem.IPC_CREAT|sem.IPC_EXCL)
+	if err != nil {
+		if errors.Is(err, os.ErrExist) {
+			Sem, err = sem.SemGet(ptttype.PASSWDSEM_KEY, 1, sem.SEM_R|sem.SEM_A)
+			if err != nil {
+				return err
+			}
+
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	err = Sem.SetVal(0, 1)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func PasswdLock() error {
+	return Sem.Wait(0)
+}
+
+func PasswdUnlock() error {
+	return Sem.Post(0)
 }

@@ -60,12 +60,14 @@ func verifyJwt(userID string, raw string) error {
 }
 
 func processResult(c *gin.Context, result interface{}, err error) {
-	if err == ErrInvalidToken {
+	switch err {
+	case nil:
+		c.JSON(200, result)
+	case ErrInvalidToken:
 		c.JSON(401, &errResult{err.Error()})
-	}
-	if err != nil {
+	case api.ErrLoginFailed:
+		c.JSON(401, &errResult{err.Error()})
+	default:
 		c.JSON(500, &errResult{err.Error()})
 	}
-
-	c.JSON(200, result)
 }

@@ -40,66 +40,66 @@ func TestIsValidUserID(t *testing.T) {
 		userID *[ptttype.IDLEN + 1]byte
 	}
 	tests := []struct {
-		name string
-		args args
-		want bool
+		name     string
+		args     args
+		expected bool
 	}{
 		// TODO: Add test cases.
 		{
-			name: "nil",
-			args: args{nil},
-			want: false,
+			name:     "nil",
+			args:     args{nil},
+			expected: false,
 		},
 		{
-			name: "",
-			args: args{&userID0},
-			want: false,
+			name:     "",
+			args:     args{&userID0},
+			expected: false,
 		},
 		{
-			name: "S",
-			args: args{&userID1},
-			want: false,
+			name:     "S",
+			args:     args{&userID1},
+			expected: false,
 		},
 		{
-			name: "SYSOP",
-			args: args{&userID2},
-			want: true,
+			name:     "SYSOP",
+			args:     args{&userID2},
+			expected: true,
 		},
 		{
-			name: "too long",
-			args: args{&userID3},
-			want: false,
+			name:     "too long",
+			args:     args{&userID3},
+			expected: false,
 		},
 		{
-			name: "not alnum",
-			args: args{&userID4},
-			want: false,
+			name:     "not alnum",
+			args:     args{&userID4},
+			expected: false,
 		},
 		{
-			name: "SYSOP1",
-			args: args{&userID5},
-			want: true,
+			name:     "SYSOP1",
+			args:     args{&userID5},
+			expected: true,
 		},
 		{
-			name: "1SYSOP (not alpha in 0st char)",
-			args: args{&userID6},
-			want: false,
+			name:     "1SYSOP (not alpha in 0st char)",
+			args:     args{&userID6},
+			expected: false,
 		},
 		{
-			name: "S1 (alnum)",
-			args: args{&userID7},
-			want: true,
+			name:     "S1 (alnum)",
+			args:     args{&userID7},
+			expected: true,
 		},
 		{
-			name: "Ss (all alpha)",
-			args: args{&userID7},
-			want: true,
+			name:     "Ss (all alpha)",
+			args:     args{&userID7},
+			expected: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsValidUserID(tt.args.userID); got != tt.want {
-				t.Errorf("IsValidUserID() = %v, want %v", got, tt.want)
+			if got := IsValidUserID(tt.args.userID); got != tt.expected {
+				t.Errorf("IsValidUserID() = %v, expected %v", got, tt.expected)
 			}
 		})
 	}

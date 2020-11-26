@@ -7,17 +7,23 @@ import (
 
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
+	log "github.com/sirupsen/logrus"
 )
 
 func TestLoadUHash(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	err := NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, true)
+	err := NewSHM(types.Key_t(TestShmKey), ptttype.USE_HUGETLB, true)
 	if err != nil {
 		return
 	}
-	defer CloseSHM()
+	defer func() {
+		CloseSHM()
+		log.Errorf("TestLoadUHash: after CloseSHM")
+	}()
+
+	log.Infof("TestLoadUHash: start")
 
 	wantHashHead := [1 << ptttype.HASH_BITS]int32{}
 	wantNextInHash := [ptttype.MAX_USERS]int32{}
@@ -46,12 +52,17 @@ func TestLoadUHash(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{},
-		{},
+		{
+			name: "create totally new shm",
+		},
+		{
+			name: "open created shm",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var err error = nil
+			t.Logf("loadUHash: %v: start", tt.name)
+			var err error
 			if err = LoadUHash(); (err != nil) != tt.wantErr {
 				t.Errorf("loadUHash() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -68,7 +79,6 @@ func TestLoadUHash(t *testing.T) {
 			for idx, each := range hashHead {
 				if each != wantHashHead[idx] {
 					t.Errorf("loadUHash() (%v) hashHead: %v expected: %v", idx, each, wantHashHead[idx])
-					break
 				}
 			}
 

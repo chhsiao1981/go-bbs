@@ -22,7 +22,7 @@ func SetUMoney(uid int32, money int32) (int32, error) {
 		return money, err
 	}
 
-	return moneyOf(uid), nil
+	return MoneyOf(uid), nil
 
 }
 
@@ -36,7 +36,7 @@ func DeUMoney(uid int32, money int32) (int32, error) {
 		return -1, ErrInvalidUID
 	}
 
-	currentMoney := moneyOf(uid)
+	currentMoney := MoneyOf(uid)
 	if money < 0 && currentMoney < -money {
 		return SetUMoney(uid, 0)
 	}
@@ -44,7 +44,7 @@ func DeUMoney(uid int32, money int32) (int32, error) {
 	return SetUMoney(uid, currentMoney+money)
 }
 
-func moneyOf(uid int32) (money int32) {
+func MoneyOf(uid int32) (money int32) {
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Money)+types.INT32_SZ*uintptr(uid-1),
 		types.INT32_SZ,

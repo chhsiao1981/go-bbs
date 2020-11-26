@@ -15,7 +15,7 @@ func setupTest() {
 
 	// shm
 	cache.IsTest = true
-	_ = cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, true)
+	_ = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
 	cache.LoadUHash()
 	cache.AttachSHM()
 }

@@ -31,7 +31,7 @@ func Login(params interface{}) (interface{}, error) {
 
 	user, err := bbs.Login(loginParams.UserID, loginParams.Passwd, loginParams.IP)
 	if err != nil {
-		return nil, err
+		return nil, ErrLoginFailed
 	}
 
 	token, err := createToken(user)

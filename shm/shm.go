@@ -35,17 +35,17 @@ import (
 )
 
 func CreateShm(key types.Key_t, size types.Size_t, isUseHugeTlb bool) (shmid int, shmaddr unsafe.Pointer, isNew bool, err error) {
-	flags := 0600 | IpcCreat | IpcExcl
+	flags := 0600 | IPC_CREAT | IPC_EXCL
 	if isUseHugeTlb {
-		flags |= ShmHugeTlb
+		flags |= SHM_HUGETLB
 	}
 	shmid = shmget(key, size, flags)
 
 	isEExist := int(C.isEExist()) != 0
 	if isEExist {
-		flags = 0600 | IpcCreat
+		flags = 0600 | IPC_CREAT
 		if isUseHugeTlb {
-			flags |= ShmHugeTlb
+			flags |= SHM_HUGETLB
 		}
 		shmid = shmget(key, size, flags)
 	}
@@ -64,7 +64,7 @@ func CreateShm(key types.Key_t, size types.Size_t, isUseHugeTlb bool) (shmid int
 func OpenShm(key types.Key_t, size types.Size_t, is_usehugetlb bool) (shmid int, shmaddr unsafe.Pointer, err error) {
 	flags := 0
 	if is_usehugetlb {
-		flags |= ShmHugeTlb
+		flags |= SHM_HUGETLB
 	}
 	shmid = shmget(key, size, flags)
 

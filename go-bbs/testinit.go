@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"sync"
 
 	"github.com/PichuChen/go-bbs/cache"
 
@@ -13,21 +14,22 @@ import (
 )
 
 var (
-	testOrigBBSHOME = ""
+	testMutex sync.Mutex
 )
 
 func setupTest() {
+	testMutex.Lock()
 	jww.SetLogOutput(os.Stderr)
 	jww.SetLogThreshold(jww.LevelDebug)
 	jww.SetStdoutThreshold(jww.LevelDebug)
 
-	ptttype.InitConfig("./testcase/test.ini")
+	initConfig("./testcase/test.ini")
 
 	gin.SetMode(gin.TestMode)
 
 	// shm
 	cache.IsTest = true
-	_ = cache.NewSHM(types.Key_t(ptttype.SHM_KEY), ptttype.USE_HUGETLB, true)
+	_ = cache.NewSHM(types.Key_t(cache.TestShmKey), ptttype.USE_HUGETLB, true)
 
 	cache.LoadUHash()
 	cache.AttachSHM()
@@ -36,4 +38,5 @@ func setupTest() {
 func teardownTest() {
 	cache.CloseSHM()
 	cache.IsTest = false
+	testMutex.Unlock()
 }
