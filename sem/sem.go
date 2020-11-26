@@ -3,6 +3,18 @@ package sem
 // from: https://github.com/shubhros/drunkendeluge/blob/master/semaphore/semaphore.go
 
 // #include <sys/sem.h>
+//
+// /* https://comp.os.linux.development.system.narkive.com/rvJxp3Vb/union-variable-error-storage-size-isn-t-known */
+// #if defined ( _SEM_SEMUN_UNDEFINED )
+// union semun {
+//   int val; /* value for SETVAL */
+//   struct semid_ds *buf; /* buffer for IPC_STAT, IPC_SET */
+//   unsigned short int *array; /* array for GETALL, SETALL */
+//   struct seminfo *__buf; /* buffer for IPC_INFO */
+// };
+// #endif
+//
+//
 // #ifndef SEM_R
 // #define SEM_R 0400
 // #endif
