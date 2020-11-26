@@ -1,6 +1,7 @@
 package cache
 
 import (
+    "runtime/debug"
     "unsafe"
 
     "github.com/PichuChen/go-bbs/ptttype"
@@ -246,6 +247,7 @@ func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
     // verify version
     if Shm.Raw.Version != SHM_VERSION {
         log.Errorf("NewSHM: version not match: key: %v Shm.Raw.Version: %v SHM_VERSION: %v isCreate: %v isNew: %v", key, Shm.Raw.Version, SHM_VERSION, isCreate, isNew)
+        debug.PrintStack()
         CloseSHM()
         return ErrShmVersion
     }

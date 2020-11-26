@@ -141,10 +141,10 @@ func SearchUser(userID string, isReturn bool) (uid int32, rightID string, err er
 	if len(userID) == 0 {
 		return 0, "", nil
 	}
-	return doSearchUser(userID, isReturn)
+	return DoSearchUser(userID, isReturn)
 }
 
-//doSearchUser
+//DoSearchUser
 //Params:
 //	userID
 //	isReturn
@@ -153,7 +153,7 @@ func SearchUser(userID string, isReturn bool) (uid int32, rightID string, err er
 //	int32: uid
 //	string: the userID in shm.
 //	error: err.
-func doSearchUser(userID string, isReturn bool) (uid int32, rightID string, err error) {
+func DoSearchUser(userID string, isReturn bool) (uid int32, rightID string, err error) {
 	userIDBytes := &[ptttype.IDLEN + 1]byte{}
 	copy(userIDBytes[:], []byte(userID))
 

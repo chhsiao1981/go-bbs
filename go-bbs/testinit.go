@@ -23,7 +23,7 @@ func setupTest() {
 	jww.SetLogThreshold(jww.LevelDebug)
 	jww.SetStdoutThreshold(jww.LevelDebug)
 
-	initConfig("./testcase/test.ini")
+	initAllConfig("./testcase/test.ini")
 
 	gin.SetMode(gin.TestMode)
 

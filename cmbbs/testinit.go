@@ -1,8 +1,6 @@
 package cmbbs
 
 import (
-	"sync"
-
 	"github.com/PichuChen/go-bbs/cache"
 	"github.com/PichuChen/go-bbs/ptttype"
 	log "github.com/sirupsen/logrus"
@@ -10,12 +8,10 @@ import (
 
 var (
 	origBBSHOME = ""
-
-	testMutex sync.Mutex
 )
 
 func setupTest() {
-	testMutex.Lock()
+	cache.TestMutex.Lock()
 	origBBSHOME = ptttype.SetBBSHOME("./testcase")
 
 	err := cache.NewSHM(cache.TestShmKey, ptttype.USE_HUGETLB, true)
@@ -29,5 +25,5 @@ func setupTest() {
 func teardownTest() {
 	_ = cache.CloseSHM()
 	ptttype.SetBBSHOME(origBBSHOME)
-	testMutex.Unlock()
+	cache.TestMutex.Unlock()
 }

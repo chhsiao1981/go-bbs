@@ -82,6 +82,9 @@ func TestPasswdQuery(t *testing.T) {
 }
 
 func TestCheckPasswd(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	input1 := []byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', 0}
 	input2 := []byte{'0', '1', '2', '4', '4', '5', '6', '7', '8', '9', '0', '1', 0}
 	expected1 := [ptttype.PASSLEN]byte{65, 65, 51, 81, 66, 104, 76, 87, 107, 49, 66, 87, 65}
@@ -122,6 +125,9 @@ func TestCheckPasswd(t *testing.T) {
 }
 
 func TestGenPasswd(t *testing.T) {
+	setupTest()
+	defer teardownTest()
+
 	type args struct {
 		passwd []byte
 	}

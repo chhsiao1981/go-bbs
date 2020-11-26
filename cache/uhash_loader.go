@@ -1,9 +1,9 @@
 package cache
 
 import (
-	"bytes"
 	"io"
 	"os"
+	"reflect"
 	"unsafe"
 
 	"github.com/PichuChen/go-bbs/cmsys"
@@ -82,7 +82,6 @@ func fillUHash(isOnfly bool) error {
 		log.Errorf("fillUHash: unable to open passwd: file: %v e: %v", ptttype.FN_PASSWD, err)
 		return err
 	}
-	defer file.Close()
 
 	uidInCache := int32(0)
 
@@ -107,7 +106,7 @@ func fillUHash(isOnfly bool) error {
 		return err
 	}
 
-	log.Infof("fillUHash: to write uidInCache: %v", uidInCache)
+	log.Infof("fillUHash: to write usernum: %v", uidInCache)
 
 	Shm.WriteAt(
 		unsafe.Offsetof(Shm.Raw.Number),
@@ -131,8 +130,6 @@ func userecRawAddToUHash(uidInCache int32, userecRaw *ptttype.UserecRaw, isOnfly
 
 	h := cmsys.StringHashWithHashBits(userecRaw.UserID[:])
 
-	/////
-	// adding to user-info-cache
 	shmUserID := [ptttype.IDLEN + 1]byte{}
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
@@ -140,7 +137,9 @@ func userecRawAddToUHash(uidInCache int32, userecRaw *ptttype.UserecRaw, isOnfly
 		unsafe.Pointer(&shmUserID),
 	)
 
-	if !isOnfly || !bytes.Equal(userecRaw.UserID[:], shmUserID[:]) {
+	offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
+
+	if !isOnfly || !reflect.DeepEqual(userecRaw.UserID, shmUserID) {
 		Shm.WriteAt(
 			unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
 			ptttype.USER_ID_SZ,
@@ -161,57 +160,64 @@ func userecRawAddToUHash(uidInCache int32, userecRaw *ptttype.UserecRaw, isOnfly
 				unsafe.Pointer(&zero),
 			)
 		}
-		log.Debugf("UHashLoader.userecRawAddToUHash: add info: uidInCache: %v id: %v shmUserID: %v", uidInCache, string(userecRaw.UserID[:]), string(shmUserID[:]))
+		log.Debugf("UHashLoader.userecRawAddToUHash: add info: usernum: %v id: %v shmUserID: %v", uidInCache, string(userecRaw.UserID[:]), string(shmUserID[:]))
 	}
 
-	/////
-	// adding to user-hash (for-loop)
 	p := h
 	val := int32(0)
-	pval := &val
-	valptr := unsafe.Pointer(pval)
-	offset := unsafe.Offsetof(Shm.Raw.HashHead)
+	offsetHashHead := unsafe.Offsetof(Shm.Raw.HashHead)
+	//offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
+	isFirst := true
+
 	Shm.ReadAt(
-		offset+types.INT32_SZ*uintptr(p),
+		offsetHashHead+types.INT32_SZ*uintptr(p),
 		types.INT32_SZ,
-		valptr,
+		unsafe.Pointer(&val),
 	)
 
 	l := 0
-	for ; val >= 0 && val < ptttype.MAX_USERS; l++ {
+	for val >= 0 && val < ptttype.MAX_USERS {
 		if isOnfly && val == uidInCache { // already in hash
 			return
 		}
 
+		l++
 		// go to next
 		// 1. setting p as val
 		// 2. get val from next_in_hash[p]
 		p = uint32(val)
-		offset = unsafe.Offsetof(Shm.Raw.NextInHash)
 		Shm.ReadAt(
-			offset+types.INT32_SZ*uintptr(p),
+			offsetNextInHash+types.INT32_SZ*uintptr(p),
 			types.INT32_SZ,
-			valptr,
+			unsafe.Pointer(&val),
 		)
+
+		isFirst = false
 	}
-	*pval = uidInCache
+
+	// set next in hash as n
+	offset := offsetHashHead
+	if !isFirst {
+		offset = offsetNextInHash
+	}
+	val = uidInCache
 	Shm.WriteAt(
 		offset+types.INT32_SZ*uintptr(p),
 		types.INT32_SZ,
-		valptr,
+		unsafe.Pointer(&val),
 	)
 
-	log.Infof("UHashLoader.userecRawAddToUHash: added level: %v p: %v hash: %v uidInCache: %v [%v] val: %v in hash", l, p, h, uidInCache, string(userecRaw.UserID[:]), val)
+	log.Infof("UHashLoader.userecRawAddToUHash: added level: %v p: %v hash: %v usernum: %v [%v] val: %v in hash isHashHead: %v", l, p, h, uidInCache, string(userecRaw.UserID[:]), val, isFirst)
 
-	/////
 	// set next in hash as -1
-	*pval = -1
+	p = uint32(val)
+	val = -1
 	Shm.WriteAt(
-		unsafe.Offsetof(Shm.Raw.NextInHash)+types.INT32_SZ*uintptr(uidInCache),
+		offsetNextInHash+types.INT32_SZ*uintptr(p),
 		types.INT32_SZ,
-		valptr,
+		unsafe.Pointer(&val),
 	)
-	log.Infof("UHashLoader.userecRawAddToUHash: added NextInHash: uidInCache: %v p: %v val: %v", uidInCache, p, val)
+	log.Debugf("UHashLoader.userecRawAddToUHash: added NextInHash: usernum: %v p: %v val: %v isFirst: %v", uidInCache, p, val, isFirst)
 }
 
 func InitFillUHash(isOnfly bool) {
@@ -256,7 +262,7 @@ func checkHash(h uint32) {
 	// line: 72
 	isFirst := true
 
-	var offset uintptr
+	var offset uintptr = 0
 	offsetHashHead := unsafe.Offsetof(Shm.Raw.HashHead)
 	offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 
