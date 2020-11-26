@@ -1,6 +1,6 @@
 package ptttype
 
-func initConfig() {
+func config() {
 	serviceModeStr := setStringConfig("SERVICE_MODE", "DEV")
 	SERVICE_MODE = stringToServiceMode(serviceModeStr)
 

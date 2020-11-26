@@ -7,7 +7,7 @@ import (
 )
 
 func InitConfig() error {
-	initConfig()
+	config()
 	return nil
 }
 
