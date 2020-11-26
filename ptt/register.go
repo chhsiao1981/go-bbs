@@ -71,7 +71,8 @@ func NewRegister(
 	newUser.Over18 = over18
 
 	// XXX SECURE_LOGIN
-	newUser.UFlag |= ptttype.UF_SECURE_LOGIN
+	// XXX no need to secure-login for now.
+	// newUser.UFlag |= ptttype.UF_SECURE_LOGIN
 
 	copy(newUser.UserID[:], userID[:])
 
@@ -205,13 +206,17 @@ func getSystemUaVersion() uint8 {
 func SetupNewUser(user *ptttype.UserecRaw) error {
 	// XXX race-condition, need to setup RWLock (across-processes)
 	//
-	_, err := cache.DoSearchUserRaw(&user.UserID, nil)
+	uid, err := cache.DoSearchUserRaw(&user.UserID, nil)
 	if err != nil {
 		return err
 	}
 
+	if uid != 0 {
+		return ptttype.ErrUserIDAlreadyExists
+	}
+
 	/* Lazy method : 先找尋已經清除的過期帳號 */
-	uid, err := cache.DoSearchUserRaw(&ptttype.EMPTY_USER_ID, nil)
+	uid, err = cache.DoSearchUserRaw(&ptttype.EMPTY_USER_ID, nil)
 	if err != nil {
 		return err
 	}
