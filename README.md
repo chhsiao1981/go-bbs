@@ -14,6 +14,10 @@
 3. create SYSOP and some other users.
 4. curl -X POST -d '{"UserID": "SYSOP", "Passwd": "[passwd]", "IP": "localhost"}' 'http://localhost:3456/login'
 
+### Run Docker with local dir
+1. ./scripts/docker_initbbs.sh [BBSHOME] chhsiao1981/go-bbs:dev
+2. docker run --name go-bbs -p 3456:3456 -p 8888:8888 -p 48763:48763 -v [BBSHOME]:/home/bbs chhsiao1981/go-bbs:dev
+
 ## config
 
 因為有些 variable 必須是 const (ex: IDLEN, 用在 [IDLEN+1]byte)
