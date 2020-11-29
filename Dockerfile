@@ -18,7 +18,7 @@ RUN DEBIAN_FRONTEND=noninteractive &&  \
         clang
 
 ENV GOROOT=/usr/local/go
-ENV PATH=${PATH}:/usr/local/go/bin:/home/bbs/bin
+ENV PATH=${PATH}:/usr/local/go/bin:/home/bbs/bin:/opt/bbs/bin
 
 # go-bbs
 COPY . /srv/go-bbs
@@ -34,9 +34,12 @@ RUN go build -tags production
 WORKDIR /srv/go-bbs
 RUN ./scripts/rebuild_pttbbs.sh
 
-# cmd
+# mkdir -p /opt/bbs
 USER root
+RUN mkdir -p /opt/bbs && cp -R /home/bbs/bin /home/bbs/etc /home/bbs/wsproxy /opt/bbs
+
+# cmd
 WORKDIR /home/bbs
-CMD ["sh","-c","sudo -iu bbs /home/bbs/bin/shmctl init && sudo -iu bbs /home/bbs/bin/logind && /usr/bin/openresty && sudo -iu bbs /srv/go-bbs/go-bbs/go-bbs -ini production.ini"]
+CMD ["sh", "-c", "sudo -iu bbs /home/bbs/bin/shmctl init && sudo -iu bbs /home/bbs/bin/logind && /usr/bin/openresty && sudo -iu bbs /srv/go-bbs/go-bbs/go-bbs -ini production.ini"]
 
 EXPOSE 3456
