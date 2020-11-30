@@ -73,7 +73,7 @@ func deleteFriendFromFile(filename string, friend *ptttype.UserID_t, isCaseSensi
 	}
 	defer new_file.Close()
 
-	userIDInFile := &[ptttype.IDLEN + 1]byte{}
+	userIDInFile := &ptttype.UserID_t{}
 	reader := bufio.NewReader(file)
 	writer := bufio.NewWriter(new_file)
 

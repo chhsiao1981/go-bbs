@@ -161,9 +161,9 @@ func TestSHM_ReadAt(t *testing.T) {
 			expected: &want1,
 		},
 		{
-			name: "Userid[3] ([IDLEN+1]byte)",
+			name: "Userid[3]",
 			args: args{
-				unsafe.Offsetof(Shm.Raw.Userid) + (ptttype.IDLEN+1)*3,
+				unsafe.Offsetof(Shm.Raw.Userid) + (ptttype.USER_ID_SZ)*3,
 				unsafe.Sizeof(Shm.Raw.Userid[3]),
 				unsafe.Pointer(&out2),
 			},
@@ -171,7 +171,7 @@ func TestSHM_ReadAt(t *testing.T) {
 			expected: &want2,
 		},
 		{
-			name: "LoginMsg.UserID ([IDLEN+1]byte)",
+			name: "LoginMsg.UserID",
 			args: args{
 				unsafe.Offsetof(Shm.Raw.LoginMsg) + unsafe.Offsetof(Shm.Raw.LoginMsg.UserID),
 				unsafe.Sizeof(Shm.Raw.LoginMsg.UserID),
