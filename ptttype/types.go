@@ -2,6 +2,10 @@ package ptttype
 
 import "unsafe"
 
+//A good thing about specifying the type,
+//is that we don't need to worry whether we need to + 1 or not.
+//We don't mix-up with user-id and board-id either.
+
 type UserID_t [IDLEN + 1]byte
 type RealName_t [REALNAMESZ]byte
 type Nickname_t [NICKNAMESZ]byte

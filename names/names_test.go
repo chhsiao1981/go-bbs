@@ -10,34 +10,34 @@ func TestIsValidUserID(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	userID0 := [ptttype.IDLEN + 1]byte{}
+	userID0 := ptttype.UserID_t{}
 
-	userID1 := [ptttype.IDLEN + 1]byte{}
+	userID1 := ptttype.UserID_t{}
 	copy(userID1[:], []byte("S"))
 
-	userID2 := [ptttype.IDLEN + 1]byte{}
+	userID2 := ptttype.UserID_t{}
 	copy(userID2[:], []byte("SYSOP"))
 
-	userID3 := [ptttype.IDLEN + 1]byte{}
+	userID3 := ptttype.UserID_t{}
 	copy(userID3[:], []byte("S1234567891234"))
 
-	userID4 := [ptttype.IDLEN + 1]byte{}
+	userID4 := ptttype.UserID_t{}
 	copy(userID4[:], []byte("SYSOP,-"))
 
-	userID5 := [ptttype.IDLEN + 1]byte{}
+	userID5 := ptttype.UserID_t{}
 	copy(userID5[:], []byte("SYSOP1"))
 
-	userID6 := [ptttype.IDLEN + 1]byte{}
+	userID6 := ptttype.UserID_t{}
 	copy(userID6[:], []byte("1SYSOP"))
 
-	userID7 := [ptttype.IDLEN + 1]byte{}
+	userID7 := ptttype.UserID_t{}
 	copy(userID7[:], []byte("S1"))
 
-	userID8 := [ptttype.IDLEN + 1]byte{}
+	userID8 := ptttype.UserID_t{}
 	copy(userID8[:], []byte("Ss"))
 
 	type args struct {
-		userID *[ptttype.IDLEN + 1]byte
+		userID *ptttype.UserID_t
 	}
 	tests := []struct {
 		name     string

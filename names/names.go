@@ -12,7 +12,7 @@ import (
 //
 //Return
 //	bool: is valid user-id
-func IsValidUserID(userID *[ptttype.IDLEN + 1]byte) bool {
+func IsValidUserID(userID *ptttype.UserID_t) bool {
 	if userID == nil {
 		return false
 	}

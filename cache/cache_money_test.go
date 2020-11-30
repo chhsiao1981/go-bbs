@@ -20,7 +20,7 @@ func TestSetUMoney(t *testing.T) {
 
 	_ = LoadUHash()
 
-	userID1 := &[ptttype.IDLEN + 1]byte{}
+	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("SYSOP"))
 	SetUserID(1, userID1)
 

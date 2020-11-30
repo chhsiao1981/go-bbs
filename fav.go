@@ -39,7 +39,7 @@ func FavLoad(userID string) (*Fav, error) {
 }
 
 func (f *Fav) Save(userID string) (*Fav, int64, error) {
-	userIDRaw := &[ptttype.IDLEN + 1]byte{}
+	userIDRaw := &ptttype.UserID_t{}
 	copy(userIDRaw[:], []byte(userID))
 
 	favRaw := f.ToRaw()

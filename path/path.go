@@ -9,7 +9,7 @@ import (
 	"github.com/PichuChen/go-bbs/types"
 )
 
-func SetHomePath(userID *[ptttype.IDLEN + 1]byte) string {
+func SetHomePath(userID *ptttype.UserID_t) string {
 	return strings.Join([]string{
 		ptttype.BBSHOME,
 		ptttype.DIR_HOME,
@@ -20,7 +20,7 @@ func SetHomePath(userID *[ptttype.IDLEN + 1]byte) string {
 	)
 }
 
-func SetHomeFile(userID *[ptttype.IDLEN + 1]byte, filename string) (string, error) {
+func SetHomeFile(userID *ptttype.UserID_t, filename string) (string, error) {
 	if !names.IsValidUserID(userID) {
 		return "", ptttype.ErrInvalidUserID
 	}
@@ -42,7 +42,7 @@ func IsValidFilename(filename string) bool {
 	return !strings.Contains(filename, "..")
 }
 
-func SetBFile(boardID *[ptttype.IDLEN + 1]byte, filename string) (string, error) {
+func SetBFile(boardID *ptttype.BoardID_t, filename string) (string, error) {
 	if filename[0] == '\x00' || !IsValidFilename(filename) {
 		return "", ptttype.ErrInvalidFilename
 	}

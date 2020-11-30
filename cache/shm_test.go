@@ -98,7 +98,7 @@ func TestSHM_ReadAt(t *testing.T) {
 	want1 := byte(1)
 
 	// test2
-	in2 := [ptttype.MAX_USERS][ptttype.IDLEN + 1]byte{}
+	in2 := [ptttype.MAX_USERS]ptttype.UserID_t{}
 	copy(in2[0][:], []byte("test"))
 	copy(in2[1][:], []byte("test1"))
 	copy(in2[2][:], []byte("test2"))
@@ -111,8 +111,8 @@ func TestSHM_ReadAt(t *testing.T) {
 		unsafe.Pointer(&in2),
 	)
 
-	out2 := [ptttype.IDLEN + 1]byte{}
-	want2 := [ptttype.IDLEN + 1]byte{}
+	out2 := ptttype.UserID_t{}
+	want2 := ptttype.UserID_t{}
 	copy(want2[:], []byte("SYSOP"))
 
 	// test3
@@ -126,7 +126,7 @@ func TestSHM_ReadAt(t *testing.T) {
 	)
 
 	out3 := &ptttype.MsgQueueRaw{}
-	want3 := [ptttype.IDLEN + 1]byte{}
+	want3 := ptttype.UserID_t{}
 	copy(want3[:], []byte("test33"))
 
 	type fields struct {
@@ -212,16 +212,16 @@ func TestSHM_WriteAt(t *testing.T) {
 	want1 := byte(1)
 
 	// in2
-	in2 := [ptttype.MAX_USERS][ptttype.IDLEN + 1]byte{}
+	in2 := [ptttype.MAX_USERS]ptttype.UserID_t{}
 	copy(in2[0][:], []byte("test"))
 	copy(in2[1][:], []byte("test1"))
 	copy(in2[2][:], []byte("test2"))
 	copy(in2[3][:], []byte("SYSOP"))
 	copy(in2[4][:], []byte("test4"))
 
-	out2 := [ptttype.IDLEN + 1]byte{}
+	out2 := ptttype.UserID_t{}
 	out2ptr := unsafe.Pointer(&out2)
-	want2 := [ptttype.IDLEN + 1]byte{}
+	want2 := ptttype.UserID_t{}
 
 	copy(want2[:], []byte("SYSOP"))
 
@@ -229,9 +229,9 @@ func TestSHM_WriteAt(t *testing.T) {
 	in3 := &ptttype.MsgQueueRaw{}
 	copy(in3.UserID[:], []byte("test33"))
 
-	out3 := [ptttype.IDLEN + 1]byte{}
+	out3 := ptttype.UserID_t{}
 	out3ptr := unsafe.Pointer(&out3)
-	want3 := [ptttype.IDLEN + 1]byte{}
+	want3 := ptttype.UserID_t{}
 	copy(want3[:], []byte("test33"))
 
 	//in4

@@ -76,18 +76,18 @@ func TestAddToUHash(t *testing.T) {
 
 	InitFillUHash(false)
 
-	user1 := &[ptttype.IDLEN + 1]byte{}
+	user1 := &ptttype.UserID_t{}
 	copy(user1[:], []byte("SYSOP"))
 
-	user2 := &[ptttype.IDLEN + 1]byte{}
+	user2 := &ptttype.UserID_t{}
 	copy(user2[:], []byte("test1"))
 
-	user3 := &[ptttype.IDLEN + 1]byte{}
+	user3 := &ptttype.UserID_t{}
 	copy(user3[:], []byte("test3"))
 
 	type args struct {
 		uidInCache int32
-		userID     *[ptttype.IDLEN + 1]byte
+		userID     *ptttype.UserID_t
 	}
 	tests := []struct {
 		name    string
@@ -136,7 +136,7 @@ func TestRemoveFromUHash(t *testing.T) {
 
 	InitFillUHash(false)
 
-	user := &[ptttype.IDLEN + 1]byte{}
+	user := &ptttype.UserID_t{}
 
 	AddToUHash(0, user)
 	AddToUHash(1, user)
@@ -253,15 +253,15 @@ func TestGetUserID(t *testing.T) {
 
 	InitFillUHash(false)
 
-	userID1 := &[ptttype.IDLEN + 1]byte{}
+	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("SYSOP"))
 	SetUserID(1, userID1)
 
-	userID2 := &[ptttype.IDLEN + 1]byte{}
+	userID2 := &ptttype.UserID_t{}
 	copy(userID2[:], []byte("SYSOP2"))
 	SetUserID(2, userID2)
 
-	userIDEmpty := &[ptttype.IDLEN + 1]byte{}
+	userIDEmpty := &ptttype.UserID_t{}
 
 	type args struct {
 		uid int32
@@ -269,7 +269,7 @@ func TestGetUserID(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *[ptttype.IDLEN + 1]byte
+		want    *ptttype.UserID_t
 		wantErr bool
 	}{
 		// TODO: Add test cases.
@@ -317,13 +317,13 @@ func TestSetUserID(t *testing.T) {
 
 	InitFillUHash(false)
 
-	userID0 := &[ptttype.IDLEN + 1]byte{}
+	userID0 := &ptttype.UserID_t{}
 	copy(userID0[:], []byte("SYSOP0"))
 
-	userID1 := &[ptttype.IDLEN + 1]byte{}
+	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("SYSOP"))
 
-	userID2 := &[ptttype.IDLEN + 1]byte{}
+	userID2 := &ptttype.UserID_t{}
 	copy(userID2[:], []byte("SYSOP2"))
 
 	nextInHash1 := &[ptttype.MAX_USERS]int32{}
@@ -334,12 +334,12 @@ func TestSetUserID(t *testing.T) {
 
 	type args struct {
 		uid    int32
-		userID *[ptttype.IDLEN + 1]byte
+		userID *ptttype.UserID_t
 	}
 	tests := []struct {
 		name           string
 		args           args
-		wantUserID     *[ptttype.IDLEN + 1]byte
+		wantUserID     *ptttype.UserID_t
 		wantNextInHash *[ptttype.MAX_USERS]int32
 		wantErr        bool
 	}{

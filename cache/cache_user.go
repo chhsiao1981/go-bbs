@@ -11,7 +11,7 @@ import (
 )
 
 //AddToUHash
-func AddToUHash(uidInCache int32, userID *[ptttype.IDLEN + 1]byte) error {
+func AddToUHash(uidInCache int32, userID *ptttype.UserID_t) error {
 	h := cmsys.StringHashWithHashBits(userID[:])
 
 	// line: 166
@@ -72,7 +72,7 @@ func AddToUHash(uidInCache int32, userID *[ptttype.IDLEN + 1]byte) error {
 
 //RemoveFromUHash
 func RemoveFromUHash(uidInCache int32) error {
-	userID := &[ptttype.IDLEN + 1]byte{}
+	userID := &ptttype.UserID_t{}
 
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
@@ -154,12 +154,12 @@ func SearchUser(userID string, isReturn bool) (uid int32, rightID string, err er
 //	string: the userID in shm.
 //	error: err.
 func DoSearchUser(userID string, isReturn bool) (uid int32, rightID string, err error) {
-	userIDBytes := &[ptttype.IDLEN + 1]byte{}
+	userIDBytes := &ptttype.UserID_t{}
 	copy(userIDBytes[:], []byte(userID))
 
-	var rightIDBytes *[ptttype.IDLEN + 1]byte = nil
+	var rightIDBytes *ptttype.UserID_t = nil
 	if isReturn {
-		rightIDBytes = &[ptttype.IDLEN + 1]byte{}
+		rightIDBytes = &ptttype.UserID_t{}
 	}
 
 	uid, err = DoSearchUserRaw(userIDBytes, rightIDBytes)
@@ -184,14 +184,14 @@ func DoSearchUser(userID string, isReturn bool) (uid int32, rightID string, err 
 //	int: uid.
 //	string: the userID in shm.
 //	error: err.
-func SearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 1]byte) (uid int32, err error) {
+func SearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (uid int32, err error) {
 	if userID[0] == 0 {
 		return 0, nil
 	}
 	return DoSearchUserRaw(userID, rightID)
 }
 
-func DoSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 1]byte) (int32, error) {
+func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (int32, error) {
 	// XXX we should have 0 as non-exists.
 	//     currently the reason why it's ok is because the probability of collision on 0 is low.
 
@@ -207,7 +207,7 @@ func DoSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 
 	)
 	log.Debugf("doSearchUserRaw: after Shm.ReadAt: userID: %v h: %v p: %v", string(userID[:]), h, p)
 
-	shmUserID := [ptttype.IDLEN + 1]byte{}
+	shmUserID := ptttype.UserID_t{}
 
 	for times := 0; times < ptttype.MAX_USERS && p != -1 && p < ptttype.MAX_USERS; times++ {
 		//if (strcasecmp(SHM->userid[p], userid) == 0)  //line: 222
@@ -236,13 +236,13 @@ func DoSearchUserRaw(userID *[ptttype.IDLEN + 1]byte, rightID *[ptttype.IDLEN + 
 //GetUserID
 //
 //XXX uid = uid-in-cache + 1
-func GetUserID(uid int32) (*[ptttype.IDLEN + 1]byte, error) {
+func GetUserID(uid int32) (*ptttype.UserID_t, error) {
 	uid--
 	if uid < 0 || uid >= ptttype.MAX_USERS {
 		return nil, ErrInvalidUID
 	}
 
-	userID := &[ptttype.IDLEN + 1]byte{}
+	userID := &ptttype.UserID_t{}
 	log.Infof("GetUserID: to ReadAt: uid: %v", uid)
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uid),
@@ -256,7 +256,7 @@ func GetUserID(uid int32) (*[ptttype.IDLEN + 1]byte, error) {
 //SetUserID
 //
 //XXX uid = uid-in-cache + 1
-func SetUserID(uid int32, userID *[ptttype.IDLEN + 1]byte) (err error) {
+func SetUserID(uid int32, userID *ptttype.UserID_t) (err error) {
 	if uid <= 0 || uid > ptttype.MAX_USERS {
 		return ErrInvalidUID
 	}
@@ -273,7 +273,7 @@ func SetUserID(uid int32, userID *[ptttype.IDLEN + 1]byte) (err error) {
 	return nil
 }
 
-func SearchUListUserID(userID *[ptttype.IDLEN + 1]byte) *ptttype.UserInfoRaw {
+func SearchUListUserID(userID *ptttype.UserID_t) *ptttype.UserInfoRaw {
 	// start and end
 	start := int32(0)
 

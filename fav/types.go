@@ -23,7 +23,7 @@ const SIZE_OF_FAV_LINE = unsafe.Sizeof(FavLine{})
 
 type FavFolder struct {
 	Fid        int8
-	Title      ptttype.BoardTitle
+	Title      ptttype.BoardTitle_t
 	ThisFolder *FavRaw
 }
 
@@ -39,7 +39,7 @@ const SIZE_OF_FAV_BOARD = unsafe.Sizeof(FavBoard{})
 
 type Fav4Folder struct {
 	Fid        int8
-	Title      ptttype.BoardTitle
+	Title      ptttype.BoardTitle_t
 	ThisFolder int32
 }
 

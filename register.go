@@ -17,27 +17,27 @@ func Register(
 	address string,
 	over18 bool,
 ) (user *Userec, err error) {
-	userIDRaw := &[ptttype.IDLEN + 1]byte{}
+	userIDRaw := &ptttype.UserID_t{}
 	copy(userIDRaw[:], []byte(userID))
 
 	passwdRaw := []byte(passwd)
 
-	ipRaw := &[ptttype.IPV4LEN + 1]byte{}
+	ipRaw := &ptttype.IPv4_t{}
 	copy(ipRaw[:], []byte(ip))
 
-	emailRaw := &[ptttype.EMAILSZ]byte{}
+	emailRaw := &ptttype.Email_t{}
 	copy(emailRaw[:], []byte(email))
 
-	nicknameRaw := &[ptttype.NICKNAMESZ]byte{}
+	nicknameRaw := &ptttype.Nickname_t{}
 	copy(nicknameRaw[:], []byte(nickname))
 
-	realnameRaw := &[ptttype.REALNAMESZ]byte{}
+	realnameRaw := &ptttype.RealName_t{}
 	copy(realnameRaw[:], []byte(realname))
 
-	careerRaw := &[ptttype.CAREERSZ]byte{}
+	careerRaw := &ptttype.Career_t{}
 	copy(careerRaw[:], []byte(career))
 
-	addressRaw := &[ptttype.ADDRESSSZ]byte{}
+	addressRaw := &ptttype.Address_t{}
 	copy(addressRaw[:], []byte(address))
 
 	userRaw, err := ptt.NewRegister(

@@ -17,14 +17,14 @@ func TestFavLoad(t *testing.T) {
 	types.CopyFile("./testcase/home1", "./testcase/home")
 	defer os.RemoveAll("./testcase/home")
 
-	userID0 := [ptttype.IDLEN + 1]byte{}
+	userID0 := ptttype.UserID_t{}
 	copy(userID0[:], []byte("testUser"))
 
-	userID1 := [ptttype.IDLEN + 1]byte{}
+	userID1 := ptttype.UserID_t{}
 	copy(userID1[:], []byte("testNoExist"))
 
 	type args struct {
-		userID *[ptttype.IDLEN + 1]byte
+		userID *ptttype.UserID_t
 	}
 	tests := []struct {
 		name     string
@@ -80,15 +80,15 @@ func TestFavSave(t *testing.T) {
 
 	time.Sleep(11 * time.Second)
 
-	userID0 := [ptttype.IDLEN + 1]byte{}
+	userID0 := ptttype.UserID_t{}
 	copy(userID0[:], []byte("testUserWrt"))
 
-	userID1 := [ptttype.IDLEN + 1]byte{}
+	userID1 := ptttype.UserID_t{}
 	copy(userID0[:], []byte("testUserWr1"))
 
 	type args struct {
 		fav    *FavRaw
-		userID *[ptttype.IDLEN + 1]byte
+		userID *ptttype.UserID_t
 	}
 	tests := []struct {
 		name     string

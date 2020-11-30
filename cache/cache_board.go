@@ -65,7 +65,7 @@ func IsHiddenBoardFriend(bidInCache int32, uidInCache int32) bool {
 }
 
 func HbflReload(bidInCache int32) {
-	brdname := &[ptttype.IDLEN + 1]byte{}
+	brdname := &ptttype.BoardID_t{}
 
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache)+ptttype.BOARD_HEADER_BOARD_NAME_OFFSET,
@@ -93,7 +93,7 @@ func HbflReload(bidInCache int32) {
 		line = scanner.Bytes()
 		theList := bytes.Split(line, []byte{' '})
 
-		eachUserID := &[ptttype.IDLEN + 1]byte{}
+		eachUserID := &ptttype.UserID_t{}
 		copy(eachUserID[:], theList[0][:])
 
 		if bytes.EqualFold(eachUserID[:], ptttype.USER_ID_GUEST[:]) {

@@ -34,7 +34,7 @@ type FavRaw struct {
 
 const SIZE_OF_FAV = unsafe.Sizeof(FavRaw{})
 
-func MTime(userID *[ptttype.IDLEN + 1]byte) (int64, error) {
+func MTime(userID *ptttype.UserID_t) (int64, error) {
 	filename, err := path.SetHomeFile(userID, FAV)
 	if err != nil {
 		return 0, err
@@ -54,7 +54,7 @@ func MTime(userID *[ptttype.IDLEN + 1]byte) (int64, error) {
 //Load
 //
 //Load fav from file.
-func Load(userID *[ptttype.IDLEN + 1]byte) (*FavRaw, error) {
+func Load(userID *ptttype.UserID_t) (*FavRaw, error) {
 	filename, err := path.SetHomeFile(userID, FAV)
 	if err != nil {
 		return nil, err
@@ -104,7 +104,7 @@ func Load(userID *[ptttype.IDLEN + 1]byte) (*FavRaw, error) {
 //
 //save fav to file.
 //XXX use rename to reduce the probability of race-condition.
-func (fav *FavRaw) Save(userID *[ptttype.IDLEN + 1]byte) (*FavRaw, int64, error) {
+func (fav *FavRaw) Save(userID *ptttype.UserID_t) (*FavRaw, int64, error) {
 	fav.cleanup()
 
 	filename, err := path.SetHomeFile(userID, FAV)
@@ -361,7 +361,7 @@ func (fav *FavRaw) writeFavrec(file *os.File) error {
 	return nil
 }
 
-func tryFav4Load(userID *[ptttype.IDLEN + 1]byte, filename string) (*FavRaw, error) {
+func tryFav4Load(userID *ptttype.UserID_t, filename string) (*FavRaw, error) {
 	oldFilename, err := path.SetHomeFile(userID, FAV4)
 	if err != nil {
 		return nil, err

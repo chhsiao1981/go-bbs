@@ -23,7 +23,7 @@ test0:
 */
 
 var (
-	testTitle0 = ptttype.BoardTitle{
+	testTitle0 = ptttype.BoardTitle_t{
 		183, 115, 170, 186, 165, 216, 191, 253, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
