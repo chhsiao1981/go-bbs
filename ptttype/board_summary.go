@@ -11,8 +11,8 @@ const (
 type BoardSummary struct {
 	Bid     int32
 	Attr    BoardStatAttr
-	Brdname [IDLEN + 1]byte
+	Brdname BoardID_t
 	Title   []byte
-	BM      [IDLEN*3 + 3]byte
+	BM      BM_t
 	Reason  RestrictReason
 }

@@ -13,39 +13,39 @@ type UserecRaw struct {
 	Version uint32
 
 	//Require const-bytes to have correct Unsafe.Sizeof
-	UserID     [IDLEN + 1]byte  /* 使用者ID (alpha-number only) */
-	RealName   [REALNAMESZ]byte /* 真實姓名 */
-	Nickname   [NICKNAMESZ]byte /* 暱稱 */
-	PasswdHash [PASSLEN]byte    /* 密碼 (hashed bytes) */
+	UserID     UserID_t   /* 使用者ID (alpha-number only) */
+	RealName   RealName_t /* 真實姓名 */
+	Nickname   Nickname_t /* 暱稱 */
+	PasswdHash Passwd_t   /* 密碼 (hashed bytes) */
 	Pad1       byte
 
-	UFlag        UFlag             /* 習慣, see uflags.h */
-	Unused1      uint32            /* 從前放習慣2, 使用前請先清0 */
-	UserLevel    PERM              /* 權限 */
-	NumLoginDays uint32            /* 上線資歷 (每日最多+1的登入次數) */
-	NumPosts     uint32            /* 文章篇數 */
-	FirstLogin   types.Time4       /* 註冊時間 */
-	LastLogin    types.Time4       /* 最近上站時間(包含隱身) */
-	LastHost     [IPV4LEN + 1]byte /* 上次上站來源 */
-	Money        int32             /* Ptt幣 */
+	UFlag        UFlag       /* 習慣, see uflags.h */
+	Unused1      uint32      /* 從前放習慣2, 使用前請先清0 */
+	UserLevel    PERM        /* 權限 */
+	NumLoginDays uint32      /* 上線資歷 (每日最多+1的登入次數) */
+	NumPosts     uint32      /* 文章篇數 */
+	FirstLogin   types.Time4 /* 註冊時間 */
+	LastLogin    types.Time4 /* 最近上站時間(包含隱身) */
+	LastHost     IPv4_t      /* 上次上站來源 */
+	Money        int32       /* Ptt幣 */
 	Unused2      [4]byte
 
-	Email       [EMAILSZ]byte    /* Email */
-	Address     [ADDRESSSZ]byte  /* 住址 */
-	Justify     [REGLEN + 1]byte /* 審核資料 */
-	UnusedBirth [3]uint8         /* 生日 月日年 */
-	Over18      bool             /* 是否已滿18歲 */
-	PagerUIType uint8            /* 呼叫器界面類別 (was: WATER_*) */
-	Pager       PagerMode        /* 呼叫器狀態 */
-	Invisible   uint8            /* 隱形狀態 */
+	Email       Email_t   /* Email */
+	Address     Address_t /* 住址 */
+	Justify     Reg_t     /* 審核資料 */
+	UnusedBirth [3]uint8  /* 生日 月日年 */
+	Over18      bool      /* 是否已滿18歲 */
+	PagerUIType uint8     /* 呼叫器界面類別 (was: WATER_*) */
+	Pager       PagerMode /* 呼叫器狀態 */
+	Invisible   uint8     /* 隱形狀態 */
 	Unused4     [2]byte
 	Exmailbox   uint32 /* 購買信箱數 */
 
 	// r3968 移出 sizeof(chicken_t)=128 bytes
 	Unused5       [4]byte
-	Career        [CAREERSZ]byte /* 學歷職業 */
-	UnusedPhone   [PHONESZ]byte  /* 電話 */
-	Unused6       uint32         /* 從前放轉換前的 numlogins, 使用前請先清0 */
+	Career        Career_t /* 學歷職業 */
+	UnusedPhone   Phone_t  /* 電話 */
+	Unused6       uint32   /* 從前放轉換前的 numlogins, 使用前請先清0 */
 	Chkpad1       [44]byte
 	Role          uint32      /* Role-specific permissions */
 	LastSeen      types.Time4 /* 最近上站時間(隱身不計) */
@@ -76,11 +76,11 @@ type UserecRaw struct {
 	DarkLose   uint16  /* 暗棋戰績 敗 */
 	UaVersion  uint8   /* Applicable user agreement version */
 
-	Signature uint8           /* 慣用簽名檔 */
-	Unused10  uint8           /* 從前放好文章數, 使用前請先清0 */
-	BadPost   uint8           /* 評價為壞文章數 */
-	DarkTie   uint16          /* 暗棋戰績 和 */
-	MyAngel   [IDLEN + 1]byte /* 我的小天使 */
+	Signature uint8    /* 慣用簽名檔 */
+	Unused10  uint8    /* 從前放好文章數, 使用前請先清0 */
+	BadPost   uint8    /* 評價為壞文章數 */
+	DarkTie   uint16   /* 暗棋戰績 和 */
+	MyAngel   UserID_t /* 我的小天使 */
 	Pad3      byte
 
 	ChessEloRating    uint16      /* 象棋等級分 */

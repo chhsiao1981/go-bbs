@@ -14,8 +14,8 @@ type UserInfoRaw struct {
 
 	/* user data */
 	UserLevel  uint32
-	UserID     [IDLEN + 1]byte
-	Nickname   [NICKNAMESZ]byte
+	UserID     UserID_t
+	Nickname   Nickname_t
 	From       [27]byte       /* machine name the user called in from */
 	FromIp     types.InAddr_t // was: int     from_alias;
 	DarkWin    uint16
@@ -69,10 +69,10 @@ type UserInfoRaw struct {
 	Chatid [11]byte /* chat id, if in chat mode */
 
 	/* games */
-	LockMode uint8           /* 不准 multi_login 玩的東西 */
-	Turn     byte            /* 遊戲的先後 */
-	Mateid   [IDLEN + 1]byte /* 遊戲對手的 id */
-	Color    byte            /* 暗棋 顏色 */
+	LockMode uint8    /* 不准 multi_login 玩的東西 */
+	Turn     byte     /* 遊戲的先後 */
+	Mateid   UserID_t /* 遊戲對手的 id */
+	Color    byte     /* 暗棋 顏色 */
 
 	/* game record */
 	FiveWin        uint16

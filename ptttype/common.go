@@ -255,8 +255,8 @@ const (
 )
 
 var (
-	USER_ID_GUEST  = [IDLEN + 1]byte{'g', 'u', 'e', 's', 't'} // guest account
-	USER_ID_REGNEW = [IDLEN + 1]byte{'n', 'e', 'w'}           // 用來建新帳號的名稱
+	USER_ID_GUEST  = UserID_t{'g', 'u', 'e', 's', 't'} // guest account
+	USER_ID_REGNEW = UserID_t{'n', 'e', 'w'}           // 用來建新帳號的名稱
 
 	FN_CONF_BANIP_POSTFIX = "/etc/banip.conf"               // 禁止連線的 IP 列表
 	FN_CONF_BANIP         = BBSHOME + FN_CONF_BANIP_POSTFIX // 禁止連線的 IP 列表

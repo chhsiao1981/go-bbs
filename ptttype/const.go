@@ -21,8 +21,7 @@ const (
 	CAREERSZ   = 40 /* Size of career field */
 	PHONESZ    = 20 /* Size of phone field */
 
-	USERNAMESZ = 24 /* Size of Username in MailQueue */
-	RCPTSZ     = 50 /* Size of RCPT in MailQueue */
+	RCPTSZ = 50 /* Size of RCPT in MailQueue */
 
 	PASSWD_VERSION = 4194
 

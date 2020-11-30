@@ -9,7 +9,7 @@ import (
 type MsgQueueRaw struct {
 	//Require updating SHM_VERSION if MSG_QUEUE_RAW_SZ is changed.
 	Pid        types.Pid_t
-	UserID     [IDLEN + 1]byte
+	UserID     UserID_t
 	LastCallIn [76]byte
 	MsgMode    int32
 }

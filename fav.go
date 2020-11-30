@@ -18,14 +18,14 @@ func (f *Fav) ToRaw() *fav.FavRaw {
 }
 
 func FavMTime(userID string) (int64, error) {
-	userIDRaw := &[ptttype.IDLEN + 1]byte{}
+	userIDRaw := &ptttype.UserID_t{}
 	copy(userIDRaw[:], []byte(userID))
 
 	return fav.MTime(userIDRaw)
 }
 
 func FavLoad(userID string) (*Fav, error) {
-	userIDRaw := &[ptttype.IDLEN + 1]byte{}
+	userIDRaw := &ptttype.UserID_t{}
 	copy(userIDRaw[:], []byte(userID))
 
 	favRaw, err := fav.Load(userIDRaw)

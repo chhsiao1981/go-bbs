@@ -11,9 +11,9 @@ import (
 
 type BoardHeaderRaw struct {
 	//Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
-	Brdname            [IDLEN + 1]byte /* bid */
-	Title              BoardTitle
-	BM                 [IDLEN*3 + 3]byte /* BMs' userid, token '/' */
+	Brdname            BoardID_t /* bid */
+	Title              BoardTitle_t
+	BM                 BM_t /* BMs' userid, token '/' */
 	Pad1               [3]byte
 	BrdAttr            BrdAttr     /* board的屬性 */
 	ChessCountry       int8        /* 棋國 */

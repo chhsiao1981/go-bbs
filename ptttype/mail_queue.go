@@ -25,12 +25,12 @@ func (m MQType) String() string {
 }
 
 type MailQueue struct {
-	FilePath [FNLEN]byte
-	Subject  [STRLEN]byte
+	FilePath Filename_t
+	Subject  Subject_t
 	MailTime types.Time4
-	Sender   [IDLEN + 1]byte
-	Username [USERNAMESZ]byte
-	RCPT     [RCPTSZ]byte
+	Sender   UserID_t
+	Username Nickname_t
+	RCPT     RCPT_t
 	Method   int32
 	Niamod   []byte
 }

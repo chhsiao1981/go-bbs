@@ -8,7 +8,7 @@ import (
 //emailDBCheckEmail
 //
 //XXX to implement
-func emailDBCheckEmail(userID *[ptttype.IDLEN + 1]byte, email *[ptttype.EMAILSZ]byte) (count int, err error) {
+func emailDBCheckEmail(userID *ptttype.UserID_t, email *[ptttype.EMAILSZ]byte) (count int, err error) {
 
 	return -1, types.ErrNotImplemented
 }
