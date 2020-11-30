@@ -70,9 +70,9 @@ func NewRegister(
 	copy(newUser.Address[:], address[:])
 	newUser.Over18 = over18
 
-	// XXX SECURE_LOGIN
-	// XXX no need to secure-login for now.
-	// newUser.UFlag |= ptttype.UF_SECURE_LOGIN
+	if ptttype.REQUIRE_SECURE_CONN_TO_REGISTER {
+		newUser.UFlag |= ptttype.UF_SECURE_LOGIN
+	}
 
 	copy(newUser.UserID[:], userID[:])
 
@@ -297,7 +297,7 @@ func tryCleanUser() error {
 func isToCleanUser() (bool, error) {
 	theStat, err := os.Stat(ptttype.FN_FRESH)
 	if err != nil {
-		if _, ok := err.(*os.PathError); ok {
+		if os.IsNotExist(err) {
 			return true, nil
 		}
 		return false, err

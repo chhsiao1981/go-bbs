@@ -52,7 +52,7 @@ var (
 		Nickname:   [ptttype.NICKNAMESZ]byte{175, 171},
 		PasswdHash: [ptttype.PASSLEN]byte{98, 104, 119, 118, 79, 74, 116, 102, 84, 49, 84, 65, 73, 0},
 
-		UFlag:        34081376,
+		UFlag:        33557088,
 		UserLevel:    7,
 		NumLoginDays: 1,
 		NumPosts:     0,
