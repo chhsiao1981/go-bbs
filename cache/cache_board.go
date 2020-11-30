@@ -89,7 +89,9 @@ func HbflReload(bidInCache int32) {
 	scanner := bufio.NewScanner(file)
 	var line []byte
 	var uid int32
-	for num := 1; scanner.Scan() && num <= ptttype.MAX_FRIEND; num++ {
+	// num++ is in the end of the for.
+	for num := 1; scanner.Scan() && num <= ptttype.MAX_FRIEND; {
+
 		line = scanner.Bytes()
 		theList := bytes.Split(line, []byte{' '})
 
@@ -97,21 +99,20 @@ func HbflReload(bidInCache int32) {
 		copy(eachUserID[:], theList[0][:])
 
 		if bytes.EqualFold(eachUserID[:], ptttype.USER_ID_GUEST[:]) {
-			num--
 			continue
 		}
 
 		uid, err = SearchUserRaw(eachUserID, nil)
 		if err != nil {
-			num--
 			continue
 		}
 		if uid == 0 {
-			num--
 			continue
 		}
 
 		hbfl[num] = uid
+
+		num++ // num++ is in the end of the for.
 	}
 
 	hbfl[0] = int32(types.NowTS())

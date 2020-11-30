@@ -22,7 +22,7 @@ func IsValidUserID(userID *ptttype.UserID_t) bool {
 		return false
 	}
 
-	if !isalpha(userID[0]) {
+	if !types.Isalpha(userID[0]) {
 		return false
 	}
 
@@ -31,33 +31,10 @@ func IsValidUserID(userID *ptttype.UserID_t) bool {
 			break
 		}
 
-		if !isalnum(c) {
+		if !types.Isalnum(c) {
 			return false
 		}
 	}
 
 	return true
-}
-
-func isalpha(c byte) bool {
-	if c >= 'A' && c <= 'Z' {
-		return true
-	}
-
-	if c >= 'a' && c <= 'z' {
-		return true
-	}
-
-	return false
-}
-
-func isnumber(c byte) bool {
-	if c >= '0' && c <= '9' {
-		return true
-	}
-	return false
-}
-
-func isalnum(c byte) bool {
-	return isalpha(c) || isnumber(c)
 }

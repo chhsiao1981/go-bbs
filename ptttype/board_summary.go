@@ -9,10 +9,11 @@ const (
 )
 
 type BoardSummary struct {
-	Bid     int32
-	Attr    BoardStatAttr
-	Brdname BoardID_t
-	Title   []byte
-	BM      BM_t
-	Reason  RestrictReason
+	Bid       int32
+	Attr      BrdAttr
+	StatAttr  BoardStatAttr
+	Brdname   BoardID_t
+	RealTitle []byte
+	BM        BM_t
+	Reason    RestrictReason
 }
