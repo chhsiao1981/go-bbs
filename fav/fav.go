@@ -6,7 +6,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/PichuChen/go-bbs/cmbbs"
+	"github.com/PichuChen/go-bbs/path"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 	log "github.com/sirupsen/logrus"
@@ -35,7 +35,7 @@ type FavRaw struct {
 const SIZE_OF_FAV = unsafe.Sizeof(FavRaw{})
 
 func MTime(userID *[ptttype.IDLEN + 1]byte) (int64, error) {
-	filename, err := cmbbs.SetHomeFile(userID, FAV)
+	filename, err := path.SetHomeFile(userID, FAV)
 	if err != nil {
 		return 0, err
 	}
@@ -55,7 +55,7 @@ func MTime(userID *[ptttype.IDLEN + 1]byte) (int64, error) {
 //
 //Load fav from file.
 func Load(userID *[ptttype.IDLEN + 1]byte) (*FavRaw, error) {
-	filename, err := cmbbs.SetHomeFile(userID, FAV)
+	filename, err := path.SetHomeFile(userID, FAV)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func Load(userID *[ptttype.IDLEN + 1]byte) (*FavRaw, error) {
 func (fav *FavRaw) Save(userID *[ptttype.IDLEN + 1]byte) (*FavRaw, int64, error) {
 	fav.cleanup()
 
-	filename, err := cmbbs.SetHomeFile(userID, FAV)
+	filename, err := path.SetHomeFile(userID, FAV)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -133,7 +133,7 @@ func (fav *FavRaw) Save(userID *[ptttype.IDLEN + 1]byte) (*FavRaw, int64, error)
 	}
 
 	postfix := types.GetRandom()
-	tmpFilename, err := cmbbs.SetHomeFile(userID, FAV+".tmp."+postfix)
+	tmpFilename, err := path.SetHomeFile(userID, FAV+".tmp."+postfix)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -362,7 +362,7 @@ func (fav *FavRaw) writeFavrec(file *os.File) error {
 }
 
 func tryFav4Load(userID *[ptttype.IDLEN + 1]byte, filename string) (*FavRaw, error) {
-	oldFilename, err := cmbbs.SetHomeFile(userID, FAV4)
+	oldFilename, err := path.SetHomeFile(userID, FAV4)
 	if err != nil {
 		return nil, err
 	}
@@ -383,7 +383,7 @@ func tryFav4Load(userID *[ptttype.IDLEN + 1]byte, filename string) (*FavRaw, err
 	}
 	_, _, _ = fav.Save(userID)
 
-	bakFilename, err := cmbbs.SetHomeFile(userID, FAV+".bak")
+	bakFilename, err := path.SetHomeFile(userID, FAV+".bak")
 	if err != nil {
 		return nil, err
 	}

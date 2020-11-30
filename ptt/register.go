@@ -8,6 +8,7 @@ import (
 
 	"github.com/PichuChen/go-bbs/cache"
 	"github.com/PichuChen/go-bbs/cmbbs"
+	"github.com/PichuChen/go-bbs/path"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 	log "github.com/sirupsen/logrus"
@@ -117,7 +118,7 @@ func NewRegister(
 }
 
 func ensureErasingOldUser(uid int32, userID *[ptttype.IDLEN + 1]byte) (err error) {
-	filename := cmbbs.SetHomePath(userID)
+	filename := path.SetHomePath(userID)
 	tmpFilename := filename + fmt.Sprintf(".%v", types.NowTS())
 	if !types.IsDir(filename) {
 		return nil

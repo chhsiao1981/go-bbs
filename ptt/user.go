@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/PichuChen/go-bbs/cmbbs"
+	"github.com/PichuChen/go-bbs/path"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 	log "github.com/sirupsen/logrus"
@@ -38,7 +38,7 @@ func killUser(uid int32, userID *[ptttype.IDLEN + 1]byte) error {
 }
 
 func tryDeleteHomePath(userID *[ptttype.IDLEN + 1]byte) error {
-	homePath := cmbbs.SetHomePath(userID)
+	homePath := path.SetHomePath(userID)
 	dstPath := strings.Join([]string{ptttype.BBSHOME, ptttype.DIR_TMP, types.CstrToString(userID[:])}, string(os.PathSeparator))
 
 	if !types.IsDir(homePath) {
@@ -54,4 +54,8 @@ func tryDeleteHomePath(userID *[ptttype.IDLEN + 1]byte) error {
 	}
 
 	return nil
+}
+
+func hasUserPerm(user *ptttype.UserecRaw, perm ptttype.PERM) bool {
+	return user.UserLevel&perm != 0
 }

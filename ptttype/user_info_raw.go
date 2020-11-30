@@ -15,7 +15,7 @@ type UserInfoRaw struct {
 	/* user data */
 	UserLevel  uint32
 	UserID     [IDLEN + 1]byte
-	Nickname   [24]byte
+	Nickname   [NICKNAMESZ]byte
 	From       [27]byte       /* machine name the user called in from */
 	FromIp     types.InAddr_t // was: int     from_alias;
 	DarkWin    uint16

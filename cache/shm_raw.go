@@ -62,7 +62,7 @@ type SHMRaw struct {
 	Gap14         [types.INT32_SZ]byte
 	NBottom       [ptttype.MAX_BOARD]uint8 /* number of bottom */
 	Gap15         [types.INT32_SZ]byte
-	Hbfl          [ptttype.MAX_BOARD][ptttype.MAX_FRIEND + 1]int32 /* hidden board friend list, 0: load time, 1-MAX_FRIEND: uid */
+	Hbfl          [ptttype.MAX_BOARD][ptttype.MAX_FRIEND + 1]int32 /* hidden board friend list, 0: load time, 1-MAX_FRIEND: uid (板友們) (0th: load 的時間. 其他欄位: 用來記錄板友的 uid) (XXX 在之後 Time8 時需要改變 structure) */
 	Gap16         [types.INT32_SZ]byte
 	LastPostTime  [ptttype.MAX_BOARD]types.Time4
 	Gap17         [types.INT32_SZ]byte

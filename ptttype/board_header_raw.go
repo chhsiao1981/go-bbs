@@ -12,7 +12,7 @@ import (
 type BoardHeaderRaw struct {
 	//Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
 	Brdname            [IDLEN + 1]byte /* bid */
-	Title              [BTLEN + 1]byte
+	Title              BoardTitle
 	BM                 [IDLEN*3 + 3]byte /* BMs' userid, token '/' */
 	Pad1               [3]byte
 	BrdAttr            BrdAttr     /* board的屬性 */
@@ -47,7 +47,11 @@ type BoardHeaderRaw struct {
 }
 
 //!!!Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
-const BOARD_HEADER_RAW_SZ = unsafe.Sizeof(BoardHeaderRaw{})
+var emptyBoardHeaderRaw = BoardHeaderRaw{}
+
+const BOARD_HEADER_RAW_SZ = unsafe.Sizeof(emptyBoardHeaderRaw)
+
+const BOARD_HEADER_BOARD_NAME_OFFSET = unsafe.Offsetof(emptyBoardHeaderRaw.Brdname)
 
 func LoadBoardHeaderRawsFromFile(filename string) ([]*BoardHeaderRaw, error) {
 	file, err := os.Open(filename)

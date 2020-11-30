@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/PichuChen/go-bbs/cmbbs"
+	"github.com/PichuChen/go-bbs/path"
 	"github.com/PichuChen/go-bbs/ptttype"
 )
 
@@ -77,7 +77,7 @@ func Test_tryDeleteHomePath(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			homepath := cmbbs.SetHomePath(tt.args.userID)
+			homepath := path.SetHomePath(tt.args.userID)
 			_, err := os.Stat(homepath)
 			if err != nil {
 				t.Errorf("tryDeleteHomePath: home-path not exists: homepath: %v", homepath)

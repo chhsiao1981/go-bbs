@@ -8,15 +8,15 @@ import (
 	"math/rand"
 	"os"
 
-	"github.com/PichuChen/go-bbs/cmbbs"
 	"github.com/PichuChen/go-bbs/names"
+	"github.com/PichuChen/go-bbs/path"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 	log "github.com/sirupsen/logrus"
 )
 
 func friendDeleteAll(userID *[ptttype.IDLEN + 1]byte, friendType int) error {
-	filename, err := cmbbs.SetHomeFile(userID, ptttype.FriendFile[friendType])
+	filename, err := path.SetHomeFile(userID, ptttype.FriendFile[friendType])
 	if err != nil { //unable to get the file. assuming not-exists
 		return err
 	}
@@ -47,7 +47,7 @@ func deleteUserFriend(userID *[ptttype.IDLEN + 1]byte, friendID *[ptttype.IDLEN 
 		return
 	}
 
-	filename, err := cmbbs.SetHomeFile(userID, ptttype.FN_ALOHA)
+	filename, err := path.SetHomeFile(userID, ptttype.FN_ALOHA)
 	if err != nil {
 		return
 	}

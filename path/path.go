@@ -1,4 +1,4 @@
-package cmbbs
+package path
 
 import (
 	"os"
@@ -40,4 +40,20 @@ func SetHomeFile(userID *[ptttype.IDLEN + 1]byte, filename string) (string, erro
 
 func IsValidFilename(filename string) bool {
 	return !strings.Contains(filename, "..")
+}
+
+func SetBFile(boardID *[ptttype.IDLEN + 1]byte, filename string) (string, error) {
+	if filename[0] == '\x00' || !IsValidFilename(filename) {
+		return "", ptttype.ErrInvalidFilename
+	}
+
+	return strings.Join([]string{
+		ptttype.BBSHOME,
+		ptttype.DIR_BOARD,
+		string(boardID[0]),
+		types.CstrToString(boardID[:]),
+		filename,
+	},
+		string(os.PathSeparator),
+	), nil
 }
