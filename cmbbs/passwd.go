@@ -17,9 +17,9 @@ import (
 //GenPasswd
 //
 //If passwd as empty: return empty passwd (unable to login)
-func GenPasswd(passwd []byte) (passwdHash *[ptttype.PASSLEN]byte, err error) {
+func GenPasswd(passwd []byte) (passwdHash *ptttype.Passwd_t, err error) {
 	if passwd[0] == 0 {
-		return &[ptttype.PASSLEN]byte{}, nil
+		return &ptttype.Passwd_t{}, nil
 	}
 
 	num := rand.Intn(65536)
@@ -29,7 +29,7 @@ func GenPasswd(passwd []byte) (passwdHash *[ptttype.PASSLEN]byte, err error) {
 	}
 
 	result, err := crypt.Fcrypt(passwd, saltc[:])
-	passwdHash = &[ptttype.PASSLEN]byte{}
+	passwdHash = &ptttype.Passwd_t{}
 	copy(passwdHash[:], result[:])
 	return passwdHash, err
 }
@@ -50,7 +50,7 @@ func CheckPasswd(expected []byte, input []byte) (bool, error) {
 	return bytes.Equal(pw, expected), nil
 }
 
-func LogAttempt(userID *[ptttype.IDLEN + 1]byte, ip *[ptttype.IPV4LEN + 1]byte, isWithUserHome bool) {
+func LogAttempt(userID *ptttype.UserID_t, ip *ptttype.IPv4_t, isWithUserHome bool) {
 }
 
 //PasswdLoadUser
@@ -61,7 +61,7 @@ func LogAttempt(userID *[ptttype.IDLEN + 1]byte, ip *[ptttype.IPV4LEN + 1]byte, 
 //	int32: uid
 //	*ptttype.UserecRaw: user.
 //	error: err.
-func PasswdLoadUser(userID *[ptttype.IDLEN + 1]byte) (int32, *ptttype.UserecRaw, error) {
+func PasswdLoadUser(userID *ptttype.UserID_t) (int32, *ptttype.UserecRaw, error) {
 	if userID == nil || userID[0] == 0 {
 		return 0, nil, ptttype.ErrInvalidUserID
 	}

@@ -11,11 +11,11 @@ func TestPasswdLoadUser(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	userID1 := [ptttype.IDLEN + 1]byte{}
+	userID1 := ptttype.UserID_t{}
 	copy(userID1[:], []byte("SYSOP"))
 
 	type args struct {
-		userID *[ptttype.IDLEN + 1]byte
+		userID *ptttype.UserID_t
 	}
 	tests := []struct {
 		name      string
@@ -87,7 +87,7 @@ func TestCheckPasswd(t *testing.T) {
 
 	input1 := []byte{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '1', 0}
 	input2 := []byte{'0', '1', '2', '4', '4', '5', '6', '7', '8', '9', '0', '1', 0}
-	expected1 := [ptttype.PASSLEN]byte{65, 65, 51, 81, 66, 104, 76, 87, 107, 49, 66, 87, 65}
+	expected1 := ptttype.Passwd_t{65, 65, 51, 81, 66, 104, 76, 87, 107, 49, 66, 87, 65}
 
 	type args struct {
 		expected []byte

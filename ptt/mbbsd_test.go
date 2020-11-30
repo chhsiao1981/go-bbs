@@ -11,13 +11,13 @@ func TestLoginQuery(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	userid1 := [ptttype.IDLEN + 1]byte{}
+	userid1 := ptttype.UserID_t{}
 	copy(userid1[:], []byte("SYSOP"))
 
 	type args struct {
-		userID *[ptttype.IDLEN + 1]byte
+		userID *ptttype.UserID_t
 		passwd []byte
-		ip     *[ptttype.IPV4LEN + 1]byte
+		ip     *ptttype.IPv4_t
 	}
 	tests := []struct {
 		name     string

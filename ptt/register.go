@@ -18,17 +18,17 @@ import (
 //
 //XXX Assuming valid input. need to verify email at api.
 func NewRegister(
-	userID *[ptttype.IDLEN + 1]byte,
+	userID *ptttype.UserID_t,
 	passwd []byte,
-	fromHost *[ptttype.IPV4LEN + 1]byte,
-	email *[ptttype.EMAILSZ]byte,
+	fromHost *ptttype.IPv4_t,
+	email *ptttype.Email_t,
 	isEmailVerified bool,
 	isAdbannerUSong bool,
 
-	nickname *[ptttype.NICKNAMESZ]byte,
-	realname *[ptttype.REALNAMESZ]byte,
-	career *[ptttype.CAREERSZ]byte,
-	address *[ptttype.ADDRESSSZ]byte,
+	nickname *ptttype.Nickname_t,
+	realname *ptttype.RealName_t,
+	career *ptttype.Career_t,
+	address *ptttype.Address_t,
 	over18 bool,
 ) (*ptttype.UserecRaw, error) {
 
@@ -101,7 +101,7 @@ func NewRegister(
 	if isEmailVerified {
 		emailErr := registerCheckAndUpdateEmaildb(newUser, &newUser.Email)
 		if emailErr == nil {
-			justify := [ptttype.REGLEN + 1]byte{}
+			justify := ptttype.Reg_t{}
 			copy(justify[:ptttype.REGLEN], []byte(fmt.Sprintf("<E-Mail>: %v", types.NowTS().Cdate())))
 			err = pwcuRegCompleteJustify(uid, userID, &justify)
 			if err != nil {
@@ -117,7 +117,7 @@ func NewRegister(
 	return user, nil
 }
 
-func ensureErasingOldUser(uid int32, userID *[ptttype.IDLEN + 1]byte) (err error) {
+func ensureErasingOldUser(uid int32, userID *ptttype.UserID_t) (err error) {
 	filename := path.SetHomePath(userID)
 	tmpFilename := filename + fmt.Sprintf(".%v", types.NowTS())
 	if !types.IsDir(filename) {
@@ -134,7 +134,7 @@ func ensureErasingOldUser(uid int32, userID *[ptttype.IDLEN + 1]byte) (err error
 	return nil
 }
 
-func registerCheckAndUpdateEmaildb(user *ptttype.UserecRaw, email *[ptttype.EMAILSZ]byte) (err error) {
+func registerCheckAndUpdateEmaildb(user *ptttype.UserecRaw, email *ptttype.Email_t) (err error) {
 
 	_, err = registerCountEmail(user, email)
 	if err != nil {
@@ -159,7 +159,7 @@ func registerCheckAndUpdateEmaildb(user *ptttype.UserecRaw, email *[ptttype.EMAI
 	return nil
 }
 
-func registerCountEmail(user *ptttype.UserecRaw, email *[ptttype.EMAILSZ]byte) (count int, err error) {
+func registerCountEmail(user *ptttype.UserecRaw, email *ptttype.Email_t) (count int, err error) {
 
 	if ptttype.USE_EMAILDB {
 		r, err := emailDBCheckEmail(&user.UserID, email)

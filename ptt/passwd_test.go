@@ -11,11 +11,11 @@ func Test_initCurrentUser(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	userid1 := [ptttype.IDLEN + 1]byte{}
+	userid1 := ptttype.UserID_t{}
 	copy(userid1[:], []byte("SYSOP"))
 
 	type args struct {
-		userID *[ptttype.IDLEN + 1]byte
+		userID *ptttype.UserID_t
 	}
 	tests := []struct {
 		name      string

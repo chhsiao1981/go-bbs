@@ -22,7 +22,7 @@ func pwcuSetByBit(perm ptttype.PERM, mask ptttype.PERM, isSet bool) ptttype.PERM
 	}
 }
 
-func pwcuStart(uid int32, userID *[ptttype.IDLEN + 1]byte) (user *ptttype.UserecRaw, err error) {
+func pwcuStart(uid int32, userID *ptttype.UserID_t) (user *ptttype.UserecRaw, err error) {
 	user, err = passwdSyncQuery(uid)
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func pwcuEnd(uid int32, user *ptttype.UserecRaw) (err error) {
 	return passwdSyncUpdate(uid, user)
 }
 
-func pwcuRegCompleteJustify(uid int32, userID *[ptttype.IDLEN + 1]byte, justify *[ptttype.REGLEN + 1]byte) (err error) {
+func pwcuRegCompleteJustify(uid int32, userID *ptttype.UserID_t, justify *ptttype.Reg_t) (err error) {
 
 	user, err := pwcuStart(uid, userID)
 	if err != nil {
@@ -57,7 +57,7 @@ func pwcuRegCompleteJustify(uid int32, userID *[ptttype.IDLEN + 1]byte, justify 
 	return nil
 }
 
-func pwcuBitDisableLevel(uid int32, userID *[ptttype.IDLEN + 1]byte, perm ptttype.PERM) (err error) {
+func pwcuBitDisableLevel(uid int32, userID *ptttype.UserID_t, perm ptttype.PERM) (err error) {
 	user, err := pwcuStart(uid, userID)
 	if err != nil {
 		return err

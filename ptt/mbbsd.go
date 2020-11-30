@@ -17,7 +17,7 @@ import (
 //Return
 //	*UserecRaw: user
 //  error: err
-func LoginQuery(userID *[ptttype.IDLEN + 1]byte, passwd []byte, ip *[ptttype.IPV4LEN + 1]byte) (*ptttype.UserecRaw, error) {
+func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (*ptttype.UserecRaw, error) {
 	if !names.IsValidUserID(userID) {
 		return nil, ptttype.ErrInvalidUserID
 	}

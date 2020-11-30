@@ -130,7 +130,7 @@ func userecRawAddToUHash(uidInCache int32, userecRaw *ptttype.UserecRaw, isOnfly
 
 	h := cmsys.StringHashWithHashBits(userecRaw.UserID[:])
 
-	shmUserID := [ptttype.IDLEN + 1]byte{}
+	shmUserID := ptttype.UserID_t{}
 	Shm.ReadAt(
 		unsafe.Offsetof(Shm.Raw.Userid)+ptttype.USER_ID_SZ*uintptr(uidInCache),
 		ptttype.USER_ID_SZ,
@@ -266,7 +266,7 @@ func checkHash(h uint32) {
 	offsetHashHead := unsafe.Offsetof(Shm.Raw.HashHead)
 	offsetNextInHash := unsafe.Offsetof(Shm.Raw.NextInHash)
 
-	userID := [ptttype.IDLEN + 1]byte{}
+	userID := ptttype.UserID_t{}
 	deep := 0
 	for val != -1 {
 		offset = offsetNextInHash

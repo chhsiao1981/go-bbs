@@ -18,7 +18,7 @@ func Test_registerCountEmail(t *testing.T) {
 
 	type args struct {
 		user  *ptttype.UserecRaw
-		email *[ptttype.EMAILSZ]byte
+		email *ptttype.Email_t
 	}
 	tests := []struct {
 		name          string
@@ -272,16 +272,16 @@ func TestNewRegister(t *testing.T) {
 	defer teardownTest()
 
 	type args struct {
-		userID          *[ptttype.IDLEN + 1]byte
+		userID          *ptttype.UserID_t
 		passwd          []byte
-		fromHost        *[ptttype.IPV4LEN + 1]byte
-		email           *[ptttype.EMAILSZ]byte
+		fromHost        *ptttype.IPv4_t
+		email           *ptttype.Email_t
 		isEmailVerified bool
 		isAdbannerUSong bool
-		nickname        *[ptttype.NICKNAMESZ]byte
-		realname        *[ptttype.REALNAMESZ]byte
-		career          *[ptttype.CAREERSZ]byte
-		address         *[ptttype.ADDRESSSZ]byte
+		nickname        *ptttype.Nickname_t
+		realname        *ptttype.RealName_t
+		career          *ptttype.Career_t
+		address         *ptttype.Address_t
 		over18          bool
 	}
 	tests := []struct {

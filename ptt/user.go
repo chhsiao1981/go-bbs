@@ -13,7 +13,7 @@ import (
 //killUser
 //
 //Assume correct uid / userID correspondance.
-func killUser(uid int32, userID *[ptttype.IDLEN + 1]byte) error {
+func killUser(uid int32, userID *ptttype.UserID_t) error {
 	if uid <= 0 || userID == nil {
 		return ptttype.ErrInvalidUserID
 	}
@@ -37,7 +37,7 @@ func killUser(uid int32, userID *[ptttype.IDLEN + 1]byte) error {
 	return nil
 }
 
-func tryDeleteHomePath(userID *[ptttype.IDLEN + 1]byte) error {
+func tryDeleteHomePath(userID *ptttype.UserID_t) error {
 	homePath := path.SetHomePath(userID)
 	dstPath := strings.Join([]string{ptttype.BBSHOME, ptttype.DIR_TMP, types.CstrToString(userID[:])}, string(os.PathSeparator))
 

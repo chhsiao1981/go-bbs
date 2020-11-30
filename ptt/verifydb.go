@@ -8,7 +8,7 @@ import (
 //verifyDBSet
 //
 //XXX to implement
-func verifyDBSet(userID *[ptttype.IDLEN + 1]byte, generation int64, vmethod ptttype.VerifyDBVMethod, vkey []byte, timestamp int64) error {
+func verifyDBSet(userID *ptttype.UserID_t, generation int64, vmethod ptttype.VerifyDBVMethod, vkey []byte, timestamp int64) error {
 	return types.ErrNotImplemented
 }
 

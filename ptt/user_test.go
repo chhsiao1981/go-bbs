@@ -13,12 +13,12 @@ func Test_killUser(t *testing.T) {
 	setupTest()
 	defer teardownTest()
 
-	userID1 := &[ptttype.IDLEN + 1]byte{}
+	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("CodingMan"))
 
 	type args struct {
 		uid    int32
-		userID *[ptttype.IDLEN + 1]byte
+		userID *ptttype.UserID_t
 	}
 	tests := []struct {
 		name    string
@@ -59,11 +59,11 @@ func Test_tryDeleteHomePath(t *testing.T) {
 		os.RemoveAll("./testcase/tmp")
 	}()
 
-	userID1 := &[ptttype.IDLEN + 1]byte{}
+	userID1 := &ptttype.UserID_t{}
 	copy(userID1[:], []byte("CodingMan"))
 
 	type args struct {
-		userID *[ptttype.IDLEN + 1]byte
+		userID *ptttype.UserID_t
 	}
 	tests := []struct {
 		name    string

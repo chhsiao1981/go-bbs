@@ -15,7 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func friendDeleteAll(userID *[ptttype.IDLEN + 1]byte, friendType int) error {
+func friendDeleteAll(userID *ptttype.UserID_t, friendType int) error {
 	filename, err := path.SetHomeFile(userID, ptttype.FriendFile[friendType])
 	if err != nil { //unable to get the file. assuming not-exists
 		return err
@@ -29,7 +29,7 @@ func friendDeleteAll(userID *[ptttype.IDLEN + 1]byte, friendType int) error {
 
 	reader := bufio.NewReader(file)
 
-	friendID := &[ptttype.IDLEN + 1]byte{}
+	friendID := &ptttype.UserID_t{}
 	for line, err := reader.ReadBytes('\n'); err == nil; line, err = reader.ReadBytes('\n') {
 		copy(friendID[:], line)
 		if !names.IsValidUserID(friendID) {
@@ -42,7 +42,7 @@ func friendDeleteAll(userID *[ptttype.IDLEN + 1]byte, friendType int) error {
 	return nil
 }
 
-func deleteUserFriend(userID *[ptttype.IDLEN + 1]byte, friendID *[ptttype.IDLEN + 1]byte, friendType int) {
+func deleteUserFriend(userID *ptttype.UserID_t, friendID *ptttype.UserID_t, friendType int) {
 	if bytes.Equal(userID[:], friendID[:]) {
 		return
 	}
@@ -55,7 +55,7 @@ func deleteUserFriend(userID *[ptttype.IDLEN + 1]byte, friendID *[ptttype.IDLEN 
 	_ = deleteFriendFromFile(filename, friendID, false)
 }
 
-func deleteFriendFromFile(filename string, friend *[ptttype.IDLEN + 1]byte, isCaseSensitive bool) bool {
+func deleteFriendFromFile(filename string, friend *ptttype.UserID_t, isCaseSensitive bool) bool {
 	// XXX race-condition
 	randNum := rand.Intn(0xfff)
 	randStr := fmt.Sprintf("%3.3X", randNum)
