@@ -372,3 +372,15 @@ func (s *SHM) Cmp(offsetOfSHMRawComponent uintptr, size uintptr, cmpptr unsafe.P
 func (s *SHM) SetBCACHEPTR(offsetOfSHMRawComponent uintptr) {
     shm.SetBCACHEPTR(s.Shmaddr, int(offsetOfSHMRawComponent))
 }
+
+func (s *SHM) QsortCmpBoardName() {
+    var bnumber int32
+    s.ReadAt(
+        unsafe.Offsetof(s.Raw.BNumber),
+        types.TIME4_SZ,
+        unsafe.Pointer(&bnumber),
+    )
+
+    offsetBsorted := unsafe.Offsetof(s.Raw.BSorted)
+    shm.QsortCmpBoardName(s.Shmaddr, int(offsetBsorted), uint32(bnumber), ptttype.BOARD_HEADER_RAW_SZ)
+}

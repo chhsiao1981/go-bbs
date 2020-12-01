@@ -25,8 +25,8 @@ int cmpwrapper(void *shmaddr, int offset, unsigned long n, void *cmpaddr);
 void memsetwrapper(void *shmaddr, int offset, unsigned char c, unsigned long n);
 
 void set_bcacheptr(void *shmaddr, int offset);
-void qsort_cmpboardname_wrapper(void *shmaddr, unsigned long n, unsigned long sz);
-void qsort_cmpboardclass_wrapper(void *shmaddr, unsigned long n, unsigned long sz);
+void qsort_cmpboardname_wrapper(void *shmaddr, int offset, unsigned long n, unsigned long sz);
+void qsort_cmpboardclass_wrapper(void *shmaddr, int offset, unsigned long n, unsigned long sz);
 int cmpboardname(const void * i, const void * j);
 int cmpboardclass(const void * i, const void * j);
 

@@ -97,6 +97,14 @@ func SetBCACHEPTR(shmaddr unsafe.Pointer, offset int) {
 	C.set_bcacheptr(shmaddr, C.int(offset))
 }
 
+func QsortCmpBoardName(shmaddr unsafe.Pointer, offset int, n uint32, size uintptr) {
+	C.qsort_cmpboardname_wrapper(shmaddr, C.int(offset), C.ulong(n), C.ulong(size))
+}
+
+func QsortCmpBoardClass(shmaddr unsafe.Pointer, offset int, n uint32, size uintptr) {
+	C.qsort_cmpboardclass_wrapper(shmaddr, C.int(offset), C.ulong(n), C.ulong(size))
+}
+
 //Cmp
 //
 //memcmp(shmaddr+offset, cmpaddr, size)

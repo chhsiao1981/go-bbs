@@ -69,13 +69,15 @@ _bcache(int idx) {
 }
 
 void
-qsort_cmpboardname_wrapper(void *shmaddr, unsigned long n, unsigned long sz) {
-    qsort(shmaddr, n, sz, cmpboardname);
+qsort_cmpboardname_wrapper(void *shmaddr, int offset, unsigned long n, unsigned long sz) {
+    unsigned char *bsortedaddr = (unsigned char *)shmaddr + offset;
+    qsort(bsortedaddr, n, sz, cmpboardname);
 }
 
 void
-qsort_cmpboardclass_wrapper(void *shmaddr, unsigned long n, unsigned long sz) {
-    qsort(shmaddr, n, sz, cmpboardclass);
+qsort_cmpboardclass_wrapper(void *shmaddr, int offset, unsigned long n, unsigned long sz) {
+    unsigned char *bsortedaddr = (unsigned char *)shmaddr + offset;
+    qsort(bsortedaddr, n, sz, cmpboardclass);
 }
 
 /**
