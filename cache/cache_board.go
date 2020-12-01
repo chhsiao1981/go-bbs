@@ -3,10 +3,13 @@ package cache
 import (
 	"bufio"
 	"bytes"
+	"io/ioutil"
 	"os"
+	"time"
 	"unsafe"
 
 	"github.com/PichuChen/go-bbs/cmbbs/path"
+	"github.com/PichuChen/go-bbs/cmsys"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 )
@@ -136,4 +139,135 @@ func NumBoards() int32 {
 	)
 
 	return nboards
+}
+
+//Reload BCache
+//
+//https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L458
+func ReloadBCache() {
+	var busystate int32
+	for i := 0; i < 10; i++ { //Is it ok that we don't use mutex or semaphore here?
+		Shm.ReadAt(
+			unsafe.Offsetof(Shm.Raw.BBusyState),
+			types.INT32_SZ,
+			unsafe.Pointer(&busystate),
+		)
+		if busystate == 0 {
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
+	// should we check that the busystate is still != 0 and return?
+
+	busystate = 1
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.BBusyState),
+		types.INT32_SZ,
+		unsafe.Pointer(&busystate),
+	)
+
+	theBytes, err := reloadBCacheReadFile()
+	if err != nil {
+		return
+	}
+
+	const bcachesz = unsafe.Sizeof(Shm.Raw.BCache)
+	var theSize = bcachesz
+	lenTheBytes := uintptr(len(theBytes))
+	if lenTheBytes < theSize {
+		theSize = lenTheBytes
+	}
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.BCache),
+		theSize,
+		unsafe.Pointer(&theBytes),
+	)
+
+	bnumber := int32(theSize / ptttype.BOARD_HEADER_RAW_SZ)
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.BNumber),
+		types.INT32_SZ,
+		unsafe.Pointer(&bnumber),
+	)
+
+	Shm.Memset(
+		unsafe.Offsetof(Shm.Raw.LastPostTime),
+		byte(0),
+		uintptr(ptttype.MAX_BOARD)*types.TIME4_SZ,
+	)
+
+	Shm.Memset(
+		unsafe.Offsetof(Shm.Raw.Total),
+		byte(0),
+		uintptr(ptttype.MAX_BOARD)*types.INT32_SZ,
+	)
+
+	Shm.InnerSetInt32(
+		unsafe.Offsetof(Shm.Raw.BTouchTime),
+		unsafe.Offsetof(Shm.Raw.BUptime),
+	)
+
+	busystate = 0
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.BBusyState),
+		types.INT32_SZ,
+		unsafe.Pointer(&busystate),
+	)
+
+	sortBCache()
+
+	go reloadCacheLoadBottom()
+}
+
+//sortBCache
+//XXX TODO: implement
+func sortBCache() {
+
+}
+
+func reloadCacheLoadBottom() {
+	boardName := &ptttype.BoardID_t{}
+	for i := uintptr(0); i < ptttype.MAX_BOARD; i++ {
+		Shm.ReadAt(
+			unsafe.Offsetof(Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*i+ptttype.BOARD_HEADER_BOARD_NAME_OFFSET,
+			ptttype.BOARD_HEADER_RAW_SZ,
+			unsafe.Pointer(boardName),
+		)
+
+		if boardName[0] == 0 {
+			continue
+		}
+
+		filename, err := path.SetBFile(boardName, ptttype.FN_DIR_BOTTOM)
+		if err != nil {
+			continue
+		}
+
+		n := cmsys.GetNumRecords(filename, ptttype.FILE_HEADER_RAW_SZ)
+		if n > 5 {
+			n = 5
+		}
+
+		var n_uint8 = uint8(n)
+		Shm.WriteAt(
+			unsafe.Offsetof(Shm.Raw.NBottom)+i,
+			1,
+			unsafe.Pointer(&n_uint8),
+		)
+	}
+}
+
+func reloadBCacheReadFile() ([]byte, error) {
+	file, err := os.Open(ptttype.FN_BOARD)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	theBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+
+	return theBytes, nil
 }

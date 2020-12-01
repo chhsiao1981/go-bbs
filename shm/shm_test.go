@@ -166,7 +166,7 @@ func TestReadAt(t *testing.T) {
 	test1.A = 10
 	copy(test1.B.C[:], []byte("0123456789"))
 	test1ptr := unsafe.Pointer(test1)
-	WriteAt(shmaddr, 12, types.Size_t(TEST_STRUCT_SZ), test1ptr)
+	WriteAt(shmaddr, 12, TEST_STRUCT_SZ, test1ptr)
 	logrus.Infof("TEST_STRUCT_SZ: %v", TEST_STRUCT_SZ)
 
 	test2 := &testStruct{}
@@ -185,7 +185,7 @@ func TestReadAt(t *testing.T) {
 	type args struct {
 		shmaddr unsafe.Pointer
 		offset  int
-		size    types.Size_t
+		size    uintptr
 		outptr  unsafe.Pointer
 	}
 	tests := []struct {
@@ -197,7 +197,7 @@ func TestReadAt(t *testing.T) {
 		// TODO: Add test cases.
 		{
 			name:     "read test2 (testStruct)",
-			args:     args{shmaddr: shmaddr, offset: 12, size: types.Size_t(TEST_STRUCT_SZ), outptr: test2ptr},
+			args:     args{shmaddr: shmaddr, offset: 12, size: TEST_STRUCT_SZ, outptr: test2ptr},
 			read:     test2,
 			expected: test1,
 		},
@@ -257,7 +257,7 @@ func TestWriteAt(t *testing.T) {
 	type args struct {
 		shmaddr unsafe.Pointer
 		offset  int
-		size    types.Size_t
+		size    uintptr
 		inptr   unsafe.Pointer
 	}
 	tests := []struct {
@@ -273,12 +273,12 @@ func TestWriteAt(t *testing.T) {
 		},
 		{
 			name:     "test",
-			args:     args{shmaddr, 0, types.Size_t(TEST_STRUCT_SZ), test1ptr},
+			args:     args{shmaddr, 0, TEST_STRUCT_SZ, test1ptr},
 			expected: want1,
 		},
 		{
 			name:     "test-want2",
-			args:     args{shmaddr, 12, types.Size_t(TEST_STRUCT_SZ), test1ptr},
+			args:     args{shmaddr, 12, TEST_STRUCT_SZ, test1ptr},
 			expected: want2,
 		},
 		{
@@ -337,7 +337,7 @@ func TestIncUint32(t *testing.T) {
 			IncUint32(tt.args.shmaddr, tt.args.offset)
 
 			out := uint32(0)
-			ReadAt(tt.args.shmaddr, tt.args.offset, types.Size_t(unsafe.Sizeof(out)), unsafe.Pointer(&out))
+			ReadAt(tt.args.shmaddr, tt.args.offset, unsafe.Sizeof(out), unsafe.Pointer(&out))
 			if !reflect.DeepEqual(out, tt.expected) {
 				t.Errorf("IncUint32() out: %v expected: %v", out, tt.expected)
 			}

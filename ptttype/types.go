@@ -29,6 +29,12 @@ type Filename_t [FNLEN]byte
 type Subject_t [STRLEN]byte
 type RCPT_t [RCPTSZ]byte
 
+type Owner_t [IDLEN + 2]byte //uid[.]
+
+type Title_t [TTLEN + 1]byte
+
+type Date_t [6]byte
+
 var (
 	EMPTY_USER_ID  = UserID_t{}
 	EMPTY_BOARD_ID = BoardID_t{}
@@ -45,9 +51,13 @@ func (bt *BoardTitle_t) RealTitle() []byte {
 	return bt[7:]
 }
 
+//ToBMs
+//
+//We would like to have a better method
+//(We don't need to worry about this once we move everything to the db.)
 func (bm *BM_t) ToBMs() []UserID_t {
 	bmBytes := types.CstrToBytes(bm[:])
-	theList := bytes.Split(bmBytes, '/')
+	theList := bytes.Split(bmBytes, []byte{'/'})
 	bms := make([]UserID_t, len(theList))
 	for idx, each := range theList {
 		copy(bms[idx][:], each[:])

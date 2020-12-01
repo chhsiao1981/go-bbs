@@ -121,11 +121,7 @@ func keywordNotInTitle(title *ptttype.BoardTitle_t, keyword []byte) bool {
 func showBoardList(user *ptttype.UserecRaw, uid int32, boardStats []*ptttype.BoardStat) (summary []*ptttype.BoardSummary, err error) {
 	summary = make([]*ptttype.BoardSummary, len(boardStats))
 	for idx, eachStat := range boardStats {
-		eachSummary, err := parseBoardSummary(user, uid, eachStat)
-		if err != nil {
-			return nil, err
-		}
-		summary[idx] = eachSummary
+		summary[idx] = parseBoardSummary(user, uid, eachStat)
 	}
 
 	return summary, nil
@@ -170,14 +166,14 @@ func parseBoardSummary(user *ptttype.UserecRaw, uid int32, boardStat *ptttype.Bo
 	bidInCache := boardStat.Bid - 1
 	var lastPostTime types.Time4
 	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.LastPostTime)+types.TIME4_SZ*bidInCache,
+		unsafe.Offsetof(cache.Shm.Raw.LastPostTime)+types.TIME4_SZ*uintptr(bidInCache),
 		types.TIME4_SZ,
 		unsafe.Pointer(&lastPostTime),
 	)
 
 	var total int32
 	cache.Shm.ReadAt(
-		unsafe.Offsetof(cache.Shm.Raw.Total)+types.INT32_SZ*bidInCache,
+		unsafe.Offsetof(cache.Shm.Raw.Total)+types.INT32_SZ*uintptr(bidInCache),
 		types.INT32_SZ,
 		unsafe.Pointer(&total),
 	)

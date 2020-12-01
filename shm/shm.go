@@ -28,9 +28,20 @@ package shm
 //     unsigned int *flag = (unsigned int *)inptr;
 //     *dst |= *flag;
 // }
+// void innerset_int32wrapper(void *shmaddr, int offsetSrc, int offsetDst) {
+//     unsigned char *c_src = (unsigned char *)shmaddr + offsetSrc;
+//     unsigned char *c_dst = (unsigned char *)shmaddr + offsetDst;
+//     int *src = (int *)c_src;
+//     int *dst = (int *)c_dst;
+//     *dst = *src;
+// }
 // int cmpwrapper(void *shmaddr, int offset, unsigned long n, void *cmpaddr) {
 //   unsigned char *cmp1 = (unsigned char *)shmaddr + offset;
 //   return memcmp(cmp1, cmpaddr, n);
+// }
+// void memsetwrapper(void *shmaddr, int offset, unsigned char c, unsigned long n) {
+//   unsigned char *dst = (unsigned char *)shmaddr + offset;
+//   memset(dst, c, n);
 // }
 import "C"
 import (
@@ -100,11 +111,11 @@ func CloseShm(shmid int) (err error) {
 	return nil
 }
 
-func ReadAt(shmaddr unsafe.Pointer, offset int, size types.Size_t, outptr unsafe.Pointer) {
+func ReadAt(shmaddr unsafe.Pointer, offset int, size uintptr, outptr unsafe.Pointer) {
 	C.readwrapper(outptr, shmaddr, C.int(offset), C.ulong(size))
 }
 
-func WriteAt(shmaddr unsafe.Pointer, offset int, size types.Size_t, inptr unsafe.Pointer) {
+func WriteAt(shmaddr unsafe.Pointer, offset int, size uintptr, inptr unsafe.Pointer) {
 	C.writewrapper(shmaddr, C.int(offset), inptr, C.ulong(size))
 }
 
@@ -116,13 +127,21 @@ func SetOrUint32(shmaddr unsafe.Pointer, offset int, intptr unsafe.Pointer) {
 	C.set_or_uint32wrapper(shmaddr, C.int(offset), intptr)
 }
 
+func InnerSetInt32(shmaddr unsafe.Pointer, offsetSrc int, offsetDst int) {
+	C.innerset_int32wrapper(shmaddr, C.int(offsetSrc), C.int(offsetDst))
+}
+
+func Memset(shmaddr unsafe.Pointer, offset int, c byte, size uintptr) {
+	C.memsetwrapper(shmaddr, C.int(offset), C.uchar(c), C.ulong(size))
+}
+
 //Cmp
 //
 //memcmp(shmaddr+offset, cmpaddr, size)
 //
 //Return:
 //	int: 0: shm == gomem, <0: shm < gomem, >0: shm > gomem
-func Cmp(shmaddr unsafe.Pointer, offset int, size types.Size_t, cmpaddr unsafe.Pointer) int {
+func Cmp(shmaddr unsafe.Pointer, offset int, size uintptr, cmpaddr unsafe.Pointer) int {
 	cret := C.cmpwrapper(shmaddr, C.int(offset), C.ulong(size), cmpaddr)
 
 	return int(cret)

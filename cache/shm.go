@@ -324,7 +324,7 @@ func (s *SHM) Close() error {
 //        [!!!]If we are reading from the array, make sure that have unit-size * n in the size.
 //  outptr: the ptr of the object to read.
 func (s *SHM) ReadAt(offsetOfSHMRawComponent uintptr, size uintptr, outptr unsafe.Pointer) {
-    shm.ReadAt(s.Shmaddr, int(offsetOfSHMRawComponent), types.Size_t(size), outptr)
+    shm.ReadAt(s.Shmaddr, int(offsetOfSHMRawComponent), size, outptr)
 }
 
 //WriteAt
@@ -339,7 +339,7 @@ func (s *SHM) ReadAt(offsetOfSHMRawComponent uintptr, size uintptr, outptr unsaf
 //        [!!!]If we are reading from the array, make sure that have unit-size * n in the size.
 //  inptr: the ptr of the object to write.
 func (s *SHM) WriteAt(offsetOfSHMRawComponent uintptr, size uintptr, inptr unsafe.Pointer) {
-    shm.WriteAt(s.Shmaddr, int(offsetOfSHMRawComponent), types.Size_t(size), inptr)
+    shm.WriteAt(s.Shmaddr, int(offsetOfSHMRawComponent), size, inptr)
 }
 
 func (s *SHM) SetOrUint32(offsetOfSHMRawComponent uintptr, inptr unsafe.Pointer) {
@@ -350,6 +350,14 @@ func (s *SHM) IncUint32(offsetOfSHMRawComponent uintptr) {
     shm.IncUint32(s.Shmaddr, int(offsetOfSHMRawComponent))
 }
 
+func (s *SHM) Memset(offsetOfSHMRawComponent uintptr, c byte, size uintptr) {
+    shm.Memset(s.Shmaddr, int(offsetOfSHMRawComponent), c, size)
+}
+
+func (s *SHM) InnerSetInt32(offsetSrc uintptr, offsetDst uintptr) {
+    shm.InnerSetInt32(s.Shmaddr, int(offsetSrc), int(offsetDst))
+}
+
 func (s *SHM) Cmp(offsetOfSHMRawComponent uintptr, size uintptr, cmpptr unsafe.Pointer) int {
-    return shm.Cmp(s.Shmaddr, int(offsetOfSHMRawComponent), types.Size_t(size), cmpptr)
+    return shm.Cmp(s.Shmaddr, int(offsetOfSHMRawComponent), size, cmpptr)
 }
