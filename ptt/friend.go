@@ -2,7 +2,6 @@ package ptt
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"math/rand"
@@ -43,7 +42,7 @@ func friendDeleteAll(userID *ptttype.UserID_t, friendType int) error {
 }
 
 func deleteUserFriend(userID *ptttype.UserID_t, friendID *ptttype.UserID_t, friendType int) {
-	if bytes.Equal(userID[:], friendID[:]) {
+	if types.Cstrcmp(userID[:], friendID[:]) == 0 {
 		return
 	}
 
@@ -90,8 +89,8 @@ func deleteFriendFromFile(filename string, friend *ptttype.UserID_t, isCaseSensi
 			return false
 		}
 		copy(userIDInFile[:], line[:])
-		if isCaseSensitive && !bytes.Equal(friend[:], userIDInFile[:]) ||
-			!isCaseSensitive && !bytes.EqualFold(friend[:], userIDInFile[:]) {
+		if isCaseSensitive && (types.Cstrcmp(friend[:], userIDInFile[:]) == 0) ||
+			!isCaseSensitive && (types.Cstrcasecmp(friend[:], userIDInFile[:]) == 0) {
 			sanitizedUserIDInFile := types.CstrToBytes(userIDInFile[:])
 			_, err = writer.Write(sanitizedUserIDInFile)
 			if err != nil { // unable to write-bytes into tmp-file.

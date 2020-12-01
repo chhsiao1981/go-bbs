@@ -1,7 +1,6 @@
 package cache
 
 import (
-	"bytes"
 	"unsafe"
 
 	"github.com/PichuChen/go-bbs/cmsys"
@@ -216,7 +215,7 @@ func DoSearchUserRaw(userID *ptttype.UserID_t, rightID *ptttype.UserID_t) (int32
 			ptttype.USER_ID_SZ,
 			unsafe.Pointer(&shmUserID),
 		)
-		if bytes.Equal(bytes.ToUpper(userID[:]), bytes.ToUpper(shmUserID[:])) {
+		if types.Cstrcasecmp(userID[:], shmUserID[:]) == 0 {
 			if userID[0] != 0 && rightID != nil {
 				copy(rightID[:], shmUserID[:])
 				log.Infof("doSearchUserRaw: after copy: rightID: %v shmUserID: %v", string(rightID[:]), string(shmUserID[:]))

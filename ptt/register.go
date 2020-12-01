@@ -1,7 +1,6 @@
 package ptt
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"time"
@@ -149,7 +148,7 @@ func registerCheckAndUpdateEmaildb(user *ptttype.UserecRaw, email *ptttype.Email
 	}
 
 	if ptttype.USE_VERIFYDB {
-		lcemail := bytes.ToLower(email[:])
+		lcemail := types.CstrTolower(email[:])
 		err = verifyDBSet(&user.UserID, int64(user.FirstLogin), ptttype.VMETHOD_EMAIL, lcemail, 0)
 		if err != nil {
 			return err
@@ -170,7 +169,7 @@ func registerCountEmail(user *ptttype.UserecRaw, email *ptttype.Email_t) (count 
 	}
 
 	if ptttype.USE_VERIFYDB {
-		lcemail := bytes.ToLower(email[:])
+		lcemail := types.CstrTolower(email[:])
 		_, countOther, err := verifyDBCountByVerify(ptttype.VMETHOD_EMAIL, lcemail)
 		if err != nil {
 			return -1, err
@@ -338,13 +337,13 @@ func checkAndExpireAccount(uid int32, user *ptttype.UserecRaw, expireRange int) 
 func computeUserExpireValue(user *ptttype.UserecRaw) int {
 	if (user.UserID[0] == byte(0)) ||
 		(user.UserLevel|ptttype.PERM_XEMPT) != 0 ||
-		bytes.Equal(user.UserID[:], ptttype.USER_ID_GUEST[:]) { // no expire
+		types.Cstrcmp(user.UserID[:], ptttype.USER_ID_GUEST[:]) == 0 { // no expire
 		return 999999
 	}
 
 	valMinute := int(types.NowTS()-user.LastLogin) / 60 // min-time since last login
 
-	if bytes.Equal(user.UserID[:], ptttype.USER_ID_REGNEW[:]) { // allow only 30 minutes when doing new-user.
+	if types.Cstrcmp(user.UserID[:], ptttype.USER_ID_REGNEW[:]) == 0 { // allow only 30 minutes when doing new-user.
 		return 30 - valMinute
 	}
 

@@ -1,9 +1,8 @@
 package ptt
 
 import (
-	"bytes"
-
 	"github.com/PichuChen/go-bbs/ptttype"
+	"github.com/PichuChen/go-bbs/types"
 )
 
 func pwcuEnableBit(perm ptttype.PERM, mask ptttype.PERM) ptttype.PERM {
@@ -28,7 +27,7 @@ func pwcuStart(uid int32, userID *ptttype.UserID_t) (user *ptttype.UserecRaw, er
 		return nil, err
 	}
 
-	if !bytes.Equal(userID[:], user.UserID[:]) {
+	if types.Cstrcmp(userID[:], user.UserID[:]) != 0 {
 		return nil, ptttype.ErrInvalidUserID
 	}
 

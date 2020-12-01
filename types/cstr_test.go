@@ -105,3 +105,193 @@ func TestCstrToString(t *testing.T) {
 		})
 	}
 }
+
+func TestCstrcmp(t *testing.T) {
+	type args struct {
+		cstr1 Cstr
+		cstr2 Cstr
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected int
+	}{
+		// TODO: Add test cases.
+		{
+			name:     "eq",
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("12345"))},
+			expected: 0,
+		},
+		{
+			name:     "gt with eq length",
+			args:     args{Cstr([]byte("34567")), Cstr([]byte("12345"))},
+			expected: 2,
+		},
+		{
+			name:     "gt with diff-length",
+			args:     args{Cstr([]byte("34567")), Cstr([]byte("123456"))},
+			expected: 2,
+		},
+		{
+			name:     "lt with eq length",
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("34567"))},
+			expected: -2,
+		},
+		{
+			name:     "lt with diff length",
+			args:     args{Cstr([]byte("1234567")), Cstr([]byte("34567"))},
+			expected: -2,
+		},
+		{
+			name:     "eq with \x00",
+			args:     args{Cstr([]byte("123\x0056")), Cstr([]byte("123\x0045"))},
+			expected: 0,
+		},
+		{
+			name:     "eq with \x00",
+			args:     args{Cstr([]byte("123\x0056")), Cstr([]byte("123\x004"))},
+			expected: 0,
+		},
+		{
+			name:     "eq with \x00",
+			args:     args{Cstr([]byte("123\x005")), Cstr([]byte("123\x0056"))},
+			expected: 0,
+		},
+		{
+			name:     "len(c1) > len(c2)",
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("123"))},
+			expected: 52,
+		},
+		{
+			name:     "len(c1) > len(c2) with \x00",
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("123\x0045"))},
+			expected: 52,
+		},
+		{
+			name:     "len(c1) > len(c2) with \x00",
+			args:     args{Cstr([]byte("1234\x005")), Cstr([]byte("123\x0045"))},
+			expected: 52,
+		},
+		{
+			name:     "len(c1) > len(c2)",
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("123"))},
+			expected: 52,
+		},
+		{
+			name:     "len(c1) > len(c2) with \x00 ('4' - 0)",
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("123\x0045"))},
+			expected: 52,
+		},
+		{
+			name:     "len(c1) > len(c2) with \x00 ('4' - 0)",
+			args:     args{Cstr([]byte("1234\x005")), Cstr([]byte("123\x0045"))},
+			expected: 52,
+		},
+		{
+			name:     "len(c1) < len(c2)",
+			args:     args{Cstr([]byte("123")), Cstr([]byte("1234"))},
+			expected: -52,
+		},
+		{
+			name:     "len(c1) < len(c2) with \x00",
+			args:     args{Cstr([]byte("123\x0045")), Cstr([]byte("12345"))},
+			expected: -52,
+		},
+		{
+			name:     "len(c1) < len(c2) with \x00",
+			args:     args{Cstr([]byte("123\x0045")), Cstr([]byte("1234\x005"))},
+			expected: -52,
+		},
+		{
+			name:     "len(c1) < len(c2)",
+			args:     args{Cstr([]byte("123")), Cstr([]byte("12345"))},
+			expected: -52,
+		},
+		{
+			name:     "len(c1) < len(c2) with \x00 (0 - '4')",
+			args:     args{Cstr([]byte("123\x0045")), Cstr([]byte("12345"))},
+			expected: -52,
+		},
+		{
+			name:     "len(c1) < len(c2) with \x00",
+			args:     args{Cstr([]byte("123\x0045")), Cstr([]byte("1234\x005"))},
+			expected: -52,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Cstrcmp(tt.args.cstr1, tt.args.cstr2); got != tt.expected {
+				t.Errorf("Cstrcmp() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestCstrTolower(t *testing.T) {
+	type args struct {
+		cstr Cstr
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected Cstr
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{Cstr([]byte("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-+=[]{}"))},
+			expected: Cstr([]byte("0123456789abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz!@#$%^&*()_-+=[]{}")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CstrTolower(tt.args.cstr); !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("CstrTolower() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestCstrstr(t *testing.T) {
+	type args struct {
+		cstr   Cstr
+		substr Cstr
+	}
+	tests := []struct {
+		name     string
+		args     args
+		expected int
+	}{
+		// TODO: Add test cases.
+		{
+			args:     args{Cstr([]byte("123\x0045")), Cstr([]byte("34"))},
+			expected: -1,
+		},
+		{
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("34"))},
+			expected: 2,
+		},
+		{
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("12"))},
+			expected: 0,
+		},
+		{
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("45"))},
+			expected: 3,
+		},
+		{
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("012"))},
+			expected: -1,
+		},
+		{
+			args:     args{Cstr([]byte("12345")), Cstr([]byte("456"))},
+			expected: -1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Cstrstr(tt.args.cstr, tt.args.substr); got != tt.expected {
+				t.Errorf("Cstrstr() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}

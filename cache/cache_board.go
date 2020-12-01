@@ -93,12 +93,12 @@ func HbflReload(bidInCache int32) {
 	for num := 1; scanner.Scan() && num <= ptttype.MAX_FRIEND; {
 
 		line = scanner.Bytes()
-		theList := bytes.Split(line, []byte{' '})
+		theList := bytes.Split(line, []byte{' '}) //The \x00 is taken care of by scanner.
 
 		eachUserID := &ptttype.UserID_t{}
 		copy(eachUserID[:], theList[0][:])
 
-		if bytes.EqualFold(eachUserID[:], ptttype.USER_ID_GUEST[:]) {
+		if types.Cstrcasecmp(eachUserID[:], ptttype.USER_ID_GUEST[:]) == 0 {
 			continue
 		}
 

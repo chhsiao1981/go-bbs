@@ -47,7 +47,7 @@ func CheckPasswd(expected []byte, input []byte) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return bytes.Equal(pw, expected), nil
+	return bytes.Equal(pw, expected), nil //requires the passwd-hash be exact match.
 }
 
 func LogAttempt(userID *ptttype.UserID_t, ip *ptttype.IPv4_t, isWithUserHome bool) {

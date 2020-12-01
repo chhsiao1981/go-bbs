@@ -1,6 +1,8 @@
 package types
 
-import "bytes"
+import (
+	"bytes"
+)
 
 //Cstr
 //
@@ -53,25 +55,35 @@ func CstrToBytes(cstr Cstr) []byte {
 	return cstr[:theLen]
 }
 
+//Cstrcmp
+//The reason that we don't directly do C.strcmp is because cstr1 or cstr2 may not have \x00 in the end.
 func Cstrcmp(cstr1 Cstr, cstr2 Cstr) int {
+	// iterate through cstr1
+	len1 := len(cstr1)
 	len2 := len(cstr2)
 	var each2 byte
-
-	// iterate through cstr1
 	for idx, each := range cstr1 {
+		if each == 0 { // reach the end of cstr1
+			len1 = idx
+			if idx < len2 && cstr2[idx] == 0 { // possibly len2 reaches the end as well.
+				len2 = idx
+			}
+			break
+		}
+
 		// if current-idx > len2 (abcde vs. abc)
 		if idx >= len2 {
-			return 1
+			return int(each)
 		}
 		each2 = cstr2[idx]
-		if each != each2 {
+		if each != each2 { //it's ok if each2 == 0, because because it means that each - each2 > 0
 			return int(each) - int(each2)
 		}
 	}
 
-	// until now, we know that cstr1 and cstr2 are the same with len(cstr1).
-	if len(cstr1) < len2 {
-		return -1
+	// until now, we know that cstr1 and cstr2 are the same with len1.
+	if len1 < len2 {
+		return -int(cstr2[len1])
 	}
 
 	return 0
@@ -85,7 +97,13 @@ func Cstrcasecmp(cstr1 Cstr, cstr2 Cstr) int {
 }
 
 func Cstrstr(cstr Cstr, substr Cstr) int {
-	return bytes.Index(cstr, substr)
+	theIdx := bytes.Index(cstr, substr)
+	theLen := Cstrlen(cstr)
+	if theIdx < 0 || theIdx >= theLen {
+		return -1
+	}
+
+	return theIdx
 }
 
 func Cstrcasestr(cstr Cstr, substr Cstr) int {

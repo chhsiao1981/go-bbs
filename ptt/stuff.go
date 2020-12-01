@@ -1,8 +1,6 @@
 package ptt
 
 import (
-	"bytes"
-
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 )
@@ -10,7 +8,7 @@ import (
 func is_uBM(userID *ptttype.UserID_t, bm *ptttype.BM_t) bool {
 	userIDBytes := types.CstrToBytes(userID[:])
 	bmBytes := types.CstrToBytes(bm[:])
-	theIdx := bytes.Index(bmBytes, userIDBytes)
+	theIdx := types.Cstrstr(bmBytes, userIDBytes)
 	if theIdx < 0 {
 		return false
 	}
