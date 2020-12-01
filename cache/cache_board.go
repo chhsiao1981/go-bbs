@@ -251,6 +251,7 @@ func sortBCache() {
 		)
 	}()
 
+	// init is in shm.c
 	Shm.QsortCmpBoardName()
 	Shm.QsortCmpBoardClass()
 
