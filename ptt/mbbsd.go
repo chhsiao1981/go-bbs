@@ -40,5 +40,7 @@ func LoginQuery(userID *ptttype.UserID_t, passwd []byte, ip *ptttype.IPv4_t) (*p
 		return nil, ptttype.ErrInvalidUserID
 	}
 
+	//XXX do post-user-login.
+
 	return cuser, nil
 }
