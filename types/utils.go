@@ -49,6 +49,11 @@ func ReadFile(filename string) ([]byte, error) {
 	return data, nil
 }
 
+//BinRead
+//
+//Read the file with identified size, the first bytes are fit in v.
+//Assuming that the size of v is <= theSize.
+//XXX not sure what to do if v > theSize.
 func BinRead(file *os.File, v interface{}, theSize uintptr) error {
 	err := binary.Read(file, binary.LittleEndian, v)
 	if err != nil {
@@ -68,6 +73,11 @@ func BinRead(file *os.File, v interface{}, theSize uintptr) error {
 	return nil
 }
 
+//BinWrite
+//
+//Write the file with identified size, the first bytes are with v.
+//Assuming that the size of v is <= theSize.
+//XXX not sure what to do if v > theSize.
 func BinWrite(file *os.File, v interface{}, theSize uintptr) error {
 	err := binary.Write(file, binary.LittleEndian, v)
 	if err != nil {
