@@ -93,6 +93,10 @@ func Memset(shmaddr unsafe.Pointer, offset int, c byte, size uintptr) {
 	C.memsetwrapper(shmaddr, C.int(offset), C.uchar(c), C.ulong(size))
 }
 
+func SetBCACHEPTR(shmaddr unsafe.Pointer, offset int) {
+	C.set_bcacheptr(shmaddr, C.int(offset))
+}
+
 //Cmp
 //
 //memcmp(shmaddr+offset, cmpaddr, size)

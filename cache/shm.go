@@ -244,6 +244,10 @@ func NewSHM(key types.Key_t, isUseHugeTlb bool, isCreate bool) error {
         unsafe.Pointer(&Shm.Raw.Size),
     )
 
+    Shm.SetBCACHEPTR(
+        unsafe.Offsetof(Shm.Raw.BCache),
+    )
+
     // verify version
     if Shm.Raw.Version != SHM_VERSION {
         log.Errorf("NewSHM: version not match: key: %v Shm.Raw.Version: %v SHM_VERSION: %v isCreate: %v isNew: %v", key, Shm.Raw.Version, SHM_VERSION, isCreate, isNew)
@@ -360,4 +364,11 @@ func (s *SHM) InnerSetInt32(offsetSrc uintptr, offsetDst uintptr) {
 
 func (s *SHM) Cmp(offsetOfSHMRawComponent uintptr, size uintptr, cmpptr unsafe.Pointer) int {
     return shm.Cmp(s.Shmaddr, int(offsetOfSHMRawComponent), size, cmpptr)
+}
+
+//SetBCACHEPTR
+//
+//!!!Required in NewSHM (and should be set only once in NewSHM)
+func (s *SHM) SetBCACHEPTR(offsetOfSHMRawComponent uintptr) {
+    shm.SetBCACHEPTR(s.Shmaddr, int(offsetOfSHMRawComponent))
 }
