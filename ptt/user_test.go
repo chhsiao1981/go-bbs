@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/PichuChen/go-bbs/path"
+	"github.com/PichuChen/go-bbs/cmbbs/path"
 	"github.com/PichuChen/go-bbs/ptttype"
 )
 

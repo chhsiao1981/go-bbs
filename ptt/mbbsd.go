@@ -2,7 +2,7 @@ package ptt
 
 import (
 	"github.com/PichuChen/go-bbs/cmbbs"
-	"github.com/PichuChen/go-bbs/names"
+	"github.com/PichuChen/go-bbs/cmbbs/names"
 	"github.com/PichuChen/go-bbs/ptttype"
 	log "github.com/sirupsen/logrus"
 )

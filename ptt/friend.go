@@ -7,8 +7,8 @@ import (
 	"math/rand"
 	"os"
 
-	"github.com/PichuChen/go-bbs/names"
-	"github.com/PichuChen/go-bbs/path"
+	"github.com/PichuChen/go-bbs/cmbbs/names"
+	"github.com/PichuChen/go-bbs/cmbbs/path"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 	log "github.com/sirupsen/logrus"

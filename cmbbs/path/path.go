@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/PichuChen/go-bbs/names"
+	"github.com/PichuChen/go-bbs/cmbbs/names"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 )

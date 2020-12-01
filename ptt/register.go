@@ -7,7 +7,7 @@ import (
 
 	"github.com/PichuChen/go-bbs/cache"
 	"github.com/PichuChen/go-bbs/cmbbs"
-	"github.com/PichuChen/go-bbs/path"
+	"github.com/PichuChen/go-bbs/cmbbs/path"
 	"github.com/PichuChen/go-bbs/ptttype"
 	"github.com/PichuChen/go-bbs/types"
 	log "github.com/sirupsen/logrus"
