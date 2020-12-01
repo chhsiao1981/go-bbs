@@ -255,6 +255,18 @@ func sortBCache() {
 	Shm.QsortCmpBoardClass()
 
 	// for-loop cleaning first-child
+	//init vars
+	val := [ptttype.BSORT_BY_MAX]int32{}
+	bnumber := Shm.GetBNumber()
+
+	const valsz = unsafe.Sizeof(val)
+	for i := int32(0); i < bnumber; i++ {
+		Shm.WriteAt(
+			unsafe.Offsetof(Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(i)+ptttype.BOARD_HEADER_FIRST_CHILD_OFFSET,
+			valsz,
+			unsafe.Pointer(&val),
+		)
+	}
 }
 
 func reloadCacheLoadBottom() {
