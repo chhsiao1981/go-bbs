@@ -381,6 +381,20 @@ func (s *SHM) QsortCmpBoardName() {
         unsafe.Pointer(&bnumber),
     )
 
-    offsetBsorted := unsafe.Offsetof(s.Raw.BSorted)
-    shm.QsortCmpBoardName(s.Shmaddr, int(offsetBsorted), uint32(bnumber), ptttype.BOARD_HEADER_RAW_SZ)
+    const bsorted0sz = unsafe.Sizeof(s.Raw.BSorted[0])
+    offsetBsorted := unsafe.Offsetof(s.Raw.BSorted) + bsorted0sz*uintptr(ptttype.BSORT_BY_GENERAL)
+    shm.QsortCmpBoardName(s.Shmaddr, int(offsetBsorted), uint32(bnumber))
+}
+
+func (s *SHM) QsortCmpBoardClass() {
+    var bnumber int32
+    s.ReadAt(
+        unsafe.Offsetof(s.Raw.BNumber),
+        types.TIME4_SZ,
+        unsafe.Pointer(&bnumber),
+    )
+
+    const bsorted0sz = unsafe.Sizeof(s.Raw.BSorted[0])
+    offsetBsorted := unsafe.Offsetof(s.Raw.BSorted) + bsorted0sz*uintptr(ptttype.BSORT_BY_CLASS)
+    shm.QsortCmpBoardClass(s.Shmaddr, int(offsetBsorted), uint32(bnumber))
 }

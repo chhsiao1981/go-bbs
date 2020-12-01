@@ -222,7 +222,39 @@ func ReloadBCache() {
 //sortBCache
 //XXX TODO: implement
 func sortBCache() {
+	var busystate int32
+	pbusystate := &busystate
+	pbusystateptr := unsafe.Pointer(pbusystate)
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.BBusyState),
+		types.INT32_SZ,
+		pbusystateptr,
+	)
 
+	if busystate != 0 {
+		time.Sleep(1 * time.Second)
+		return
+	}
+
+	*pbusystate = 1
+	Shm.WriteAt(
+		unsafe.Offsetof(Shm.Raw.BBusyState),
+		types.INT32_SZ,
+		pbusystateptr,
+	)
+	defer func() {
+		*pbusystate = 0
+		Shm.WriteAt(
+			unsafe.Offsetof(Shm.Raw.BBusyState),
+			types.INT32_SZ,
+			pbusystateptr,
+		)
+	}()
+
+	Shm.QsortCmpBoardName()
+	Shm.QsortCmpBoardClass()
+
+	// for-loop cleaning first-child
 }
 
 func reloadCacheLoadBottom() {

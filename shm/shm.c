@@ -69,15 +69,35 @@ _bcache(int idx) {
 }
 
 void
-qsort_cmpboardname_wrapper(void *shmaddr, int offset, unsigned long n, unsigned long sz) {
+qsort_cmpboardname_wrapper(void *shmaddr, int offset, unsigned long n) {
+    //the bsortedaddr is already in board-name
     unsigned char *bsortedaddr = (unsigned char *)shmaddr + offset;
-    qsort(bsortedaddr, n, sz, cmpboardname);
+
+    //init bsorted
+    int i = 0;
+    int *pbsortedaddr = (int *)bsortedaddr;
+    for (i = 0, pbsortedaddr = (int *)bsortedaddr; i < n; i++, pbsortedaddr++) {
+        *pbsortedaddr = i;
+    }
+
+    //qsort
+    qsort(bsortedaddr, n, sizeof(int), cmpboardname);
 }
 
 void
-qsort_cmpboardclass_wrapper(void *shmaddr, int offset, unsigned long n, unsigned long sz) {
+qsort_cmpboardclass_wrapper(void *shmaddr, int offset, unsigned long n) {
+    //the bsortedaddr is already in board-class
     unsigned char *bsortedaddr = (unsigned char *)shmaddr + offset;
-    qsort(bsortedaddr, n, sz, cmpboardclass);
+
+    //init bsorted
+    int i = 0;
+    int *pbsortedaddr = (int *)bsortedaddr;
+    for (i = 0, pbsortedaddr = (int *)bsortedaddr; i < n; i++, pbsortedaddr++) {
+        *pbsortedaddr = i;
+    }
+
+    //qsort
+    qsort(bsortedaddr, n, sizeof(int), cmpboardclass);
 }
 
 /**
