@@ -131,32 +131,31 @@ func showBoardList(user *ptttype.UserecRaw, uid int32, boardStats []*ptttype.Boa
 	return summary, nil
 }
 
-func parseBoardSummary(user *ptttype.UserecRaw, uid int32, boardStat *ptttype.BoardStat) (summary *ptttype.BoardSummary, err error) {
+//parseBoardSummary
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1460
+func parseBoardSummary(user *ptttype.UserecRaw, uid int32, boardStat *ptttype.BoardStat) (summary *ptttype.BoardSummary) {
 
 	//XXX we do not deal with fav in go-bbs.
 	if boardStat.Attr&ptttype.NBRD_LINE != 0 {
-		return &ptttype.BoardSummary{Bid: boardStat.Bid, StatAttr: boardStat.Attr}, nil
+		return &ptttype.BoardSummary{Bid: boardStat.Bid, StatAttr: boardStat.Attr}
 	}
 
 	//XXX we do not deal with fav in go-bbs.
 	if boardStat.Attr&ptttype.NBRD_FOLDER != 0 {
-		return &ptttype.BoardSummary{Bid: boardStat.Bid, StatAttr: boardStat.Attr}, nil
+		return &ptttype.BoardSummary{Bid: boardStat.Bid, StatAttr: boardStat.Attr}
 	}
 
 	//hidden board
-	board, err := cache.GetBCache(boardStat.Bid - 1)
-	if err != nil {
-		return nil, err
-	}
-
-	if !groupOp(user, board) && boardPermStat(user, uid, board, boardStat.Bid) == ptttype.NBRD_INVALID {
+	board := boardStat.Board
+	if !boardStat.IsGroupOp && boardStat.Attr == ptttype.NBRD_INVALID {
 		reason := ptttype.RESTRICT_REASON_FORBIDDEN
 		if board.BrdAttr&ptttype.BRD_HIDE != 0 {
 			reason = ptttype.RESTRICT_REASON_HIDDEN
 		}
 		summary = &ptttype.BoardSummary{
 			Bid:      boardStat.Bid,
-			Attr:     board.BrdAttr,
+			BrdAttr:  board.BrdAttr,
 			StatAttr: boardStat.Attr,
 			Brdname:  board.Brdname,
 			Reason:   reason,
@@ -165,9 +164,36 @@ func parseBoardSummary(user *ptttype.UserecRaw, uid int32, boardStat *ptttype.Bo
 			summary.RealTitle = board.Title.RealTitle()
 		}
 
-		return summary, nil
+		return summary
 	}
-	return nil, nil
+
+	bidInCache := boardStat.Bid - 1
+	var lastPostTime types.Time4
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.LastPostTime)+types.TIME4_SZ*bidInCache,
+		types.TIME4_SZ,
+		unsafe.Pointer(&lastPostTime),
+	)
+
+	var total int32
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.Total)+types.INT32_SZ*bidInCache,
+		types.INT32_SZ,
+		unsafe.Pointer(&total),
+	)
+
+	summary = &ptttype.BoardSummary{
+		Bid:          boardStat.Bid,
+		BrdAttr:      board.BrdAttr,
+		StatAttr:     boardStat.Attr,
+		Brdname:      board.Brdname,
+		BM:           board.BM.ToBMs(),
+		LastPostTime: lastPostTime,
+		NUser:        board.NUser,
+		Total:        total,
+	}
+
+	return summary
 }
 
 //groupOp

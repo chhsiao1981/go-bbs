@@ -2,6 +2,7 @@ package types
 
 import (
 	"time"
+	"unsafe"
 )
 
 var (
@@ -11,6 +12,9 @@ var (
 )
 
 type Time4 int32
+
+//XXX check whether INT32_SZ should be TIME4_SZ
+const TIME4_SZ = unsafe.Sizeof(Time4(0))
 
 func NowTS() Time4 {
 	// We don't need to worry about time-zone when using unix-timestamp.

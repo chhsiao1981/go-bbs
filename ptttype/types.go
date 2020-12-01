@@ -1,6 +1,11 @@
 package ptttype
 
-import "unsafe"
+import (
+	"bytes"
+	"unsafe"
+
+	"github.com/PichuChen/go-bbs/types"
+)
 
 //A good thing about specifying the type,
 //is that we don't need to worry whether we need to + 1 or not.
@@ -38,4 +43,15 @@ type BoardTitle_t [BTLEN + 1]byte
 
 func (bt *BoardTitle_t) RealTitle() []byte {
 	return bt[7:]
+}
+
+func (bm *BM_t) ToBMs() []UserID_t {
+	bmBytes := types.CstrToBytes(bm[:])
+	theList := bytes.Split(bmBytes, '/')
+	bms := make([]UserID_t, len(theList))
+	for idx, each := range theList {
+		copy(bms[idx][:], each[:])
+	}
+
+	return bms
 }
