@@ -52,6 +52,7 @@ var emptyBoardHeaderRaw = BoardHeaderRaw{}
 const BOARD_HEADER_RAW_SZ = unsafe.Sizeof(emptyBoardHeaderRaw)
 
 const BOARD_HEADER_BOARD_NAME_OFFSET = unsafe.Offsetof(emptyBoardHeaderRaw.Brdname)
+const BOARD_HEADER_BRD_ATTR_OFFSET = unsafe.Offsetof(emptyBoardHeaderRaw.BrdAttr)
 
 func LoadBoardHeaderRawsFromFile(filename string) ([]*BoardHeaderRaw, error) {
 	file, err := os.Open(filename)

@@ -123,3 +123,17 @@ func HbflReload(bidInCache int32) {
 		unsafe.Pointer(&hbfl),
 	)
 }
+
+//NumBoards
+//
+//https://github.com/ptt/pttbbs/blob/master/common/bbs/cache.c#L512
+func NumBoards() int32 {
+	var nboards int32
+	Shm.ReadAt(
+		unsafe.Offsetof(Shm.Raw.BNumber),
+		types.INT32_SZ,
+		unsafe.Pointer(&nboards),
+	)
+
+	return nboards
+}

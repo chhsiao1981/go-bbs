@@ -1,9 +1,119 @@
 package ptt
 
 import (
+	"unsafe"
+
 	"github.com/PichuChen/go-bbs/cache"
 	"github.com/PichuChen/go-bbs/ptttype"
+	"github.com/PichuChen/go-bbs/types"
 )
+
+//LoadGeneralBoards
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1142
+func LoadGeneralBoards(user *ptttype.UserecRaw, uid int32, startBID int32, nBoards int32, keyword []byte) (summary []*ptttype.BoardSummary, nextBID int32, err error) {
+
+	nBoardsInCache := cache.NumBoards()
+
+	endBID := startBID + nBoards // endBID is exluded
+	if endBID >= nBoardsInCache {
+		endBID = nBoardsInCache
+	}
+
+	boardStats := make([]*ptttype.BoardStat, 0, endBID-startBID)
+	for i := startBID; i < endBID; i++ {
+		eachBoardStat, err := loadGeneralBoardStat(user, uid, i, keyword)
+		if err != nil {
+			continue
+		}
+		if eachBoardStat == nil {
+			continue
+		}
+
+		boardStats = append(boardStats, eachBoardStat)
+	}
+
+	summary, err = showBoardList(user, uid, boardStats)
+	if err != nil {
+		return nil, -1, err
+	}
+
+	if endBID == nBoardsInCache {
+		endBID = -1
+	}
+
+	return summary, endBID, nil
+}
+
+//loadGeneralBoardStat
+//
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L1147
+func loadGeneralBoardStat(user *ptttype.UserecRaw, uid int32, idx int32, keyword []byte) (*ptttype.BoardStat, error) {
+	var bidInCache int32
+
+	const bsort0sz = unsafe.Sizeof(cache.Shm.Raw.BSorted[0])
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.BSorted)+bsort0sz*uintptr(ptttype.BSORT_BY_GENERAL)+uintptr(idx)*types.INT32_SZ,
+		types.INT32_SZ,
+		unsafe.Pointer(&bidInCache),
+	)
+	if bidInCache < 0 {
+		return nil, nil
+	}
+
+	board := &ptttype.BoardHeaderRaw{}
+	cache.Shm.ReadAt(
+		unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache),
+		ptttype.BOARD_HEADER_RAW_SZ,
+		unsafe.Pointer(board),
+	)
+
+	bid := bidInCache + 1
+	isGroupOp := groupOp(user, board)
+	state := boardPermStat(user, uid, board, bid)
+	if (board.Brdname[0] == '\x00') ||
+		(board.BrdAttr&(ptttype.BRD_GROUPBOARD|ptttype.BRD_SYMBOLIC) != 0) ||
+		!((state != ptttype.NBRD_INVALID) || isGroupOp) ||
+		keywordNotInTitle(&board.Title, keyword) {
+		return nil, nil
+	}
+
+	boardStat := newBoardStat(bidInCache, state, board, isGroupOp)
+
+	return boardStat, nil
+}
+
+//newBoardStat
+func newBoardStat(bidInCache int32, state ptttype.BoardStatAttr, board *ptttype.BoardHeaderRaw, isGroupOp bool) (boardStat *ptttype.BoardStat) {
+	boardStat = &ptttype.BoardStat{}
+
+	boardStat.Bid = bidInCache + 1
+	boardStat.Attr = state
+
+	boardStat.Board = board
+	boardStat.IsGroupOp = isGroupOp
+
+	//XXX need to modify this by having state with NBRD_SET_POSTMASK
+	//XXX this is a hack to ensure the brd-postmask
+	var brd_postmask = ptttype.BRD_POSTMASK
+	if (board.BrdAttr&ptttype.BRD_HIDE != 0) && (board.BrdAttr&ptttype.BRD_POSTMASK == 0) && state == ptttype.NBRD_BOARD {
+		cache.Shm.SetOrUint32(
+			unsafe.Offsetof(cache.Shm.Raw.BCache)+ptttype.BOARD_HEADER_RAW_SZ*uintptr(bidInCache)+ptttype.BOARD_HEADER_BRD_ATTR_OFFSET,
+			unsafe.Pointer(&brd_postmask),
+		)
+		board.BrdAttr |= brd_postmask
+	}
+
+	return boardStat
+}
+
+//keywordNotInTitle
+//
+//TITLE_MATCH in board.c
+//https://github.com/ptt/pttbbs/blob/master/mbbsd/board.c#L14
+func keywordNotInTitle(title *ptttype.BoardTitle_t, keyword []byte) bool {
+	return (len(keyword) > 0) && (types.Cstrcasestr(title[:], keyword) < 0)
+}
 
 //showBoardList
 //
@@ -38,7 +148,8 @@ func parseBoardSummary(user *ptttype.UserecRaw, uid int32, boardStat *ptttype.Bo
 	if err != nil {
 		return nil, err
 	}
-	if !groupOp(user, board) && !hasBoardPerm(user, uid, board, boardStat.Bid) {
+
+	if !groupOp(user, board) && boardPermStat(user, uid, board, boardStat.Bid) == ptttype.NBRD_INVALID {
 		reason := ptttype.RESTRICT_REASON_FORBIDDEN
 		if board.BrdAttr&ptttype.BRD_HIDE != 0 {
 			reason = ptttype.RESTRICT_REASON_HIDDEN

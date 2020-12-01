@@ -342,6 +342,10 @@ func (s *SHM) WriteAt(offsetOfSHMRawComponent uintptr, size uintptr, inptr unsaf
     shm.WriteAt(s.Shmaddr, int(offsetOfSHMRawComponent), types.Size_t(size), inptr)
 }
 
+func (s *SHM) SetOrUint32(offsetOfSHMRawComponent uintptr, inptr unsafe.Pointer) {
+    shm.SetOrUint32(s.Shmaddr, int(offsetOfSHMRawComponent), inptr)
+}
+
 func (s *SHM) IncUint32(offsetOfSHMRawComponent uintptr) {
     shm.IncUint32(s.Shmaddr, int(offsetOfSHMRawComponent))
 }

@@ -22,6 +22,12 @@ package shm
 //   unsigned int *dst = (unsigned int *)dst_b;
 //   (*dst)++;
 // }
+// void set_or_uint32wrapper(void *shmaddr, int offset, void *inptr) {
+//     unsigned char *c_dst = (unsigned char *)shmaddr + offset;
+//     unsigned int *dst = (unsigned int *)c_dst;
+//     unsigned int *flag = (unsigned int *)inptr;
+//     *dst |= *flag;
+// }
 // int cmpwrapper(void *shmaddr, int offset, unsigned long n, void *cmpaddr) {
 //   unsigned char *cmp1 = (unsigned char *)shmaddr + offset;
 //   return memcmp(cmp1, cmpaddr, n);
@@ -95,23 +101,19 @@ func CloseShm(shmid int) (err error) {
 }
 
 func ReadAt(shmaddr unsafe.Pointer, offset int, size types.Size_t, outptr unsafe.Pointer) {
-
 	C.readwrapper(outptr, shmaddr, C.int(offset), C.ulong(size))
-
-	return
 }
 
 func WriteAt(shmaddr unsafe.Pointer, offset int, size types.Size_t, inptr unsafe.Pointer) {
-
 	C.writewrapper(shmaddr, C.int(offset), inptr, C.ulong(size))
-
-	return
 }
 
 func IncUint32(shmaddr unsafe.Pointer, offset int) {
 	C.incuint32wrapper(shmaddr, C.int(offset))
+}
 
-	return
+func SetOrUint32(shmaddr unsafe.Pointer, offset int, intptr unsafe.Pointer) {
+	C.set_or_uint32wrapper(shmaddr, C.int(offset), intptr)
 }
 
 //Cmp

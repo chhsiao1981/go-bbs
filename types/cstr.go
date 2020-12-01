@@ -52,3 +52,62 @@ func CstrToBytes(cstr Cstr) []byte {
 	theLen := Cstrlen(cstr)
 	return cstr[:theLen]
 }
+
+func Cstrcmp(cstr1 Cstr, cstr2 Cstr) int {
+	len2 := len(cstr2)
+	var each2 byte
+
+	// iterate through cstr1
+	for idx, each := range cstr1 {
+		// if current-idx > len2 (abcde vs. abc)
+		if idx >= len2 {
+			return 1
+		}
+		each2 = cstr2[idx]
+		if each != each2 {
+			return int(each) - int(each2)
+		}
+	}
+
+	// until now, we know that cstr1 and cstr2 are the same with len(cstr1).
+	if len(cstr1) < len2 {
+		return -1
+	}
+
+	return 0
+}
+
+func Cstrcasecmp(cstr1 Cstr, cstr2 Cstr) int {
+	cstr1Lower := CstrTolower(cstr1)
+	cstr2Lower := CstrTolower(cstr2)
+
+	return Cstrcmp(cstr1Lower, cstr2Lower)
+}
+
+func Cstrstr(cstr Cstr, substr Cstr) int {
+	return bytes.Index(cstr, substr)
+}
+
+func Cstrcasestr(cstr Cstr, substr Cstr) int {
+	cstrLower := CstrTolower(cstr)
+	substrLower := CstrTolower(cstr)
+
+	return Cstrstr(cstrLower, substrLower)
+}
+
+func CstrTolower(cstr Cstr) Cstr {
+	cstrLower := make(Cstr, len(cstr))
+	for idx, each := range cstr {
+		cstrLower[idx] = CcharTolower(each)
+	}
+
+	return cstrLower
+}
+
+func CcharTolower(ch byte) byte {
+	if ch >= 'A' && ch <= 'Z' {
+		return ch + 'a' - 'A'
+	}
+
+	return ch
+}

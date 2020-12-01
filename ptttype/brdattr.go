@@ -1,5 +1,7 @@
 package ptttype
 
+import "unsafe"
+
 type BrdAttr uint32
 
 const (
@@ -34,3 +36,5 @@ const (
 	BRD_NOSELFDELPOST   BrdAttr = 0x08000000 /* 不可自刪 */
 	BRD_BM_MASK_CONTENT BrdAttr = 0x10000000 /* 允許板主刪除特定文字 */
 )
+
+const BRD_ATTR_SZ = unsafe.Sizeof(BrdAttr(0))

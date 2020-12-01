@@ -49,7 +49,7 @@ type SHMRaw struct {
 	Gap9    [types.INT32_SZ]byte
 	BCache  [ptttype.MAX_BOARD]ptttype.BoardHeaderRaw
 	Gap10   [types.INT32_SZ]byte
-	BSorted [2][ptttype.MAX_BOARD]int32 /* 0: by name 1: by class */ /* 裡頭存的是 bid-1 */
+	BSorted [ptttype.BSORT_BY_MAX][ptttype.MAX_BOARD]int32 /* 0: by name 1: by class */ /* 裡頭存的是 bid-1 */
 	Gap11   [types.INT32_SZ]byte
 	// XXX NHOTs and HBcache are affected with HOTBOARDCACHE
 	//     Require to discuss with admins about current settings.
@@ -108,8 +108,6 @@ type SHMRaw struct {
 	FBusyState int32
 }
 
-const DUMMY_SHMGV2 = 512 - 6
-
 type shmGV2 struct {
 	DyMaxMctive  int32       /* 動態設定最大人數上限     */
 	TooManyUsers int32       /* 超過人數上限不給進的個數 */
@@ -119,5 +117,7 @@ type shmGV2 struct {
 	Shutdown     int32 /* shutdown flag */
 	Dummy        [DUMMY_SHMGV2]int32
 }
+
+const DUMMY_SHMGV2 = 512 - 6 //6 defined int32 variables in shmGV2a
 
 const SHM_RAW_SZ = unsafe.Sizeof(SHMRaw{})
